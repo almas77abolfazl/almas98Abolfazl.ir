@@ -31,3 +31,5 @@ Database:
 Comments:
 
 - Every public method must have XML summary.
+
+<!-- Initial commit marker -->
