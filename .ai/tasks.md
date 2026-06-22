@@ -2,8 +2,8 @@
 
 ## Phase 1: Backend + Main Website
 
-- [ ] 1.1 Create monorepo folder structure (backend, frontend-site, frontend-admin)
-- [ ] 1.2 Create base docker-compose.yml (nginx, postgres, backend)
+- [x] 1.1 Create monorepo folder structure (backend, frontend-site, frontend-admin)
+- [x] 1.2 Create base docker-compose.yml (nginx, postgres, backend)
 - [ ] 1.3 Set up PostgreSQL database with Prisma
 - [ ] 1.4 Create initial tables (AboutMe, Experiences, Educations, Skills, Articles, Media)
 - [ ] 1.5 Implement public API endpoints for main website
