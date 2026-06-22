@@ -6,7 +6,7 @@
 - [x] 1.2 Create base docker-compose.yml (nginx, postgres, backend)
 - [x] 1.3 Set up PostgreSQL database with Prisma
 - [x] 1.4 Create initial tables (AboutMe, Experiences, Educations, Skills, Articles, Media)
-- [ ] 1.5 Implement public API endpoints for main website
+- [x] 1.5 Implement public API endpoints for main website
   - [ ] GET /api/about-me
   - [ ] GET /api/experiences
   - [ ] GET /api/educations
