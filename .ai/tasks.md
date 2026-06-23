@@ -26,7 +26,12 @@
   - [x] Home, AboutMe, Experiences, Skills pages with dynamic API integration
   - [x] Shared API service for backend communication
 - [x] 1.7 Initial styling and responsive layout
-- [ ] 1.8 Optimize build for static serving via Nginx
+- [x] 1.8 Optimize build for static serving via Nginx
+  - [x] Multi-stage Dockerfile in frontend-site (Node builder + Nginx Alpine)
+  - [x] Updated docker-compose.yml to serve frontend-site on port 80
+  - [x] Nginx config for static file serving and API proxy (/api, /admin-api)
+
+**Phase 1 Complete ✅**
 
 ## Phase 2: Admin Panel + Testimonials
 
