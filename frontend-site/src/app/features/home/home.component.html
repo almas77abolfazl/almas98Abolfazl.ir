@@ -1,0 +1,48 @@
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+  <div class="text-center mb-16">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+      {{ i18n.isFa ? 'سلام، من ' : 'Hi, I\'m ' }}{{ aboutMe?.fullName }}
+    </h1>
+    <p class="text-xl text-gray-600 dark:text-gray-400 mb-6">{{ aboutMe?.title }}</p>
+    <p class="max-w-2xl mx-auto text-gray-700 dark:text-gray-300">{{ aboutMe?.bio }}</p>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-8 mb-16">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+        {{ i18n.t('experiencesTitle') }}
+      </h2>
+      @if (latestExperience) {
+        <div class="space-y-2">
+          <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ latestExperience.role }}</p>
+          <p class="text-gray-600 dark:text-gray-400">{{ latestExperience.company }}</p>
+          <p class="text-sm text-gray-500 dark:text-gray-500">
+            {{ latestExperience.startDate | date:'yyyy' }} -
+            {{ latestExperience.endDate ? (latestExperience.endDate | date:'yyyy') : i18n.t('present') }}
+          </p>
+        </div>
+      } @else {
+        <p class="text-gray-500 dark:text-gray-500">{{ i18n.isFa ? 'در حال بارگذاری...' : 'Loading...' }}</p>
+      }
+      <a routerLink="/experiences" class="inline-block mt-4 text-secondary hover:underline">
+        {{ i18n.t('readMore') }}
+      </a>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+        {{ i18n.t('skillsTitle') }}
+      </h2>
+      <div class="flex flex-wrap gap-2">
+        @for (skill of topSkills; track skill.id) {
+          <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">
+            {{ skill.name }}
+          </span>
+        }
+      </div>
+      <a routerLink="/skills" class="inline-block mt-4 text-secondary hover:underline">
+        {{ i18n.t('readMore') }}
+      </a>
+    </div>
+  </div>
+</section>

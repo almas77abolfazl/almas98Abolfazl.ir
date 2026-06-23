@@ -15,8 +15,17 @@
   - [x] GET /api/articles/:slug
   - [x] GET /api/media
   - [x] Seed script and Docker db push entrypoint
-- [ ] 1.6 Build frontend site first phase (homepage, about me, experiences, skills)
-- [ ] 1.7 Initial styling and responsive layout
+- [x] 1.6 Build frontend site first phase (homepage, about me, experiences, skills)
+  - [x] Angular 20 project initialized with standalone components
+  - [x] Tailwind CSS v4 configured with PostCSS
+  - [x] Class-based Dark/Light mode toggle implemented
+  - [x] Bilingual i18n (Farsi/English) with dynamic RTL/LTR direction switching
+  - [x] Vazirmatn font for Farsi, Inter for English
+  - [x] Header with language/theme toggles
+  - [x] Footer component
+  - [x] Home, AboutMe, Experiences, Skills pages with dynamic API integration
+  - [x] Shared API service for backend communication
+- [x] 1.7 Initial styling and responsive layout
 - [ ] 1.8 Optimize build for static serving via Nginx
 
 ## Phase 2: Admin Panel + Testimonials

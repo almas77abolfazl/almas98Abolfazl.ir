@@ -1,0 +1,103 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface AboutMe {
+  id: string;
+  fullName: string;
+  title: string;
+  bio?: string;
+  avatarUrl?: string;
+  resumeUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Experience {
+  id: string;
+  role: string;
+  company: string;
+  startDate: string;
+  endDate?: string;
+  description?: string;
+  technologies: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Education {
+  id: string;
+  degree: string;
+  institution: string;
+  field?: string;
+  startDate: string;
+  endDate?: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Skill {
+  id: string;
+  name: string;
+  category: string;
+  proficiency?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  excerpt?: string;
+  coverUrl?: string;
+  published: boolean;
+  publishedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Media {
+  id: string;
+  filename: string;
+  originalName: string;
+  mimeType: string;
+  sizeBytes: number;
+  url: string;
+  alt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class ApiService {
+  private baseUrl = '/api';
+
+  constructor(private http: HttpClient) {}
+
+  getAboutMe(): Observable<AboutMe> {
+    return this.http.get<AboutMe>(`${this.baseUrl}/about-me`);
+  }
+
+  getExperiences(): Observable<Experience[]> {
+    return this.http.get<Experience[]>(`${this.baseUrl}/experiences`);
+  }
+
+  getEducations(): Observable<Education[]> {
+    return this.http.get<Education[]>(`${this.baseUrl}/educations`);
+  }
+
+  getSkills(): Observable<Skill[]> {
+    return this.http.get<Skill[]>(`${this.baseUrl}/skills`);
+  }
+
+  getArticles(): Observable<Article[]> {
+    return this.http.get<Article[]>(`${this.baseUrl}/articles`);
+  }
+
+  getMedia(): Observable<Media[]> {
+    return this.http.get<Media[]>(`${this.baseUrl}/media`);
+  }
+}
