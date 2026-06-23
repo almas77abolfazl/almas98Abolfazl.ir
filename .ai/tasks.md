@@ -7,13 +7,14 @@
 - [x] 1.3 Set up PostgreSQL database with Prisma
 - [x] 1.4 Create initial tables (AboutMe, Experiences, Educations, Skills, Articles, Media)
 - [x] 1.5 Implement public API endpoints for main website
-  - [ ] GET /api/about-me
-  - [ ] GET /api/experiences
-  - [ ] GET /api/educations
-  - [ ] GET /api/skills
-  - [ ] GET /api/articles (published only)
-  - [ ] GET /api/articles/:slug
-  - [ ] GET /api/media
+  - [x] GET /api/about-me
+  - [x] GET /api/experiences
+  - [x] GET /api/educations
+  - [x] GET /api/skills
+  - [x] GET /api/articles (published only)
+  - [x] GET /api/articles/:slug
+  - [x] GET /api/media
+  - [x] Seed script and Docker db push entrypoint
 - [ ] 1.6 Build frontend site first phase (homepage, about me, experiences, skills)
 - [ ] 1.7 Initial styling and responsive layout
 - [ ] 1.8 Optimize build for static serving via Nginx

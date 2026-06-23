@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class ArticlesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findPublished() {
+  async findPublished() {
     return this.prisma.articles.findMany({
       where: { published: true },
       orderBy: { createdAt: 'desc' },

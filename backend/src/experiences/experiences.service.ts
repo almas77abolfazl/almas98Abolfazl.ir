@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class ExperiencesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
+  async findAll() {
     return this.prisma.experiences.findMany({
       orderBy: { startDate: 'desc' },
     });

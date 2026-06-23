@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class MediaService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
+  async findAll() {
     return this.prisma.media.findMany({
       orderBy: { createdAt: 'desc' },
     });
