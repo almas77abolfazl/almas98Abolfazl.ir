@@ -1,0 +1,120 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { TestimonialStatus } from '@prisma/client';
+
+@Injectable()
+export class AdminService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  // AboutMe (singleton)
+  async upsertAboutMe(data: { fullName: string; title: string; bio?: string; avatarUrl?: string; resumeUrl?: string }) {
+    const existing = await this.prisma.aboutMe.findFirst();
+    if (existing) {
+      return this.prisma.aboutMe.update({ where: { id: existing.id }, data });
+    }
+    return this.prisma.aboutMe.create({ data });
+  }
+
+  async deleteAboutMe(id: string) {
+    return this.prisma.aboutMe.delete({ where: { id } });
+  }
+
+  // Experiences
+  async createExperience(data: { role: string; company: string; startDate: Date; endDate?: Date; description?: string; technologies: string[] }) {
+    return this.prisma.experiences.create({ data });
+  }
+
+  async updateExperience(id: string, data: { role?: string; company?: string; startDate?: Date; endDate?: Date; description?: string; technologies?: string[] }) {
+    return this.prisma.experiences.update({ where: { id }, data });
+  }
+
+  async deleteExperience(id: string) {
+    return this.prisma.experiences.delete({ where: { id } });
+  }
+
+  // Educations
+  async createEducation(data: { degree: string; institution: string; field?: string; startDate: Date; endDate?: Date; description?: string }) {
+    return this.prisma.educations.create({ data });
+  }
+
+  async updateEducation(id: string, data: { degree?: string; institution?: string; field?: string; startDate?: Date; endDate?: Date; description?: string }) {
+    return this.prisma.educations.update({ where: { id }, data });
+  }
+
+  async deleteEducation(id: string) {
+    return this.prisma.educations.delete({ where: { id } });
+  }
+
+  // Skills
+  async createSkill(data: { name: string; category: string; proficiency?: number }) {
+    return this.prisma.skills.create({ data });
+  }
+
+  async updateSkill(id: string, data: { name?: string; category?: string; proficiency?: number }) {
+    return this.prisma.skills.update({ where: { id }, data });
+  }
+
+  async deleteSkill(id: string) {
+    return this.prisma.skills.delete({ where: { id } });
+  }
+
+  // Articles
+  async createArticle(data: { title: string; slug: string; content: string; excerpt?: string; coverUrl?: string; published?: boolean; publishedAt?: Date }) {
+    return this.prisma.articles.create({ data });
+  }
+
+  async updateArticle(id: string, data: { title?: string; slug?: string; content?: string; excerpt?: string; coverUrl?: string; published?: boolean; publishedAt?: Date }) {
+    return this.prisma.articles.update({ where: { id }, data });
+  }
+
+  async deleteArticle(id: string) {
+    return this.prisma.articles.delete({ where: { id } });
+  }
+
+  // Media
+  async createMedia(data: { filename: string; originalName: string; mimeType: string; sizeBytes: number; url: string; alt?: string }) {
+    return this.prisma.media.create({ data });
+  }
+
+  async updateMedia(id: string, data: { filename?: string; originalName?: string; mimeType?: string; sizeBytes?: number; url?: string; alt?: string }) {
+    return this.prisma.media.update({ where: { id }, data });
+  }
+
+  async deleteMedia(id: string) {
+    return this.prisma.media.delete({ where: { id } });
+  }
+
+  // ContactMessages
+  async findAllContactMessages() {
+    return this.prisma.contactMessage.findMany({ orderBy: { createdAt: 'desc' } });
+  }
+
+  async updateContactMessage(id: string, data: { isRead?: boolean }) {
+    return this.prisma.contactMessage.update({ where: { id }, data });
+  }
+
+  async deleteContactMessage(id: string) {
+    return this.prisma.contactMessage.delete({ where: { id } });
+  }
+
+  // Testimonials
+  async findAllTestimonials() {
+    return this.prisma.testimonial.findMany({ orderBy: { createdAt: 'desc' } });
+  }
+
+  async createTestimonial(data: { authorName: string; companyRole?: string; content: string; rating?: number; status?: TestimonialStatus }) {
+    return this.prisma.testimonial.create({ data });
+  }
+
+  async updateTestimonial(id: string, data: { authorName?: string; companyRole?: string; content?: string; rating?: number; status?: TestimonialStatus }) {
+    return this.prisma.testimonial.update({ where: { id }, data });
+  }
+
+  async updateTestimonialStatus(id: string, status: TestimonialStatus) {
+    return this.prisma.testimonial.update({ where: { id }, data: { status } });
+  }
+
+  async deleteTestimonial(id: string) {
+    return this.prisma.testimonial.delete({ where: { id } });
+  }
+}

@@ -4,6 +4,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+RUN apk add --no-cache openssl
+RUN npx prisma generate
 RUN npm run build
 
 FROM node:22-alpine
@@ -21,7 +23,7 @@ RUN printf '#!/bin/sh\n' > /entrypoint.sh && \
     printf '  ./node_modules/.bin/prisma db push && break\n' >> /entrypoint.sh && \
     printf '  sleep 2\n' >> /entrypoint.sh && \
     printf 'done\n' >> /entrypoint.sh && \
-    printf 'exec node dist/main\n' >> /entrypoint.sh && \
+    printf 'exec node dist/src/main\n' >> /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
 EXPOSE 3000

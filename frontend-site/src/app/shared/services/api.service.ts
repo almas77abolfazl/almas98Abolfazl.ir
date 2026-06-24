@@ -97,6 +97,14 @@ export class ApiService {
     return this.http.get<Article[]>(`${this.baseUrl}/articles`);
   }
 
+  getArticleBySlug(slug: string): Observable<Article> {
+    return this.http.get<Article>(`${this.baseUrl}/articles/${slug}`);
+  }
+
+  postContactMessage(body: { name: string; email: string; subject?: string; message: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/contact-messages`, body);
+  }
+
   getMedia(): Observable<Media[]> {
     return this.http.get<Media[]>(`${this.baseUrl}/media`);
   }

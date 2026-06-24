@@ -43,6 +43,16 @@ services:
     networks:
       - app-network
 
+  frontend-admin:
+    build:
+      context: ./frontend-admin
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
 volumes:
   postgres_data:
   frontend-site-static:

@@ -7,42 +7,81 @@
     <p class="max-w-2xl mx-auto text-gray-700 dark:text-gray-300">{{ aboutMe?.bio }}</p>
   </div>
 
-  <div class="grid md:grid-cols-2 gap-8 mb-16">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-        {{ i18n.t('experiencesTitle') }}
-      </h2>
-      @if (latestExperience) {
-        <div class="space-y-2">
-          <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ latestExperience.role }}</p>
-          <p class="text-gray-600 dark:text-gray-400">{{ latestExperience.company }}</p>
-          <p class="text-sm text-gray-500 dark:text-gray-500">
-            {{ latestExperience.startDate | date:'yyyy' }} -
-            {{ latestExperience.endDate ? (latestExperience.endDate | date:'yyyy') : i18n.t('present') }}
-          </p>
-        </div>
-      } @else {
-        <p class="text-gray-500 dark:text-gray-500">{{ i18n.isFa ? 'در حال بارگذاری...' : 'Loading...' }}</p>
-      }
-      <a routerLink="/experiences" class="inline-block mt-4 text-secondary hover:underline">
-        {{ i18n.t('readMore') }}
-      </a>
-    </div>
+   <div class="grid md:grid-cols-2 gap-8 mb-16">
+     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+       <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+         {{ i18n.t('experiencesTitle') }}
+       </h2>
+       @if (latestExperience) {
+         <div class="space-y-2">
+           <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ latestExperience.role }}</p>
+           <p class="text-gray-600 dark:text-gray-400">{{ latestExperience.company }}</p>
+           <p class="text-sm text-gray-500 dark:text-gray-500">
+             {{ latestExperience.startDate | date:'yyyy' }} -
+             {{ latestExperience.endDate ? (latestExperience.endDate | date:'yyyy') : i18n.t('present') }}
+           </p>
+         </div>
+       } @else {
+         <p class="text-gray-500 dark:text-gray-500">{{ i18n.isFa ? 'در حال بارگذاری...' : 'Loading...' }}</p>
+       }
+       <a routerLink="/experiences" class="inline-block mt-4 text-secondary hover:underline">
+         {{ i18n.t('readMore') }}
+       </a>
+     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-        {{ i18n.t('skillsTitle') }}
-      </h2>
-      <div class="flex flex-wrap gap-2">
-        @for (skill of topSkills; track skill.id) {
-          <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">
-            {{ skill.name }}
-          </span>
-        }
-      </div>
-      <a routerLink="/skills" class="inline-block mt-4 text-secondary hover:underline">
-        {{ i18n.t('readMore') }}
-      </a>
-    </div>
-  </div>
-</section>
+     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+       <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+         {{ i18n.t('skillsTitle') }}
+       </h2>
+       <div class="flex flex-wrap gap-2">
+         @for (skill of topSkills; track skill.id) {
+           <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm">
+             {{ skill.name }}
+           </span>
+         }
+       </div>
+       <a routerLink="/skills" class="inline-block mt-4 text-secondary hover:underline">
+         {{ i18n.t('readMore') }}
+       </a>
+     </div>
+   </div>
+
+   <div class="max-w-2xl mx-auto">
+     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+       {{ i18n.isFa ? 'تماس با من' : 'Get in Touch' }}
+     </h2>
+     <form (ngSubmit)="onSubmit()" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-4">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+         <div>
+           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+             {{ i18n.isFa ? 'نام' : 'Name' }}
+           </label>
+           <input [(ngModel)]="contact.name" name="name" required class="w-full px-4 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+         </div>
+         <div>
+           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+             {{ i18n.isFa ? 'ایمیل' : 'Email' }}
+           </label>
+           <input type="email" [(ngModel)]="contact.email" name="email" required class="w-full px-4 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+         </div>
+       </div>
+       <div>
+         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+           {{ i18n.isFa ? 'موضوع' : 'Subject' }}
+         </label>
+         <input [(ngModel)]="contact.subject" name="subject" class="w-full px-4 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+       </div>
+       <div>
+         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+           {{ i18n.isFa ? 'پیام' : 'Message' }}
+         </label>
+         <textarea [(ngModel)]="contact.message" name="message" rows="4" required class="w-full px-4 py-2 border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"></textarea>
+       </div>
+       <p *ngIf="success" class="text-green-600 dark:text-green-400 text-sm">{{ i18n.isFa ? 'پیام با موفقیت ارسال شد!' : 'Message sent successfully!' }}</p>
+       <p *ngIf="error" class="text-red-600 dark:text-red-400 text-sm">{{ error }}</p>
+       <button type="submit" class="w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+         {{ i18n.isFa ? 'ارسال پیام' : 'Send Message' }}
+       </button>
+     </form>
+   </div>
+ </section>
