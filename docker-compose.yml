@@ -37,7 +37,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8080:80"  # ◄◄ پورت ویندوز تغییر کرد به 8080 تا با پورت 80 سیستم خودت تداخل نداشته باشد
     depends_on:
       - backend
     networks:
@@ -48,6 +48,7 @@ services:
       context: ./frontend-admin
       dockerfile: Dockerfile
     restart: unless-stopped
+    # ◄◄ نیازی به باز کردن پورت مستقیم برای ادمین نیست، چون ترافیک از طریق Nginx کانتینر بالا (پورت 8080) با پچ /admin روت می‌شود.
     depends_on:
       - backend
     networks:
@@ -55,8 +56,6 @@ services:
 
 volumes:
   postgres_data:
-  frontend-site-static:
-  frontend-admin-static:
 
 networks:
   app-network:

@@ -21,7 +21,7 @@
 
 .dark {
   --bg-color: #0f172a;
-  --text-color: #f3f4f6;
+  --text-color: var(--color-text);
 }
 
 body {

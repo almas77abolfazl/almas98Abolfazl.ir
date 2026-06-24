@@ -13,13 +13,13 @@ import { AuthService } from '../../core/services/auth.service';
         </div>
         <nav class="flex-1 p-4 space-y-1">
           <a routerLink="/dashboard" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Dashboard</a>
-          <a routerLink="/admin/about-me" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">About Me</a>
-          <a routerLink="/admin/experiences" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Experiences</a>
-          <a routerLink="/admin/educations" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Educations</a>
-          <a routerLink="/admin/skills" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Skills</a>
-          <a routerLink="/admin/articles" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Articles</a>
-          <a routerLink="/admin/testimonials" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Testimonials</a>
-          <a routerLink="/admin/messages" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Messages</a>
+          <a routerLink="/about-me" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">About Me</a>
+          <a routerLink="/experiences" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Experiences</a>
+          <a routerLink="/educations" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Educations</a>
+          <a routerLink="/skills" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Skills</a>
+          <a routerLink="/articles" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Articles</a>
+          <a routerLink="/testimonials" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Testimonials</a>
+          <a routerLink="/messages" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Messages</a>
         </nav>
         <div class="p-4 border-t border-gray-700">
           <button (click)="logout()" class="w-full px-4 py-2 bg-red-600 hover:bg-red-700 rounded">Logout</button>

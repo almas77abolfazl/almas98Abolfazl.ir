@@ -25,7 +25,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [],
             "styles": [
-              "src/styles.scss"
+              "src/styles.css"
             ]
           },
           "configurations": {
@@ -78,7 +78,7 @@
             "inlineStyleLanguage": "scss",
             "assets": [],
             "styles": [
-              "src/styles.scss"
+              "src/styles.css"
             ]
           }
         }
