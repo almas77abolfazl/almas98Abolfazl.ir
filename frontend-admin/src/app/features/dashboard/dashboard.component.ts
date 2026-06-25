@@ -80,7 +80,7 @@ export class DashboardComponent implements OnInit {
     this.http.get<any[]>('/api/admin/articles').subscribe({
       next: (data) => (this.articleCount = data.length),
     });
-    this.http.get<any>('/api/admin-analytics/stats').subscribe({
+    this.http.get<any>('/api/analytics/stats').subscribe({
       next: (data) => {
         this.totalViews = data.total;
         this.topPages = data.topPages;

@@ -8,6 +8,11 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   // AboutMe
+  @Get('about-me')
+  findAboutMe() {
+    return this.adminService.findAboutMe();
+  }
+
   @Post('about-me')
   upsertAboutMe(@Body() body: { fullName: string; title: string; bio?: string; avatarUrl?: string; resumeUrl?: string }) {
     return this.adminService.upsertAboutMe(body);
@@ -19,6 +24,11 @@ export class AdminController {
   }
 
   // Experiences
+  @Get('experiences')
+  findAllExperiences() {
+    return this.adminService.findAllExperiences();
+  }
+
   @Post('experiences')
   createExperience(@Body() body: { role: string; company: string; startDate: string; endDate?: string; description?: string; technologies: string[] }) {
     return this.adminService.createExperience({ ...body, startDate: new Date(body.startDate), endDate: body.endDate ? new Date(body.endDate) : undefined });
@@ -38,6 +48,11 @@ export class AdminController {
   }
 
   // Educations
+  @Get('educations')
+  findAllEducations() {
+    return this.adminService.findAllEducations();
+  }
+
   @Post('educations')
   createEducation(@Body() body: { degree: string; institution: string; field?: string; startDate: string; endDate?: string; description?: string }) {
     return this.adminService.createEducation({ ...body, startDate: new Date(body.startDate), endDate: body.endDate ? new Date(body.endDate) : undefined });
@@ -57,6 +72,11 @@ export class AdminController {
   }
 
   // Skills
+  @Get('skills')
+  findAllSkills() {
+    return this.adminService.findAllSkills();
+  }
+
   @Post('skills')
   createSkill(@Body() body: { name: string; category: string; proficiency?: number }) {
     return this.adminService.createSkill(body);
@@ -73,6 +93,11 @@ export class AdminController {
   }
 
   // Articles
+  @Get('articles')
+  findAllArticles() {
+    return this.adminService.findAllArticles();
+  }
+
   @Post('articles')
   createArticle(@Body() body: { title: string; slug: string; content: string; excerpt?: string; coverUrl?: string; published?: boolean; publishedAt?: string }) {
     return this.adminService.createArticle({ ...body, publishedAt: body.publishedAt ? new Date(body.publishedAt) : undefined });

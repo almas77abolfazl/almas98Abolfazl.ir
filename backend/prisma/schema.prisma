@@ -25,6 +25,7 @@ model Experiences {
   endDate     DateTime?
   description String?  @db.Text
   technologies String[]
+  order       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -37,6 +38,7 @@ model Educations {
   startDate   DateTime
   endDate     DateTime?
   description String?  @db.Text
+  order       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -46,6 +48,7 @@ model Skills {
   name        String
   category    String
   proficiency Int?     @default(0)
+  order       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

@@ -15,6 +15,10 @@ export class AdminService {
     return this.prisma.aboutMe.create({ data });
   }
 
+  async findAboutMe() {
+    return this.prisma.aboutMe.findFirst();
+  }
+
   async deleteAboutMe(id: string) {
     return this.prisma.aboutMe.delete({ where: { id } });
   }
@@ -22,6 +26,10 @@ export class AdminService {
   // Experiences
   async createExperience(data: { role: string; company: string; startDate: Date; endDate?: Date; description?: string; technologies: string[] }) {
     return this.prisma.experiences.create({ data });
+  }
+
+  async findAllExperiences() {
+    return this.prisma.experiences.findMany({ orderBy: { order: 'asc' } });
   }
 
   async updateExperience(id: string, data: { role?: string; company?: string; startDate?: Date; endDate?: Date; description?: string; technologies?: string[] }) {
@@ -37,6 +45,10 @@ export class AdminService {
     return this.prisma.educations.create({ data });
   }
 
+  async findAllEducations() {
+    return this.prisma.educations.findMany({ orderBy: { order: 'asc' } });
+  }
+
   async updateEducation(id: string, data: { degree?: string; institution?: string; field?: string; startDate?: Date; endDate?: Date; description?: string }) {
     return this.prisma.educations.update({ where: { id }, data });
   }
@@ -50,6 +62,10 @@ export class AdminService {
     return this.prisma.skills.create({ data });
   }
 
+  async findAllSkills() {
+    return this.prisma.skills.findMany({ orderBy: { order: 'asc' } });
+  }
+
   async updateSkill(id: string, data: { name?: string; category?: string; proficiency?: number }) {
     return this.prisma.skills.update({ where: { id }, data });
   }
@@ -61,6 +77,10 @@ export class AdminService {
   // Articles
   async createArticle(data: { title: string; slug: string; content: string; excerpt?: string; coverUrl?: string; published?: boolean; publishedAt?: Date }) {
     return this.prisma.articles.create({ data });
+  }
+
+  async findAllArticles() {
+    return this.prisma.articles.findMany({ orderBy: { createdAt: 'desc' } });
   }
 
   async updateArticle(id: string, data: { title?: string; slug?: string; content?: string; excerpt?: string; coverUrl?: string; published?: boolean; publishedAt?: Date }) {

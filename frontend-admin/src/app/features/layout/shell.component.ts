@@ -1,11 +1,19 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe],
   template: `
+    @if (error$ | async; as error) {
+      <div class="fixed top-0 left-64 right-0 bg-red-600 text-white px-6 py-3 shadow-lg z-50 flex justify-between items-center">
+        <span class="font-medium">{{ error }}</span>
+        <button (click)="clearError()" class="ml-4 text-white hover:text-gray-200 text-xl font-bold leading-none">&times;</button>
+      </div>
+    }
     <div class="flex h-screen bg-gray-100 dark:bg-gray-900">
       <aside class="w-64 bg-gray-800 dark:bg-gray-950 text-white flex flex-col">
         <div class="p-4 border-b border-gray-700">
@@ -33,9 +41,17 @@ import { AuthService } from '../../core/services/auth.service';
   styles: [],
 })
 export class ShellComponent {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private notificationService: NotificationService) {}
+
+  get error$() {
+    return this.notificationService.error$;
+  }
 
   logout(): void {
     this.authService.logout();
+  }
+
+  clearError(): void {
+    this.notificationService.clear();
   }
 }
