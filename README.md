@@ -117,6 +117,35 @@ docker-compose down -v
 
 ## Development
 
+### Quick Start (Full Stack)
+
+Run the complete development stack with one command (PostgreSQL in Docker + Backend + Frontend):
+
+```powershell
+.\dev.ps1
+```
+
+Or on Windows cmd:
+
+```cmd
+dev.bat
+```
+
+This will:
+1. Start PostgreSQL in Docker
+2. Run Prisma migrations
+3. Start the NestJS backend in watch mode on port 3000
+4. Start the Angular dev server on port 4200
+5. Open Chrome automatically
+
+To stop the development stack:
+
+```powershell
+.\dev-stop.ps1
+```
+
+### Individual Services
+
 ### Backend
 
 ```bash

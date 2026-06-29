@@ -24,7 +24,6 @@ out
 prisma/migrations
 
 # IDE
-.vscode
 .idea
 *.swp
 *.swo
@@ -43,3 +42,5 @@ postgres_data
 # Logs
 logs
 *.log
+frontend-admin/.angular
+frontend-site/.angular

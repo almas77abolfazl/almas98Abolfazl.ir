@@ -1,0 +1,137 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "postgres:start",
+      "detail": "Start PostgreSQL container and wait until healthy",
+      "type": "shell",
+      "command": "docker-compose -f docker-compose.dev.yml up -d postgres; do { Start-Sleep 2 } until ((docker inspect --format '{{.State.Health.Status}}' dev-postgres) -eq 'healthy'); Write-Host 'PostgreSQL ready!' -ForegroundColor Green",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": { "executable": "powershell.exe", "args": ["-NoProfile", "-Command"] }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "devops",
+        "label": "PostgreSQL"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "backend:setup",
+      "detail": "Copy .env.development → .env and push Prisma schema",
+      "type": "shell",
+      "command": "Copy-Item .env.development .env -Force -ErrorAction SilentlyContinue; npm run prisma:push",
+      "options": {
+        "cwd": "${workspaceFolder}/backend",
+        "shell": { "executable": "powershell.exe", "args": ["-NoProfile", "-Command"] }
+      },
+      "dependsOn": ["postgres:start"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "devops",
+        "label": "Backend Setup"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "backend:debug",
+      "detail": "Start NestJS in debug+watch mode (port 9229)",
+      "type": "shell",
+      "command": "npm run start:debug",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "dependsOn": ["backend:setup"],
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "nestjs",
+        "pattern": {
+          "regexp": "^([^\\s].*)\\((\\d+),(\\d+)\\):\\s+(error|warning)\\s+TS\\d+:\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting compilation|\\[Nest\\]",
+          "endsPattern": "successfully started|Debugger listening on"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "backend",
+        "label": "Backend"
+      }
+    },
+    {
+      "label": "frontend-site:serve",
+      "detail": "Start Angular site dev server on :4200 (proxies /api → :3000)",
+      "type": "shell",
+      "command": "npm run start",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend-site"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "angular-site",
+        "pattern": {
+          "regexp": "^\\s*(ERROR|WARNING)\\s+in\\s+(.*?):(\\d+):(\\d+)\\s*$",
+          "severity": 1,
+          "file": 2,
+          "line": 3,
+          "column": 4,
+          "message": 5
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Building\\.\\.\\.|Starting\\.\\.\\.",
+          "endsPattern": "Application bundle generation complete|Watch mode enabled"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "frontend",
+        "label": "Site"
+      }
+    },
+    {
+      "label": "frontend-admin:serve",
+      "detail": "Start Angular admin panel dev server on :4201 (proxies /api → :3000)",
+      "type": "shell",
+      "command": "npm run start -- --port 4201",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend-admin"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "angular-admin",
+        "pattern": {
+          "regexp": "^\\s*(ERROR|WARNING)\\s+in\\s+(.*?):(\\d+):(\\d+)\\s*$",
+          "severity": 1,
+          "file": 2,
+          "line": 3,
+          "column": 4,
+          "message": 5
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Building\\.\\.\\.|Starting\\.\\.\\.",
+          "endsPattern": "Application bundle generation complete|Watch mode enabled"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "frontend",
+        "label": "Admin"
+      }
+    }
+  ]
+}

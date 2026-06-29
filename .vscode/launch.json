@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "NestJS: Attach Debugger",
+      "port": 9229,
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/backend/dist/**/*.js"],
+      "skipFiles": ["<node_internals>/**"],
+      "preLaunchTask": "backend:debug"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Angular: Frontend Site",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/frontend-site",
+      "preLaunchTask": "frontend-site:serve"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Angular: Admin Panel",
+      "url": "http://localhost:4201",
+      "webRoot": "${workspaceFolder}/frontend-admin",
+      "preLaunchTask": "frontend-admin:serve"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack: Debug All",
+      "configurations": [
+        "NestJS: Attach Debugger",
+        "Angular: Frontend Site",
+        "Angular: Admin Panel"
+      ],
+      "stopAll": true
+    }
+  ]
+}
