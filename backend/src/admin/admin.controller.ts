@@ -14,7 +14,12 @@ export class AdminController {
   }
 
   @Post('about-me')
-  upsertAboutMe(@Body() body: { fullName: string; title: string; bio?: string; avatarUrl?: string; resumeUrl?: string }) {
+  upsertAboutMe(@Body() body: {
+    fullName: string; fullNameFa?: string;
+    title: string; titleFa?: string;
+    bio?: string; bioFa?: string;
+    avatarUrl?: string; resumeUrl?: string;
+  }) {
     return this.adminService.upsertAboutMe(body);
   }
 
@@ -30,12 +35,28 @@ export class AdminController {
   }
 
   @Post('experiences')
-  createExperience(@Body() body: { role: string; company: string; startDate: string; endDate?: string; description?: string; technologies: string[] }) {
-    return this.adminService.createExperience({ ...body, startDate: new Date(body.startDate), endDate: body.endDate ? new Date(body.endDate) : undefined });
+  createExperience(@Body() body: {
+    role: string; roleFa?: string;
+    company: string; companyFa?: string;
+    startDate: string; endDate?: string;
+    description?: string; descriptionFa?: string;
+    technologies: string[];
+  }) {
+    return this.adminService.createExperience({
+      ...body,
+      startDate: new Date(body.startDate),
+      endDate: body.endDate ? new Date(body.endDate) : undefined,
+    });
   }
 
   @Put('experiences/:id')
-  updateExperience(@Param('id') id: string, @Body() body: { role?: string; company?: string; startDate?: string; endDate?: string; description?: string; technologies?: string[] }) {
+  updateExperience(@Param('id') id: string, @Body() body: {
+    role?: string; roleFa?: string;
+    company?: string; companyFa?: string;
+    startDate?: string; endDate?: string;
+    description?: string; descriptionFa?: string;
+    technologies?: string[];
+  }) {
     const data: any = { ...body };
     if (body.startDate) data.startDate = new Date(body.startDate);
     if (body.endDate) data.endDate = new Date(body.endDate);
@@ -54,12 +75,28 @@ export class AdminController {
   }
 
   @Post('educations')
-  createEducation(@Body() body: { degree: string; institution: string; field?: string; startDate: string; endDate?: string; description?: string }) {
-    return this.adminService.createEducation({ ...body, startDate: new Date(body.startDate), endDate: body.endDate ? new Date(body.endDate) : undefined });
+  createEducation(@Body() body: {
+    degree: string; degreeFa?: string;
+    institution: string; institutionFa?: string;
+    field?: string; fieldFa?: string;
+    startDate: string; endDate?: string;
+    description?: string; descriptionFa?: string;
+  }) {
+    return this.adminService.createEducation({
+      ...body,
+      startDate: new Date(body.startDate),
+      endDate: body.endDate ? new Date(body.endDate) : undefined,
+    });
   }
 
   @Put('educations/:id')
-  updateEducation(@Param('id') id: string, @Body() body: { degree?: string; institution?: string; field?: string; startDate?: string; endDate?: string; description?: string }) {
+  updateEducation(@Param('id') id: string, @Body() body: {
+    degree?: string; degreeFa?: string;
+    institution?: string; institutionFa?: string;
+    field?: string; fieldFa?: string;
+    startDate?: string; endDate?: string;
+    description?: string; descriptionFa?: string;
+  }) {
     const data: any = { ...body };
     if (body.startDate) data.startDate = new Date(body.startDate);
     if (body.endDate) data.endDate = new Date(body.endDate);
@@ -78,12 +115,12 @@ export class AdminController {
   }
 
   @Post('skills')
-  createSkill(@Body() body: { name: string; category: string; proficiency?: number }) {
+  createSkill(@Body() body: { name: string; nameFa?: string; category: string; categoryFa?: string; proficiency?: number }) {
     return this.adminService.createSkill(body);
   }
 
   @Put('skills/:id')
-  updateSkill(@Param('id') id: string, @Body() body: { name?: string; category?: string; proficiency?: number }) {
+  updateSkill(@Param('id') id: string, @Body() body: { name?: string; nameFa?: string; category?: string; categoryFa?: string; proficiency?: number }) {
     return this.adminService.updateSkill(id, body);
   }
 
@@ -99,12 +136,27 @@ export class AdminController {
   }
 
   @Post('articles')
-  createArticle(@Body() body: { title: string; slug: string; content: string; excerpt?: string; coverUrl?: string; published?: boolean; publishedAt?: string }) {
-    return this.adminService.createArticle({ ...body, publishedAt: body.publishedAt ? new Date(body.publishedAt) : undefined });
+  createArticle(@Body() body: {
+    title: string; titleFa?: string;
+    slug: string;
+    content: string; contentFa?: string;
+    excerpt?: string; excerptFa?: string;
+    coverUrl?: string; published?: boolean; publishedAt?: string;
+  }) {
+    return this.adminService.createArticle({
+      ...body,
+      publishedAt: body.publishedAt ? new Date(body.publishedAt) : undefined,
+    });
   }
 
   @Put('articles/:id')
-  updateArticle(@Param('id') id: string, @Body() body: { title?: string; slug?: string; content?: string; excerpt?: string; coverUrl?: string; published?: boolean; publishedAt?: string }) {
+  updateArticle(@Param('id') id: string, @Body() body: {
+    title?: string; titleFa?: string;
+    slug?: string;
+    content?: string; contentFa?: string;
+    excerpt?: string; excerptFa?: string;
+    coverUrl?: string; published?: boolean; publishedAt?: string;
+  }) {
     const data: any = { ...body };
     if (body.publishedAt) data.publishedAt = new Date(body.publishedAt);
     return this.adminService.updateArticle(id, data);
@@ -154,12 +206,22 @@ export class AdminController {
   }
 
   @Post('testimonials')
-  createTestimonial(@Body() body: { authorName: string; companyRole?: string; content: string; rating?: number; status?: string }) {
+  createTestimonial(@Body() body: {
+    authorName: string; authorNameFa?: string;
+    companyRole?: string; companyRoleFa?: string;
+    content: string; contentFa?: string;
+    rating?: number; status?: string;
+  }) {
     return this.adminService.createTestimonial({ ...body, status: body.status as any });
   }
 
   @Put('testimonials/:id')
-  updateTestimonial(@Param('id') id: string, @Body() body: { authorName?: string; companyRole?: string; content?: string; rating?: number; status?: string }) {
+  updateTestimonial(@Param('id') id: string, @Body() body: {
+    authorName?: string; authorNameFa?: string;
+    companyRole?: string; companyRoleFa?: string;
+    content?: string; contentFa?: string;
+    rating?: number; status?: string;
+  }) {
     return this.adminService.updateTestimonial(id, { ...body, status: body.status as any });
   }
 

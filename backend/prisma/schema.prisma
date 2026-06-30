@@ -9,8 +9,11 @@ datasource db {
 model AboutMe {
   id          String   @id @default(uuid())
   fullName    String
+  fullNameFa  String?
   title       String
+  titleFa     String?
   bio         String?  @db.Text
+  bioFa       String?  @db.Text
   avatarUrl   String?
   resumeUrl   String?
   createdAt   DateTime @default(now())
@@ -20,10 +23,13 @@ model AboutMe {
 model Experiences {
   id          String   @id @default(uuid())
   role        String
+  roleFa      String?
   company     String
+  companyFa   String?
   startDate   DateTime
   endDate     DateTime?
   description String?  @db.Text
+  descriptionFa String? @db.Text
   technologies String[]
   order       Int      @default(0)
   createdAt   DateTime @default(now())
@@ -31,22 +37,28 @@ model Experiences {
 }
 
 model Educations {
-  id          String   @id @default(uuid())
-  degree      String
-  institution String
-  field       String?
-  startDate   DateTime
-  endDate     DateTime?
-  description String?  @db.Text
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(uuid())
+  degree        String
+  degreeFa      String?
+  institution   String
+  institutionFa String?
+  field         String?
+  fieldFa       String?
+  startDate     DateTime
+  endDate       DateTime?
+  description   String?  @db.Text
+  descriptionFa String?  @db.Text
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Skills {
   id          String   @id @default(uuid())
   name        String
+  nameFa      String?
   category    String
+  categoryFa  String?
   proficiency Int?     @default(0)
   order       Int      @default(0)
   createdAt   DateTime @default(now())
@@ -56,9 +68,12 @@ model Skills {
 model Articles {
   id          String   @id @default(uuid())
   title       String
+  titleFa     String?
   slug        String   @unique
   content     String   @db.Text
+  contentFa   String?  @db.Text
   excerpt     String?  @db.Text
+  excerptFa   String?  @db.Text
   coverUrl    String?
   published   Boolean  @default(false)
   publishedAt DateTime?
@@ -89,13 +104,16 @@ model ContactMessage {
 }
 
 model Testimonial {
-  id          String    @id @default(uuid())
-  authorName  String
-  companyRole String?
-  content     String    @db.Text
-  rating      Int?
-  status      TestimonialStatus @default(PENDING)
-  createdAt   DateTime  @default(now())
+  id            String    @id @default(uuid())
+  authorName    String
+  authorNameFa  String?
+  companyRole   String?
+  companyRoleFa String?
+  content       String    @db.Text
+  contentFa     String?   @db.Text
+  rating        Int?
+  status        TestimonialStatus @default(PENDING)
+  createdAt     DateTime  @default(now())
 }
 
 enum TestimonialStatus {

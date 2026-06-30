@@ -1,39 +1,74 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
+import { ApiService, Article } from '../../shared/services/api.service';
+import { I18nService } from '../../shared/services/i18n.service';
 
 @Component({
   selector: 'app-article-detail',
   imports: [CommonModule, RouterLink],
   template: `
-    <div class="max-w-3xl mx-auto px-4 py-8">
-      <a routerLink="/blog" class="text-blue-600 dark:text-blue-400 hover:underline mb-4 inline-block">&larr; Back to Blog</a>
-      <div *ngIf="loading" class="text-gray-500 dark:text-gray-400">Loading...</div>
-      <article *ngIf="!loading && article" class="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-4">{{ article.title }}</h1>
-        <p *ngIf="article.publishedAt" class="text-sm text-gray-500 dark:text-gray-400 mb-6">{{ article.publishedAt | date:'mediumDate' }}</p>
-        <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ article.content }}</div>
-      </article>
-      <div *ngIf="!loading && !article" class="text-red-500">Article not found.</div>
-    </div>
+    <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+
+      <a routerLink="/blog"
+        class="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 mb-10 group transition-colors">
+        <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        {{ i18n.isFa ? 'بازگشت به مقالات' : 'Back to Blog' }}
+      </a>
+
+      @if (loading) {
+        <div class="flex items-center justify-center py-20">
+          <div class="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      } @else if (article) {
+        <article>
+          @if (article.coverUrl) {
+            <div class="w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
+              <img [src]="article.coverUrl" [alt]="i18n.isFa ? (article.titleFa || article.title) : article.title"
+                class="w-full h-full object-cover">
+            </div>
+          }
+
+          <h1 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4 leading-tight">
+            {{ i18n.isFa ? (article.titleFa || article.title) : article.title }}
+          </h1>
+
+          @if (article.publishedAt) {
+            <p class="text-sm text-slate-400 dark:text-slate-500 mb-8">
+              {{ article.publishedAt | date:'longDate' }}
+            </p>
+          }
+
+          <div class="divider mb-8"></div>
+
+          <div class="text-slate-700 dark:text-slate-300 leading-8 whitespace-pre-wrap text-base">
+            {{ i18n.isFa ? (article.contentFa || article.content) : article.content }}
+          </div>
+        </article>
+      } @else {
+        <div class="text-center py-20">
+          <p class="text-slate-400 dark:text-slate-500">{{ i18n.isFa ? 'مقاله یافت نشد' : 'Article not found' }}</p>
+          <a routerLink="/blog" class="mt-4 inline-block text-indigo-600 dark:text-indigo-400 hover:underline text-sm">
+            {{ i18n.isFa ? 'بازگشت' : 'Go back' }}
+          </a>
+        </div>
+      }
+
+    </section>
   `,
-  styles: [],
 })
 export class ArticleDetailComponent implements OnInit {
-  article: any = null;
+  article: Article | null = null;
   loading = true;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {}
+  constructor(public i18n: I18nService, private api: ApiService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug') || '';
-    this.http.get<any>(`/api/articles/${slug}`).subscribe({
-      next: (data) => {
-        this.article = data;
-        this.loading = false;
-      },
+    this.api.getArticleBySlug(slug).subscribe({
+      next: (data) => { this.article = data; this.loading = false; },
       error: () => (this.loading = false),
     });
   }

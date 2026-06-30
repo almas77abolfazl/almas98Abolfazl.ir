@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 
 export interface AboutMe {
   id: string;
-  fullName: string;
-  title: string;
-  bio?: string;
+  fullName: string; fullNameFa?: string;
+  title: string; titleFa?: string;
+  bio?: string; bioFa?: string;
   avatarUrl?: string;
   resumeUrl?: string;
   createdAt: string;
@@ -15,11 +15,11 @@ export interface AboutMe {
 
 export interface Experience {
   id: string;
-  role: string;
-  company: string;
+  role: string; roleFa?: string;
+  company: string; companyFa?: string;
   startDate: string;
   endDate?: string;
-  description?: string;
+  description?: string; descriptionFa?: string;
   technologies: string[];
   createdAt: string;
   updatedAt: string;
@@ -27,20 +27,20 @@ export interface Experience {
 
 export interface Education {
   id: string;
-  degree: string;
-  institution: string;
-  field?: string;
+  degree: string; degreeFa?: string;
+  institution: string; institutionFa?: string;
+  field?: string; fieldFa?: string;
   startDate: string;
   endDate?: string;
-  description?: string;
+  description?: string; descriptionFa?: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface Skill {
   id: string;
-  name: string;
-  category: string;
+  name: string; nameFa?: string;
+  category: string; categoryFa?: string;
   proficiency?: number;
   createdAt: string;
   updatedAt: string;
@@ -48,10 +48,10 @@ export interface Skill {
 
 export interface Article {
   id: string;
-  title: string;
+  title: string; titleFa?: string;
   slug: string;
-  content: string;
-  excerpt?: string;
+  content: string; contentFa?: string;
+  excerpt?: string; excerptFa?: string;
   coverUrl?: string;
   published: boolean;
   publishedAt?: string;
