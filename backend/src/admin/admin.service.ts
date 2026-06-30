@@ -29,7 +29,7 @@ export class AdminService {
   }
 
   async findAllExperiences() {
-    return this.prisma.experiences.findMany({ orderBy: { order: 'asc' } as any });
+    return this.prisma.experiences.findMany({ orderBy: { order: 'asc' } });
   }
 
   async updateExperience(id: string, data: { role?: string; company?: string; startDate?: Date; endDate?: Date; description?: string; technologies?: string[] }) {
@@ -46,7 +46,7 @@ export class AdminService {
   }
 
   async findAllEducations() {
-    return this.prisma.educations.findMany({ orderBy: { order: 'asc' } as any });
+    return this.prisma.educations.findMany({ orderBy: { order: 'asc' } });
   }
 
   async updateEducation(id: string, data: { degree?: string; institution?: string; field?: string; startDate?: Date; endDate?: Date; description?: string }) {
@@ -63,7 +63,7 @@ export class AdminService {
   }
 
   async findAllSkills() {
-    return this.prisma.skills.findMany({ orderBy: { order: 'asc' } as any });
+    return this.prisma.skills.findMany({ orderBy: { order: 'asc' } });
   }
 
   async updateSkill(id: string, data: { name?: string; category?: string; proficiency?: number }) {

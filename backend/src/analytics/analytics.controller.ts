@@ -34,9 +34,9 @@ export class AnalyticsController {
     `;
 
     return {
-      total,
-      topPages: topPages.map(p => ({ url: p.url, count: p._count.url })),
-      daily: (daily as any[]).map(d => ({ date: d.date, count: d.count })),
+      total: Number(total),
+      topPages: topPages.map(p => ({ url: p.url, count: Number(p._count.url) })),
+      daily: (daily as any[]).map(d => ({ date: d.date, count: Number(d.count) })),
     };
   }
 }
