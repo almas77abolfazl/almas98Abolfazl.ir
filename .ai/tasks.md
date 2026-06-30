@@ -241,6 +241,21 @@
   - Backend: handle file uploads and store to disk or cloud (S3/Cloudflare R2)
   - Currently: media is added by URL — real upload is not implemented
 
+- [ ] 8.8 **Admin user avatar upload**
+  - Allow the admin to upload a profile picture (avatar) for the portfolio owner
+  - Backend: `POST /api/admin/about-me/avatar` — accepts `multipart/form-data`, saves the file, returns the public URL
+  - Store to disk (e.g. `uploads/avatars/`) served via Nginx static path, or to cloud storage
+  - Admin form: add an avatar preview + file-picker button next to the About Me form
+  - Public site: show the uploaded avatar in the hero/about section
+
+- [ ] 8.9 **Article cover image upload**
+  - Allow uploading a cover image per article (for blog cards and article detail header)
+  - Schema: add `coverImage String?` to the `Articles` model; run `prisma db push`
+  - Backend: `POST /api/admin/articles/:id/cover` — accepts `multipart/form-data`, saves file, updates `coverImage` field
+  - Admin form: image preview + file-picker in the article editor (in addition to existing URL-based input)
+  - Frontend: show cover image in blog article cards and at the top of article-detail pages
+  - OG image: use `coverImage` as `og:image` in article SEO meta tags (Phase 6)
+
 - [ ] 8.7 **Drag-and-drop ordering**
   - Experiences, Educations, Skills list have an `order` field
   - Implement drag-and-drop reordering (CDK DragDrop or similar)

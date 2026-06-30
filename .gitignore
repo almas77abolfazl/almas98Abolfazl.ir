@@ -44,3 +44,7 @@ logs
 *.log
 frontend-admin/.angular
 frontend-site/.angular
+
+# Kilo config
+.kilo
+kilo.json
