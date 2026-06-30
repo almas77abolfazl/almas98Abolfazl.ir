@@ -1,243 +1,180 @@
 # Database Design
 
-## Tables
+**Engine:** PostgreSQL 17 via Docker  
+**ORM:** Prisma 7 with `@prisma/adapter-pg` (pool-based driver adapter)  
+**Schema file:** `backend/prisma/schema.prisma`
 
-### AboutMe
-- `id` UUID PK
-- `fullName` VARCHAR(255)
-- `title` VARCHAR(255)
-- `bio` TEXT
-- `email` VARCHAR(255)
-- `phone` VARCHAR(50) nullable
-- `location` VARCHAR(255) nullable
-- `avatarUrl` VARCHAR(500) nullable
-- `resumeUrl` VARCHAR(500) nullable
-- `socialLinks` JSONB nullable
-- `createdAt` TIMESTAMP
-- `updatedAt` TIMESTAMP
+> ⚠️ This file documents the **actual current schema**. After any schema change, always run:
+> ```
+> cd backend
+> npx prisma db push        # apply to DB
+> npx prisma generate       # regenerate client
+> ```
+
+---
+
+## Models
+
+### AboutMe (singleton — only 1 row)
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| fullName | String | EN |
+| fullNameFa | String? | FA |
+| title | String | EN job title |
+| titleFa | String? | FA job title |
+| bio | String? Text | EN biography |
+| bioFa | String? Text | FA biography |
+| avatarUrl | String? | Profile image URL |
+| resumeUrl | String? | CV/Resume URL |
+| createdAt | DateTime | |
+| updatedAt | DateTime | @updatedAt |
 
 ### Experiences
-- `id` UUID PK
-- `company` VARCHAR(255)
-- `position` VARCHAR(255)
-- `description` TEXT nullable
-- `startDate` DATE
-- `endDate` DATE nullable (null = currently working)
-- `technologies` TEXT[] nullable
-- `order` INT DEFAULT 0
-- `createdAt` TIMESTAMP
-- `updatedAt` TIMESTAMP
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| role | String | EN job role |
+| roleFa | String? | FA job role |
+| company | String | EN company name |
+| companyFa | String? | FA company name |
+| startDate | DateTime | |
+| endDate | DateTime? | null = currently working |
+| description | String? Text | EN description |
+| descriptionFa | String? Text | FA description |
+| technologies | String[] | tech stack array |
+| order | Int default 0 | display order |
+| createdAt | DateTime | |
+| updatedAt | DateTime | @updatedAt |
 
 ### Educations
-- `id` UUID PK
-- `institution` VARCHAR(255)
-- `degree` VARCHAR(255)
-- `field` VARCHAR(255) nullable
-- `startDate` DATE
-- `endDate` DATE nullable
-- `description` TEXT nullable
-- `order` INT DEFAULT 0
-- `createdAt` TIMESTAMP
-- `updatedAt` TIMESTAMP
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| degree | String | EN degree title |
+| degreeFa | String? | FA degree title |
+| institution | String | EN university/school |
+| institutionFa | String? | FA university/school |
+| field | String? | EN field of study |
+| fieldFa | String? | FA field of study |
+| startDate | DateTime | |
+| endDate | DateTime? | |
+| description | String? Text | EN |
+| descriptionFa | String? Text | FA |
+| order | Int default 0 | display order |
+| createdAt | DateTime | |
+| updatedAt | DateTime | @updatedAt |
 
 ### Skills
-- `id` UUID PK
-- `name` VARCHAR(255)
-- `category` VARCHAR(255) nullable
-- `level` INT nullable (0-100 یا-style)
-- `order` INT DEFAULT 0
-- `createdAt` TIMESTAMP
-- `updatedAt` TIMESTAMP
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| name | String | EN skill name |
+| nameFa | String? | FA skill name |
+| category | String | EN category |
+| categoryFa | String? | FA category |
+| proficiency | Int? default 0 | 0–100 percentage |
+| order | Int default 0 | display order |
+| createdAt | DateTime | |
+| updatedAt | DateTime | @updatedAt |
 
 ### Articles
-- `id` UUID PK
-- `title` VARCHAR(500)
-- `slug` VARCHAR(500) UNIQUE
-- `excerpt` TEXT nullable
-- `content` TEXT
-- `coverImage` VARCHAR(500) nullable
-- `published` BOOLEAN DEFAULT false
-- `publishedAt` TIMESTAMP nullable
-- `viewCount` INT DEFAULT 0
-- `createdAt` TIMESTAMP
-- `updatedAt` TIMESTAMP
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| title | String | EN title |
+| titleFa | String? | FA title (planned removal — see roadmap) |
+| slug | String @unique | URL slug |
+| content | String Text | EN content |
+| contentFa | String? Text | FA content (planned removal — see roadmap) |
+| excerpt | String? Text | EN excerpt |
+| excerptFa | String? Text | FA excerpt (planned removal — see roadmap) |
+| coverUrl | String? | Cover image URL |
+| published | Boolean default false | |
+| publishedAt | DateTime? | |
+| createdAt | DateTime | |
+| updatedAt | DateTime | @updatedAt |
+
+> **Roadmap change for Articles**: Remove `*Fa` fields and add `language` field (`'en'` \| `'fa'`), `tags String[]`, `likeCount Int`, `readingTime Int` (estimated minutes). Articles will be single-language, not bilingual. See `tasks.md` Phase 4.
 
 ### Media
-- `id` UUID PK
-- `type` VARCHAR(50) (image یا video)
-- `url` VARCHAR(500)
-- `embedHtml` TEXT nullable (for video embeds)
-- `caption` VARCHAR(500) nullable
-- `order` INT DEFAULT 0
-- `createdAt` TIMESTAMP
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| filename | String | stored filename |
+| originalName | String | original upload name |
+| mimeType | String | e.g., `image/jpeg` |
+| sizeBytes | Int | file size |
+| url | String | serving URL |
+| alt | String? | alt text |
+| createdAt | DateTime | |
+| updatedAt | DateTime | @updatedAt |
 
-### Testimonials
-- `id` UUID PK
-- `authorName` VARCHAR(255)
-- `authorRole` VARCHAR(255) nullable
-- `authorCompany` VARCHAR(255) nullable
-- `content` TEXT
-- `avatarUrl` VARCHAR(500) nullable
-- `isApproved` BOOLEAN DEFAULT false
-- `createdAt` TIMESTAMP
-- `updatedAt` TIMESTAMP
+### ContactMessage
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| name | String | sender name |
+| email | String | sender email |
+| subject | String? | |
+| message | String Text | |
+| isRead | Boolean default false | |
+| createdAt | DateTime | |
 
-### ContactMessages
-- `id` UUID PK
-- `name` VARCHAR(255)
-- `email` VARCHAR(255)
-- `subject` VARCHAR(500) nullable
-- `message` TEXT
-- `isRead` BOOLEAN DEFAULT false
-- `createdAt` TIMESTAMP
+### Testimonial
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| authorName | String | EN |
+| authorNameFa | String? | FA |
+| companyRole | String? | EN |
+| companyRoleFa | String? | FA |
+| content | String Text | EN |
+| contentFa | String? Text | FA |
+| rating | Int? | 1–5 stars |
+| status | TestimonialStatus | PENDING / APPROVED / REJECTED |
+| createdAt | DateTime | |
 
-### PageViews
-- `id` UUID PK
-- `path` VARCHAR(500)
-- `ipAddress` VARCHAR(45) nullable
-- `userAgent` TEXT nullable
-- `referrer` VARCHAR(500) nullable
-- `createdAt` TIMESTAMP
+### PageView
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| url | String | tracked URL path |
+| ipHash | String? | hashed IP for uniqueness |
+| createdAt | DateTime | |
 
-## Indexes
+---
 
-- Articles: slug (unique), published + publishedAt
-- Experiences: order
-- Educations: order
-- Skills: order, category
-- Testimonials: isApproved, createdAt
-- ContactMessages: isRead, createdAt
-- PageViews: path, createdAt
+## Planned Tables (future phases)
 
-## Prisma Schema
+### ArticleLike (Phase 4)
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| articleId | String FK → Articles.id | cascade delete |
+| ipHash | String | prevent duplicate likes |
+| createdAt | DateTime | |
+| UNIQUE (articleId, ipHash) | | |
 
-```prisma
-model AboutMe {
-  id          String   @id @default(uuid())
-  fullName    String
-  title       String
-  bio         String
-  email       String
-  phone       String?
-  location    String?
-  avatarUrl   String?
-  resumeUrl   String?
-  socialLinks Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+### Videos (Phase 5)
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| title | String | EN title |
+| titleFa | String? | FA title |
+| platform | String | 'youtube' \| 'aparat' |
+| videoId | String | platform video ID |
+| embedUrl | String | computed embed URL |
+| thumbnailUrl | String? | |
+| description | String? Text | |
+| order | Int default 0 | |
+| createdAt | DateTime | |
+| updatedAt | DateTime | @updatedAt |
 
-  @@map("about_me")
-}
+---
 
-model Experience {
-  id          String   @id @default(uuid())
-  company     String
-  position    String
-  description String?
-  startDate   DateTime
-  endDate     DateTime?
-  technologies String[]
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+## Notes
 
-  @@map("experiences")
-}
-
-model Education {
-  id          String   @id @default(uuid())
-  institution String
-  degree      String
-  field       String?
-  startDate   DateTime
-  endDate     DateTime?
-  description String?
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("educations")
-}
-
-model Skill {
-  id        String   @id @default(uuid())
-  name      String
-  category  String?
-  level     Int?
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("skills")
-}
-
-model Article {
-  id          String   @id @default(uuid())
-  title       String
-  slug        String   @unique
-  excerpt      String?
-  content     String
-  coverImage  String?
-  published   Boolean  @default(false)
-  publishedAt DateTime?
-  viewCount   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([slug])
-  @@index([published, publishedAt])
-  @@map("articles")
-}
-
-model Media {
-  id        String   @id @default(uuid())
-  type      String
-  url       String
-  embedHtml String?
-  caption   String?
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-
-  @@map("media")
-}
-
-model Testimonial {
-  id          String   @id @default(uuid())
-  authorName  String
-  authorRole  String?
-  authorCompany String?
-  content     String
-  avatarUrl   String?
-  isApproved  Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@index([isApproved, createdAt])
-  @@map("testimonials")
-}
-
-model ContactMessage {
-  id        String   @id @default(uuid())
-  name      String
-  email     String
-  subject   String?
-  message   String
-  isRead    Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  @@index([isRead, createdAt])
-  @@map("contact_messages")
-}
-
-model PageView {
-  id         String   @id @default(uuid())
-  path       String
-  ipAddress  String?
-  userAgent  String?
-  referrer   String?
-  createdAt  DateTime @default(now())
-
-  @@index([path, createdAt])
-  @@map("page_views")
-}
-```
+- `AboutMe.upsertAboutMe()` in `admin.service.ts` handles the singleton pattern (update if exists, create if not).
+- `$queryRaw` returns `BigInt` for `COUNT(*)` via `@prisma/adapter-pg` — always wrap with `Number()`.
+- Prisma client is regenerated at `backend/node_modules/@prisma/client` and `backend/node_modules/.prisma/client`.
