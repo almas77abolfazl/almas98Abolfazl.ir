@@ -121,15 +121,11 @@ Deliverables:
 - Admin: videos management page
 - Frontend: responsive video grid with lazy-loaded iframes
 
-## Phase 6: SEO Optimization 🔲
+## Phase 6: SEO Optimization 🔶
 
 **Goal:** Make every page crawlable with rich metadata.
 
-- Angular `SeoService` (Title + Meta)
-- Per-page meta tags, Open Graph, Twitter Card
-- Structured data (JSON-LD)
-- `sitemap.xml` + `robots.txt`
-- Canonical URLs; optional Angular SSR/prerendering
+**Status:** 6.1–6.6 done (client-side `SeoService`, per-page meta + Open Graph + Twitter, `Person`/`Article` JSON-LD, dynamic `sitemap.xml`, `robots.txt`, canonical/base tags). 6.7 (SSR/prerender) deferred by decision — the site stays static + Nginx for now.
 
 ## Phase 7: Dark/Light Theme Polish 🔲
 
@@ -169,7 +165,7 @@ Deliverables:
 | 3.5 | Bilingual + UI Polish | ✅ Done |
 | 4 | Article System Overhaul | ✅ Done |
 | 5 | Video Embeds | ✅ Done |
-| 6 | SEO Optimization | 🔲 Not started |
+| 6 | SEO Optimization | 🔶 6.1–6.6 done (6.7 SSR deferred) |
 | 7 | Dark/Light Theme Polish | 🔲 Not started |
 | 8 | Admin Panel UI Overhaul | 🔲 Not started |
 | 9 | Additional Features | 🔲 Not started |

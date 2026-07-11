@@ -34,6 +34,12 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     videosSubtitle: 'Watch',
     noVideos: 'No videos yet',
     playVideo: 'Play video',
+    seoHomeDesc: 'Personal portfolio of Abolfazl Nasiri Almas — full-stack developer. Explore my experiences, skills, articles and videos.',
+    seoAboutDesc: 'Learn more about Abolfazl Nasiri Almas — background, biography and professional focus.',
+    seoExperiencesDesc: 'Work experience and professional history of Abolfazl Nasiri Almas.',
+    seoSkillsDesc: 'Technical skills and technologies used by Abolfazl Nasiri Almas.',
+    seoBlogDesc: 'Articles and writing by Abolfazl Nasiri Almas on software development and technology.',
+    seoVideosDesc: 'Video content by Abolfazl Nasiri Almas.',
   },
   fa: {
     home: 'خانه',
@@ -65,6 +71,12 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     videosSubtitle: 'تماشا',
     noVideos: 'هنوز ویدیویی وجود ندارد',
     playVideo: 'پخش ویدیو',
+    seoHomeDesc: 'نمونه‌کار شخصی ابوالفضل نصیری الماس — توسعه‌دهنده فول‌استک. تجربیات، مهارت‌ها، مقالات و ویدیوها را ببینید.',
+    seoAboutDesc: 'درباره ابوالفضل نصیری الماس بیشتر بدانید — پیشینه، بیوگرافی و تمرکز حرفه‌ای.',
+    seoExperiencesDesc: 'سوابق کاری و تاریخچه حرفه‌ای ابوالفضل نصیری الماس.',
+    seoSkillsDesc: 'مهارت‌های فنی و فناوری‌های مورد استفاده ابوالفضل نصیری الماس.',
+    seoBlogDesc: 'مقالات و نوشته‌های ابوالفضل نصیری الماس درباره توسعه نرم‌افزار و فناوری.',
+    seoVideosDesc: 'محتوای ویدیویی ابوالفضل نصیری الماس.',
   }
 };
 

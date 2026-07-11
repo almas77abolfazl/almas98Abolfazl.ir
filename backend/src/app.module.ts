@@ -7,6 +7,7 @@ import { SkillsModule } from './skills/skills.module';
 import { ArticlesModule } from './articles/articles.module';
 import { MediaModule } from './media/media.module';
 import { VideosModule } from './videos/videos.module';
+import { SitemapModule } from './sitemap/sitemap.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { ContactMessagesModule } from './contact-messages/contact-messages.module';
@@ -15,7 +16,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
-  imports: [PrismaModule, AboutMeModule, ExperiencesModule, EducationsModule, SkillsModule, ArticlesModule, MediaModule, VideosModule, AuthModule, AdminModule, ContactMessagesModule, AnalyticsModule],
+  imports: [PrismaModule, AboutMeModule, ExperiencesModule, EducationsModule, SkillsModule, ArticlesModule, MediaModule, VideosModule, SitemapModule, AuthModule, AdminModule, ContactMessagesModule, AnalyticsModule],
   controllers: [AppController],
   providers: [AppService],
 })

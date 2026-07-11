@@ -139,46 +139,45 @@
 
 ---
 
-## Phase 6: SEO Optimization 🔲
+## Phase 6: SEO Optimization 🔶 (6.1–6.6 done · 6.7 SSR deferred)
 
 > **Goal**: Make every page crawlable with rich metadata for search engines and social sharing.
+>
+> **Implementation notes**: Domain is `https://almas98abolfazl.ir` (frontend: `shared/site-config.ts`; backend: `SITE_URL` env). Meta tags are applied client-side by `SeoService` — Google renders JS so this works for search, but JS-less social scrapers won't see per-route OG tags until SSR/prerender (6.7) is done.
 
-- [ ] 6.1 **Angular Meta service setup**
-  - Install `@angular/platform-browser` (already included)
-  - Create `SeoService` in `frontend-site/src/app/shared/services/seo.service.ts`
-  - Methods: `setTitle(title)`, `setMeta(description, image?, url?)`, `setArticleMeta(article)`
-  - Use Angular's `Title` and `Meta` services from `@angular/platform-browser`
+- [x] 6.1 **Angular Meta service setup**
+  - Created `SeoService` in `frontend-site/src/app/shared/services/seo.service.ts`
+  - Uses `Title`, `Meta`, and `DOCUMENT`; methods: `setTitle`, `update(SeoData)`, `setJsonLd`, `clearJsonLd`
+  - Shared constants in `shared/site-config.ts` (`SITE_URL`, `SITE_NAME`, `AUTHOR_NAME`, `DEFAULT_OG_IMAGE`, `SOCIAL_LINKS`)
 
-- [ ] 6.2 **Meta tags per page**
-  - `<title>`: `Page Name | Abolfazl Nasiri Almas`
-  - `<meta name="description">`: page-specific description
-  - Open Graph: `og:title`, `og:description`, `og:image`, `og:url`, `og:type`
+- [x] 6.2 **Meta tags per page**
+  - `<title>`: `Page Name | almas98Abolfazl.ir`
+  - `<meta name="description">`: per-page, bilingual (i18n `seo*Desc` keys)
+  - Open Graph: `og:title`, `og:description`, `og:type`, `og:url`, `og:site_name`, `og:locale`, `og:image`
   - Twitter Card: `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
-  - Call `SeoService` in each component's `ngOnInit`
+  - `SeoService.update()` called in each component (`home`, `about-me`, `experiences`, `skills`, `blog`, `videos`, `article-detail`)
 
-- [ ] 6.3 **Structured data (JSON-LD)**
-  - HomePage: `Person` schema with name, jobTitle, url, sameAs (social links)
-  - Article pages: `Article` schema with headline, datePublished, author, image
-  - Inject via `<script type="application/ld+json">` using Angular's `DOCUMENT` token
+- [x] 6.3 **Structured data (JSON-LD)**
+  - HomePage: `Person` schema (name, jobTitle, url, image, optional `sameAs`)
+  - Article pages: `Article` schema (headline, description, author, datePublished, dateModified, image, inLanguage)
+  - Injected via a single managed `<script type="application/ld+json">`; `update()` clears stale JSON-LD on navigation
 
-- [ ] 6.4 **`sitemap.xml`**
-  - Static sitemap with all public routes
-  - Dynamic: NestJS endpoint `GET /sitemap.xml` that queries DB for published article slugs
-  - Or: generate static sitemap at build time
+- [x] 6.4 **`sitemap.xml`**
+  - Dynamic NestJS endpoint: `SitemapModule` → `GET /api/sitemap.xml` (static routes + published article slugs with `lastmod`)
+  - Nginx maps public `/sitemap.xml` → backend `/api/sitemap.xml`
+  - Base URL from `SITE_URL` env (added to `.env`, `.env.development`, `docker-compose.yml`)
 
-- [ ] 6.5 **`robots.txt`**
-  - Allow all crawlers
-  - Point to sitemap URL
-  - Block `/admin/*` from indexing
+- [x] 6.5 **`robots.txt`**
+  - Static `frontend-site/public/robots.txt` — allows all crawlers, disallows `/admin`, points to sitemap URL
 
-- [ ] 6.6 **`index.html` base tags**
-  - Add canonical URL `<link rel="canonical">`
-  - Add `lang` attribute set correctly per language
+- [x] 6.6 **`index.html` base tags**
+  - Default description, author, `theme-color`, OG defaults, Twitter card, and a canonical link (overridden per-route by `SeoService`)
+  - `lang`/`dir` attributes managed at runtime by `I18nService`
 
-- [ ] 6.7 **Angular SSR (optional, major upgrade)**
+- [ ] 6.7 **Angular SSR (optional, major upgrade)** — _deferred by decision_
   - Consider `@angular/ssr` for server-side rendering to make pages indexable without JS
   - Trade-off: requires Node.js to serve (can't be pure static Nginx)
-  - Alternative: prerendering with `ng build --prerender`
+  - Alternative: prerendering with `ng build --prerender` for the static routes
 
 ---
 

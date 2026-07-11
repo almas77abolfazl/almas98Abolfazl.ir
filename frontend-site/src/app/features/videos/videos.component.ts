@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService, Video } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
+import { SeoService } from '../../shared/services/seo.service';
 
 interface VideoView extends Video {
   thumb: string;
@@ -84,9 +85,16 @@ export class VideosComponent implements OnInit {
     public i18n: I18nService,
     private api: ApiService,
     private sanitizer: DomSanitizer,
+    private seo: SeoService,
   ) {}
 
   ngOnInit(): void {
+    this.seo.update({
+      title: this.i18n.t('videosTitle'),
+      description: this.i18n.t('seoVideosDesc'),
+      path: '/videos',
+    });
+
     this.api.getVideos().subscribe({
       next: (data) => {
         this.videos.set(data.map((video) => this.toView(video)));

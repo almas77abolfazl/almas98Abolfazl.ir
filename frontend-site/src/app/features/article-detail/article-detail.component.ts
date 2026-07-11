@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { ApiService, Article } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
+import { SeoService } from '../../shared/services/seo.service';
+import { AUTHOR_NAME } from '../../shared/site-config';
 
 @Component({
   selector: 'app-article-detail',
@@ -112,7 +114,7 @@ export class ArticleDetailComponent implements OnInit {
   likeCount = signal(0);
   progress = signal(0);
 
-  constructor(public i18n: I18nService, private api: ApiService, private route: ActivatedRoute) {}
+  constructor(public i18n: I18nService, private api: ApiService, private route: ActivatedRoute, private seo: SeoService) {}
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug') || '';
@@ -122,9 +124,46 @@ export class ArticleDetailComponent implements OnInit {
         this.likeCount.set(data.likeCount);
         this.liked.set(localStorage.getItem(`liked_${slug}`) === '1');
         this.loading.set(false);
+        this.applySeo(data);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.seo.update({
+          title: this.i18n.t('articleNotFound'),
+          description: this.i18n.t('seoBlogDesc'),
+          path: `/blog/${slug}`,
+        });
+      },
     });
+  }
+
+  private applySeo(article: Article): void {
+    const description = article.excerpt?.trim() || article.content.slice(0, 160);
+    const path = `/blog/${article.slug}`;
+    this.seo.update({
+      title: article.title,
+      description,
+      image: article.coverUrl,
+      path,
+      type: 'article',
+    });
+
+    const schema: Record<string, unknown> = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: article.title,
+      description,
+      author: { '@type': 'Person', name: AUTHOR_NAME },
+      inLanguage: article.language,
+      dateModified: article.updatedAt,
+    };
+    if (article.publishedAt) {
+      schema['datePublished'] = article.publishedAt;
+    }
+    if (article.coverUrl) {
+      schema['image'] = article.coverUrl;
+    }
+    this.seo.setJsonLd(schema);
   }
 
   @HostListener('window:scroll')
