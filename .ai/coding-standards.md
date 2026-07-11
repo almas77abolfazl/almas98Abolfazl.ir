@@ -23,6 +23,9 @@
 
 ### Tailwind v4 (CSS-first)
 - Config lives in `styles.css` inside `@theme { ... }` block — **not** `tailwind.config.js`
+- **Class-based dark mode is required**: `styles.css` declares `@custom-variant dark (&:where(.dark, .dark *));` so every `dark:` utility responds to the `.dark` class on `<html>` (managed by `ThemeService`). Without this line, Tailwind v4 defaults the `dark:` variant to the `prefers-color-scheme` media query and the manual theme toggle only half-works — do NOT remove it.
+- The brand palette is applied by **overriding Tailwind color scales** in `@theme` (`--color-indigo-*` = Iris Violet, `--color-violet-*` = Orchid, `--color-emerald-*` = Muted Jade, `--color-slate-*` = neutrals). Change colors there, not per-template.
+- Shared typography/spacing primitives live in `@layer components` (`.page-shell`, `.page-section`, `.page-header`, `.section-label`, `.page-title`, `.section-title`, `.page-subtitle`, `.title-underline`, `.prose-measure`) — use these on pages instead of ad-hoc margins/paddings (8-point spacing system).
 - Updated class names (v4 canonical):
   - `bg-gradient-to-*` → `bg-linear-to-*`
   - `flex-shrink-0` → `shrink-0`

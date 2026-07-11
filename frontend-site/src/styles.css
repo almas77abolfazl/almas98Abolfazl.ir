@@ -1,15 +1,99 @@
 @import "tailwindcss";
 
+/*
+  Use class-based dark mode: `dark:` utilities apply when a `.dark` class
+  is present on <html> (managed by ThemeService), NOT via the OS
+  `prefers-color-scheme` media query. Without this, Tailwind v4 defaults
+  the `dark:` variant to the media query and the manual theme toggle only
+  half-works (CSS-var overrides switch, but `dark:` utilities don't).
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+/*
+  ============================================================
+  Iris Violet — custom, minimal visual identity
+  ------------------------------------------------------------
+  The whole app is styled with Tailwind color utilities
+  (indigo / violet / emerald / slate). Instead of rewriting
+  every template, we override those color SCALES here so the
+  new identity propagates everywhere consistently.
+
+    indigo  -> Iris Violet   (primary brand accent)
+    violet  -> Orchid        (secondary / gradient partner)
+    emerald -> Muted Jade    (success & status only)
+    slate   -> Iris-tinted cool neutrals (all backgrounds/text)
+  ============================================================
+*/
+
 @theme {
-  --color-primary: #0f172a;
-  --color-primary-light: #1e293b;
-  --color-secondary: #6366f1;
-  --color-secondary-dark: #4f46e5;
-  --color-accent: #10b981;
-  --color-background: #ffffff;
-  --color-surface: #f8fafc;
-  --color-text: #0f172a;
-  --color-text-muted: #64748b;
+  /* --- Primary: Iris Violet (overrides `indigo-*`) --- */
+  --color-indigo-50: #f3f1ff;
+  --color-indigo-100: #e9e5ff;
+  --color-indigo-200: #d5ccff;
+  --color-indigo-300: #b7a6ff;
+  --color-indigo-400: #9678fb;
+  --color-indigo-500: #7a5cf5;
+  --color-indigo-600: #6a45e8;
+  --color-indigo-700: #5a33cc;
+  --color-indigo-800: #4b2ba5;
+  --color-indigo-900: #3f2882;
+  --color-indigo-950: #271759;
+
+  /* --- Secondary: Orchid (overrides `violet-*`, gradient partner) --- */
+  --color-violet-50: #fbf2ff;
+  --color-violet-100: #f6e4ff;
+  --color-violet-200: #eec7ff;
+  --color-violet-300: #e3a3ff;
+  --color-violet-400: #d47bf7;
+  --color-violet-500: #c25ff0;
+  --color-violet-600: #a83fd4;
+  --color-violet-700: #8a2fac;
+  --color-violet-800: #6f2a89;
+  --color-violet-900: #5a266f;
+  --color-violet-950: #3b1049;
+
+  /* --- Success / status: Muted Jade (overrides `emerald-*`) --- */
+  --color-emerald-50: #eef8f2;
+  --color-emerald-100: #d5eede;
+  --color-emerald-200: #addcc2;
+  --color-emerald-300: #7cc4a0;
+  --color-emerald-400: #4faa81;
+  --color-emerald-500: #2f9068;
+  --color-emerald-600: #237454;
+  --color-emerald-700: #1e5c44;
+  --color-emerald-800: #1a4a38;
+  --color-emerald-900: #163d2f;
+  --color-emerald-950: #0a221a;
+
+  /* --- Neutrals: Iris-tinted cool gray (overrides `slate-*`) --- */
+  /* NOTE: 400/500/600 double as muted TEXT in light mode and are
+     re-lightened in the `.dark` block for readable text on dark. */
+  --color-slate-50: #f6f6fb;
+  --color-slate-100: #e6e6ef;
+  --color-slate-200: #d2d2df;
+  --color-slate-300: #c1c1d2;
+  --color-slate-400: #6a6a80;
+  --color-slate-500: #50506a;
+  --color-slate-600: #3d3d50;
+  --color-slate-700: #2e2e3c;
+  --color-slate-800: #222231;
+  --color-slate-900: #16161f;
+  --color-slate-950: #0d0d15;
+
+  /* --- Semantic tokens (used by custom utilities below) --- */
+  --color-primary: #16161f;
+  --color-primary-light: #222231;
+  --color-secondary: #7a5cf5;      /* iris */
+  --color-secondary-dark: #6a45e8;
+  --color-accent: #c25ff0;         /* orchid */
+
+  /* Light theme surfaces & text */
+  --color-background: #eceef4;      /* soft cool gray so white cards clearly pop */
+  --color-surface: #ffffff;
+  --color-text: #16161f;
+  --color-text-muted: #50506a;
+
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-fa: "Vazirmatn", system-ui, -apple-system, sans-serif;
 }
@@ -19,16 +103,23 @@
 }
 
 .dark {
-  --color-background: #0f172a;
-  --color-surface: #1e293b;
-  --color-text: #f1f5f9;
-  --color-text-muted: #94a3b8;
+  /* Dark theme: deep iris-charcoal, not default Tailwind slate-blue */
+  --color-background: #0f0f17;
+  --color-surface: #1a1a26;
+  --color-text: #ececf1;
+  --color-text-muted: #9a9ab0;
+
+  /* Re-lighten the muted text/border shades that were darkened for light mode */
+  --color-slate-400: #9a9ab0;
+  --color-slate-500: #7d7d93;
+  --color-slate-600: #4b4b60;
 }
 
 body {
   background-color: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-sans);
+  line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
 }
@@ -73,7 +164,7 @@ html {
 .delay-400 { animation-delay: 0.4s; }
 .delay-500 { animation-delay: 0.5s; }
 
-/* Gradient text utility */
+/* Gradient text utility — iris -> orchid */
 .gradient-text {
   background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
   -webkit-background-clip: text;
@@ -113,16 +204,16 @@ html[dir="rtl"] .timeline-item::before {
 
 /* Card hover effect */
 .card-hover {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 18px 40px -12px rgba(106, 69, 232, 0.18);
 }
 
 .dark .card-hover:hover {
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.55);
 }
 
 /* Skill badge */
@@ -139,17 +230,80 @@ html[dir="rtl"] .timeline-item::before {
 /* Form input focus */
 input:focus, textarea:focus, select:focus {
   outline: none;
-  ring: 2px solid var(--color-secondary);
 }
 
-/* Section padding */
-.section {
-  padding: 5rem 0;
+/* ============================================================
+   Typography & spacing system (8-point scale)
+   Shared page primitives so every page stays aligned, keeps a
+   consistent vertical rhythm, and a clear text hierarchy.
+   ============================================================ */
+@layer components {
+  /* Common horizontal container — every page aligns to this width */
+  .page-shell {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Vertical rhythm for a page's main content section (content sits high) */
+  .page-section {
+    @apply pt-10 pb-16 sm:pt-12 sm:pb-20;
+  }
+
+  /* Gap between the title block and the content that follows it */
+  .page-header {
+    @apply mb-8 sm:mb-10;
+  }
+
+  /* Hierarchy 1 — small eyebrow / section label */
+  .section-label {
+    @apply mb-2 text-xs font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400;
+  }
+
+  /* Hierarchy 2 — page title */
+  .page-title {
+    @apply text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-white;
+  }
+
+  /* Section heading (secondary titles inside a page) */
+  .section-title {
+    @apply text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white;
+  }
+
+  /* Hierarchy 3 — subtitle under a title */
+  .page-subtitle {
+    @apply mt-2 text-base text-slate-500 sm:text-lg dark:text-slate-400;
+  }
+
+  /* Accent underline beneath a title */
+  .title-underline {
+    @apply mt-3 h-1 w-12 rounded-full bg-linear-to-r from-indigo-500 to-violet-400;
+  }
+
+  /* Hierarchy 4 — long-form body text: capped measure + comfortable leading */
+  .prose-measure {
+    @apply leading-8 text-slate-600 dark:text-slate-300;
+    max-width: 65ch;
+  }
+}
+
+/* RTL / Persian typography: drop latin letter-spacing, add a little line-height */
+[dir="rtl"] .section-label {
+  letter-spacing: 0;
+}
+[dir="rtl"] .prose-measure,
+.prose-measure[dir="rtl"] {
+  line-height: 2.1;
+}
+/* Persian headings shouldn't use tight latin letter-spacing */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] .page-title,
+[dir="rtl"] .section-title {
+  letter-spacing: normal;
 }
 
 /* Divider gradient */
 .divider {
   height: 1px;
   background: linear-gradient(to right, transparent, var(--color-secondary), transparent);
-  opacity: 0.3;
+  opacity: 0.35;
 }

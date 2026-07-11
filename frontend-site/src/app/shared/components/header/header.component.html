@@ -1,10 +1,10 @@
 <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-700/60">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="page-shell">
     <div class="flex justify-between items-center h-16">
 
       <!-- Logo -->
       <a routerLink="/" class="flex items-center gap-2 group">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-emerald-500 flex items-center justify-center text-white text-xs font-bold">
+        <div class="w-8 h-8 rounded-lg bg-linear-to-br from-indigo-500 to-violet-400 flex items-center justify-center text-white text-xs font-bold">
           A
         </div>
         <span class="text-base font-semibold text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
@@ -12,7 +12,7 @@
         </span>
       </a>
 
-      <!-- Nav -->
+      <!-- Nav (desktop) -->
       <nav class="hidden md:flex items-center gap-1">
         <a routerLink="/" routerLinkActive="text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30" [routerLinkActiveOptions]="{exact:true}"
           class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all">
@@ -64,7 +64,52 @@
           class="px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all">
           {{ i18n.currentLang() === 'en' ? 'فا' : 'EN' }}
         </button>
+
+        <!-- Mobile menu toggle -->
+        <button (click)="toggleMenu()" type="button"
+          class="md:hidden p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+          [attr.aria-expanded]="menuOpen()" [attr.aria-label]="i18n.t('menu')">
+          @if (!menuOpen()) {
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          } @else {
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          }
+        </button>
       </div>
     </div>
+
+    <!-- Mobile nav panel -->
+    @if (menuOpen()) {
+      <nav class="md:hidden border-t border-slate-200/60 dark:border-slate-700/60 mobile-nav">
+        <a routerLink="/" (click)="closeMenu()" routerLinkActive="text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30" [routerLinkActiveOptions]="{exact:true}"
+          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all">
+          {{ i18n.t('home') }}
+        </a>
+        <a routerLink="/about-me" (click)="closeMenu()" routerLinkActive="text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30"
+          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all">
+          {{ i18n.t('about') }}
+        </a>
+        <a routerLink="/experiences" (click)="closeMenu()" routerLinkActive="text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30"
+          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all">
+          {{ i18n.t('experiences') }}
+        </a>
+        <a routerLink="/skills" (click)="closeMenu()" routerLinkActive="text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30"
+          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all">
+          {{ i18n.t('skills') }}
+        </a>
+        <a routerLink="/blog" (click)="closeMenu()" routerLinkActive="text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30"
+          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all">
+          {{ i18n.t('articles') }}
+        </a>
+        <a routerLink="/videos" (click)="closeMenu()" routerLinkActive="text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30"
+          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all">
+          {{ i18n.t('videos') }}
+        </a>
+      </nav>
+    }
   </div>
 </header>

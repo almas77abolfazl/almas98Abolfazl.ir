@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService } from '../../services/i18n.service';
 import { ThemeService } from '../../services/theme.service';
@@ -11,6 +11,8 @@ import { ThemeService } from '../../services/theme.service';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+  menuOpen = signal(false);
+
   constructor(
     public i18n: I18nService,
     public theme: ThemeService
@@ -18,5 +20,13 @@ export class HeaderComponent {
 
   get isFa(): boolean {
     return this.i18n.currentLang() === 'fa';
+  }
+
+  toggleMenu(): void {
+    this.menuOpen.update(v => !v);
+  }
+
+  closeMenu(): void {
+    this.menuOpen.set(false);
   }
 }

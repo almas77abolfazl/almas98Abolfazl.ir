@@ -1,15 +1,15 @@
 <div class="min-h-screen">
 
   <!-- Hero -->
-  <section class="relative overflow-hidden bg-linear-to-br from-slate-50 to-indigo-50/40 dark:from-slate-900 dark:to-slate-800/80 pt-24 pb-20">
+  <section class="relative overflow-hidden bg-linear-to-br from-slate-50 to-indigo-50/40 dark:from-slate-900 dark:to-slate-800/80 pt-16 pb-16 sm:pt-20 sm:pb-20">
     <!-- Background decoration -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
       <div class="absolute -top-40 -right-40 w-80 h-80 bg-indigo-200/30 dark:bg-indigo-900/20 rounded-full blur-3xl"></div>
-      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-200/30 dark:bg-emerald-900/20 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-violet-200/40 dark:bg-violet-900/20 rounded-full blur-3xl"></div>
     </div>
 
-    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row items-center gap-12">
+    <div class="relative page-shell">
+      <div class="flex flex-col md:flex-row items-center gap-8 sm:gap-12">
 
         <!-- Avatar -->
         @if (aboutMe?.avatarUrl) {
@@ -27,19 +27,19 @@
 
         <!-- Text -->
         <div class="text-center md:text-start animate-fade-up delay-100">
-          <p class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-3">
+          <p class="section-label mb-3">
             {{ i18n.isFa ? 'خوش آمدید' : 'Welcome' }}
           </p>
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-4 leading-tight">
+          <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-white mb-4 leading-tight">
             {{ i18n.isFa ? 'سلام، من ' : 'Hi, I\'m ' }}
             <span class="gradient-text">
               {{ i18n.isFa ? (aboutMe?.fullNameFa || aboutMe?.fullName) : aboutMe?.fullName }}
             </span>
           </h1>
-          <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-300 font-medium mb-6">
+          <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 font-medium mb-4">
             {{ i18n.isFa ? (aboutMe?.titleFa || aboutMe?.title) : aboutMe?.title }}
           </p>
-          <p class="max-w-xl text-slate-500 dark:text-slate-400 leading-relaxed mb-8">
+          <p class="prose-measure mx-auto md:mx-0 mb-8">
             {{ i18n.isFa ? (aboutMe?.bioFa || aboutMe?.bio) : aboutMe?.bio }}
           </p>
 
@@ -62,7 +62,7 @@
   </section>
 
   <!-- Quick Stats -->
-  <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
+  <section class="page-shell -mt-8">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       @if (experiences.length > 0) {
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-700 text-center card-hover animate-fade-up delay-200">
@@ -81,9 +81,9 @@
 
   <!-- Latest Experience -->
   @if (latestExperience) {
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <section class="page-shell py-12 sm:py-16">
       <div class="flex items-center justify-between mb-8">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">{{ i18n.t('experiencesTitle') }}</h2>
+        <h2 class="section-title">{{ i18n.t('experiencesTitle') }}</h2>
         <a routerLink="/experiences" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
           {{ i18n.t('readMore') }} →
         </a>
@@ -114,9 +114,9 @@
 
   <!-- Top Skills -->
   @if (topSkills.length > 0) {
-    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <section class="page-shell pb-12 sm:pb-16">
       <div class="flex items-center justify-between mb-8">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">{{ i18n.t('skillsTitle') }}</h2>
+        <h2 class="section-title">{{ i18n.t('skillsTitle') }}</h2>
         <a routerLink="/skills" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
           {{ i18n.t('readMore') }} →
         </a>
@@ -132,10 +132,10 @@
   }
 
   <!-- Contact -->
-  <section class="bg-slate-50 dark:bg-slate-800/50 py-20">
+  <section class="bg-slate-50 dark:bg-slate-800/50 py-16 sm:py-20">
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-10">
-        <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+        <h2 class="section-title mb-2">
           {{ i18n.isFa ? 'با من در تماس باشید' : 'Get in Touch' }}
         </h2>
         <p class="text-slate-500 dark:text-slate-400 text-sm">

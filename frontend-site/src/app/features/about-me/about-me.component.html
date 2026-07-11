@@ -1,11 +1,11 @@
-<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+<section class="page-shell page-section">
 
   <!-- Header -->
-  <div class="mb-12">
-    <p class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-2">{{ i18n.isFa ? 'معرفی' : 'Introduction' }}</p>
-    <h1 class="text-4xl font-bold text-slate-900 dark:text-white">{{ i18n.t('aboutMeTitle') }}</h1>
-    <div class="mt-4 w-16 h-1 rounded-full bg-linear-to-r from-indigo-500 to-emerald-500"></div>
-  </div>
+  <header class="page-header">
+    <p class="section-label">{{ i18n.isFa ? 'معرفی' : 'Introduction' }}</p>
+    <h1 class="page-title">{{ i18n.t('aboutMeTitle') }}</h1>
+    <div class="title-underline"></div>
+  </header>
 
   @if (isLoading) {
     <div class="flex items-center justify-center py-20">
@@ -29,7 +29,7 @@
       }
 
       <!-- Content -->
-      <div [class]="aboutMe.avatarUrl ? 'md:col-span-3' : 'md:col-span-5'">
+      <div [class]="aboutMe.avatarUrl ? 'md:col-span-3 text-center md:text-start' : 'md:col-span-5 text-center'">
         <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-1">
           {{ i18n.isFa ? (aboutMe.fullNameFa || aboutMe.fullName) : aboutMe.fullName }}
         </h2>
@@ -39,7 +39,7 @@
 
         <div class="divider mb-6"></div>
 
-        <div class="text-slate-600 dark:text-slate-300 leading-8 whitespace-pre-line text-base">
+        <div class="prose-measure mx-auto whitespace-pre-line text-base">
           {{ i18n.isFa ? (aboutMe.bioFa || aboutMe.bio) : aboutMe.bio }}
         </div>
 

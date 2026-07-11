@@ -181,28 +181,51 @@
 
 ---
 
-## Phase 7: Dark/Light Theme Polish 🔲
+## Phase 7: Dark/Light Theme Polish 🔶 (7.1–7.4, 7.6 done · 7.5 pending)
 
 > **Goal**: Make the theme system feel polished, native, and glitch-free.
+>
+> **Visual identity — "Iris Violet"**: A custom, minimal palette replaces the generic default-Tailwind indigo/emerald look. Implemented by overriding Tailwind v4 color SCALES in `styles.css` `@theme` so the new identity propagates to every existing utility class without touching UI structure:
+> - `indigo-*` → **Iris Violet** (primary brand accent)
+> - `violet-*` → **Orchid** (secondary / gradient partner — brand gradients are now iris→orchid, previously indigo→emerald)
+> - `emerald-*` → **Muted Jade** (reserved for success & status only — online dot, "message sent")
+> - `slate-*` → **Iris-tinted cool neutrals** (all backgrounds, borders, text)
+>
+> **Light contrast fix**: body base is a soft cool-gray (`--color-background: #eceef4`) so white cards/elements no longer get lost in white space; muted-text neutrals (`slate-400/500/600`) are darkened in light mode and re-lightened inside `.dark` for readable contrast in both modes.
+> **Dark identity**: deep iris-charcoal (`#0f0f17` / `#1a1a26`) instead of default slate-blue.
+> Brand gradient stops swapped from `to-emerald-*` → `to-violet-400` across header/footer logos, page-title underlines, skill/reading progress bars, and the decorative hero blob.
 
-- [ ] 7.1 **System preference on first load**
-  - Currently: reads `prefers-color-scheme` media query in `ThemeService` — verify it works correctly
-  - Add: listen for `prefers-color-scheme` changes during session via `window.matchMedia(...).addEventListener('change', ...)`
+- [x] 7.1 **System preference on first load**
+  - `ThemeService` reads `prefers-color-scheme` when no stored choice exists
+  - Live-listens for `prefers-color-scheme` changes via `matchMedia(...).addEventListener('change', ...)` — follows the OS only while the user hasn't made an explicit choice
 
-- [ ] 7.2 **Prevent flash of wrong theme (FOBT)**
-  - Add a small inline `<script>` in `index.html` `<head>` that reads `localStorage` and applies `.dark` class before Angular hydrates
-  - This prevents the white flash on dark-mode page load
+- [x] 7.2 **Prevent flash of wrong theme (FOBT)**
+  - Inline `<script>` in `index.html` `<head>` reads `localStorage('app_theme')` (falling back to system pref) and applies `.dark` before first paint
+  - `ThemeService` also syncs the `<meta name="theme-color">` to the active theme
 
-- [ ] 7.3 **Theme-aware colors audit**
-  - Audit all components for hardcoded colors that don't switch with dark mode
-  - Ensure all text, backgrounds, borders have both light and dark variants
+- [x] 7.3 **Theme-aware colors audit**
+  - Palette centralized via scale overrides — every text/bg/border utility resolves to the new identity in both modes
+  - Semantic colors preserved: success/status = jade green, likes = rose, errors = red
 
-- [ ] 7.4 **CSS custom properties for smoother transitions**
-  - Define semantic color tokens in `styles.css` `@theme` that automatically change in `.dark`
-  - Replace one-off `dark:` Tailwind classes with token-based classes where appropriate
+- [x] 7.4 **CSS custom properties for smoother transitions**
+  - Semantic tokens (`--color-secondary`, `--color-accent`, `--color-background`, `--color-surface`, `--color-text`, `--color-text-muted`) defined in `@theme` and overridden in `.dark`
+  - `body` transitions background/color; `gradient-text`, `divider`, `timeline`, `skill-tag` all driven by tokens
 
 - [ ] 7.5 **Theme toggle animation**
   - Animate the sun/moon icon transition in header (rotate + scale)
+
+- [x] 7.6 **Typography & spacing system (8-point scale)**
+  - Central shared primitives in `styles.css` `@layer components` (via `@apply`) applied across every page — no arbitrary margins/paddings:
+    - `.page-shell` — common max-width container (`max-w-6xl` + responsive px); also used by header/footer for alignment
+    - `.page-section` — vertical rhythm (`pt-10 pb-16 sm:pt-12 sm:pb-20`) so first content sits high
+    - `.page-header` — gap between title block and content (`mb-8 sm:mb-10`)
+    - Hierarchy: `.section-label` (eyebrow) → `.page-title` / `.section-title` → `.page-subtitle` → `.prose-measure`
+    - `.title-underline` — iris→orchid accent bar
+    - `.prose-measure` — caps body text to `65ch` with `leading-8` for readability
+  - Applied to Home, About, Experiences, Skills, Blog, Videos, Article detail, Contact (+ header/footer container)
+  - Reduced hero top padding, removed oversized `lg:text-6xl`, standardized heading sizes/weights with `tracking-tight`
+  - RTL typography: latin letter-spacing removed for Persian labels/headings, extra line-height (2.1) for Persian long-form text
+  - Responsive spacing tuned for mobile/tablet via `sm:` steps
 
 ---
 

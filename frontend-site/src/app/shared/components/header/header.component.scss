@@ -1,1 +1,12 @@
 /* Header styles are mostly handled by Tailwind utility classes */
+
+/* Mobile nav panel */
+.mobile-nav {
+  background-color: var(--color-surface);
+  animation: mobile-nav-in 0.18s ease-out;
+}
+
+@keyframes mobile-nav-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

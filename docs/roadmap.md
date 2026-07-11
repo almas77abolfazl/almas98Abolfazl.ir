@@ -127,14 +127,16 @@ Deliverables:
 
 **Status:** 6.1–6.6 done (client-side `SeoService`, per-page meta + Open Graph + Twitter, `Person`/`Article` JSON-LD, dynamic `sitemap.xml`, `robots.txt`, canonical/base tags). 6.7 (SSR/prerender) deferred by decision — the site stays static + Nginx for now.
 
-## Phase 7: Dark/Light Theme Polish 🔲
+## Phase 7: Dark/Light Theme Polish 🔶
 
 **Goal:** Make the theme system polished and glitch-free.
 
-- System preference detection + live change listening
-- Prevent flash of wrong theme (inline script)
-- Theme-aware color audit + semantic tokens
-- Theme toggle animation
+**Status:** 7.1–7.4 done (7.5 toggle animation pending). Introduced a custom **"Iris Violet"** identity — iris-violet primary + orchid gradient partner + muted-jade success + iris-tinted neutrals — applied by overriding Tailwind v4 color scales in `styles.css` `@theme` (no UI restructure). Light mode now uses a soft off-white base so cards no longer vanish into white; dark mode uses deep iris-charcoal instead of default slate-blue. Added FOBT-prevention inline script, live OS-preference following, and `theme-color` sync.
+
+- System preference detection + live change listening ✅
+- Prevent flash of wrong theme (inline script) ✅
+- Theme-aware color audit + semantic tokens ✅
+- Theme toggle animation 🔲
 
 ## Phase 8: Admin Panel UI Overhaul 🔲
 
@@ -166,7 +168,7 @@ Deliverables:
 | 4 | Article System Overhaul | ✅ Done |
 | 5 | Video Embeds | ✅ Done |
 | 6 | SEO Optimization | 🔶 6.1–6.6 done (6.7 SSR deferred) |
-| 7 | Dark/Light Theme Polish | 🔲 Not started |
+| 7 | Dark/Light Theme Polish | 🔶 7.1–7.4 done (7.5 toggle animation pending) |
 | 8 | Admin Panel UI Overhaul | 🔲 Not started |
 | 9 | Additional Features | 🔲 Not started |
 

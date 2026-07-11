@@ -9,7 +9,7 @@
   <!-- Default SEO meta (overridden per-route by SeoService) -->
   <meta name="description" content="Personal portfolio of Abolfazl Nasiri Almas — full-stack developer.">
   <meta name="author" content="Abolfazl Nasiri Almas">
-  <meta name="theme-color" content="#4f46e5">
+  <meta name="theme-color" content="#6a45e8">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="almas98Abolfazl.ir">
   <meta property="og:title" content="almas98Abolfazl.ir">
@@ -23,6 +23,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vazirmatn@3.0.2/Vazirmatn-font-face.css" rel="stylesheet">
+
+  <!-- Apply the saved/preferred theme before first paint to avoid a flash of the wrong theme -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('app_theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var dark = stored ? stored === 'dark' : prefersDark;
+        if (dark) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>
