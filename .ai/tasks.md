@@ -44,11 +44,11 @@
 
 ---
 
-## Phase 4: Article System Overhaul 🔲
+## Phase 4: Article System Overhaul ✅
 
 > **Goal**: Replace the current bilingual article approach with a proper per-language system. Each article is either EN or FA — no dual-language fields.
 
-- [ ] 4.1 **Schema migration**
+- [x] 4.1 **Schema migration**
   - Remove `titleFa`, `contentFa`, `excerptFa` from `Articles` model
   - Add `language String @default("en")` — values: `'en'` or `'fa'`
   - Add `tags String[]` — array of tag strings
@@ -57,31 +57,31 @@
   - Create `ArticleLike` model: `{ id, articleId FK, ipHash String, createdAt }` with `@@unique([articleId, ipHash])`
   - Run `prisma db push` + `prisma generate`
 
-- [ ] 4.2 **Backend: Article likes API**
+- [x] 4.2 **Backend: Article likes API**
   - `POST /api/articles/:slug/like` — public endpoint
   - Hash the requester's IP with SHA-256, attempt `prisma.articleLike.create()`
   - On unique constraint error = already liked (return 200 with `alreadyLiked: true`)
   - On success: increment `Articles.likeCount` via `prisma.articles.update({ data: { likeCount: { increment: 1 } } })`
   - Response: `{ likeCount: number, alreadyLiked: boolean }`
 
-- [ ] 4.3 **Backend: Update `GET /api/articles` and `GET /api/articles/:slug`**
+- [x] 4.3 **Backend: Update `GET /api/articles` and `GET /api/articles/:slug`**
   - Add `language` filter param: `GET /api/articles?lang=fa` — filter by language
   - Return `likeCount`, `readingTime`, `tags` in responses
   - Auto-calculate `readingTime` on create/update: `Math.ceil(wordCount / 200)` minutes
 
-- [ ] 4.4 **Admin: Article form update**
+- [x] 4.4 **Admin: Article form update**
   - Add `language` dropdown (`English` / `فارسی`) — sets `dir` of content textarea
   - Add `tags` input (comma-separated chips)
   - Remove `titleFa`, `contentFa`, `excerptFa` fields from the form
   - Show `readingTime` as auto-calculated read-only field
 
-- [ ] 4.5 **Frontend: Blog page**
+- [x] 4.5 **Frontend: Blog page**
   - Filter articles by current `i18n.currentLang()` automatically: fetch `?lang=fa` or `?lang=en`
   - Show tags as pills on article cards
   - Show reading time badge
   - Show like count on cards
 
-- [ ] 4.6 **Frontend: Article detail page**
+- [x] 4.6 **Frontend: Article detail page**
   - Show language badge (EN/FA indicator)
   - Show reading time
   - Show tags

@@ -48,15 +48,24 @@ export interface Skill {
 
 export interface Article {
   id: string;
-  title: string; titleFa?: string;
+  title: string;
   slug: string;
-  content: string; contentFa?: string;
-  excerpt?: string; excerptFa?: string;
+  content: string;
+  excerpt?: string;
   coverUrl?: string;
+  language: string;
+  tags: string[];
+  readingTime: number;
+  likeCount: number;
   published: boolean;
   publishedAt?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ArticleLikeResult {
+  likeCount: number;
+  alreadyLiked: boolean;
 }
 
 export interface Media {
@@ -93,12 +102,17 @@ export class ApiService {
     return this.http.get<Skill[]>(`${this.baseUrl}/skills`);
   }
 
-  getArticles(): Observable<Article[]> {
-    return this.http.get<Article[]>(`${this.baseUrl}/articles`);
+  getArticles(lang?: string): Observable<Article[]> {
+    const url = lang ? `${this.baseUrl}/articles?lang=${lang}` : `${this.baseUrl}/articles`;
+    return this.http.get<Article[]>(url);
   }
 
   getArticleBySlug(slug: string): Observable<Article> {
     return this.http.get<Article>(`${this.baseUrl}/articles/${slug}`);
+  }
+
+  likeArticle(slug: string): Observable<ArticleLikeResult> {
+    return this.http.post<ArticleLikeResult>(`${this.baseUrl}/articles/${slug}/like`, {});
   }
 
   postContactMessage(body: { name: string; email: string; subject?: string; message: string }): Observable<any> {

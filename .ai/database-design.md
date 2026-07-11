@@ -82,20 +82,31 @@
 | Field | Type | Notes |
 |---|---|---|
 | id | String UUID PK | |
-| title | String | EN title |
-| titleFa | String? | FA title (planned removal — see roadmap) |
+| title | String | article title (single language) |
 | slug | String @unique | URL slug |
-| content | String Text | EN content |
-| contentFa | String? Text | FA content (planned removal — see roadmap) |
-| excerpt | String? Text | EN excerpt |
-| excerptFa | String? Text | FA excerpt (planned removal — see roadmap) |
+| content | String Text | article body |
+| excerpt | String? Text | short summary |
 | coverUrl | String? | Cover image URL |
+| language | String default "en" | `'en'` \| `'fa'` — article is single-language |
+| tags | String[] | tag strings |
+| readingTime | Int default 0 | estimated minutes, auto-calculated (`ceil(words / 200)`) |
+| likeCount | Int default 0 | cached like count, incremented by likes API |
 | published | Boolean default false | |
 | publishedAt | DateTime? | |
 | createdAt | DateTime | |
 | updatedAt | DateTime | @updatedAt |
+| likes | ArticleLike[] | relation to likes |
 
-> **Roadmap change for Articles**: Remove `*Fa` fields and add `language` field (`'en'` \| `'fa'`), `tags String[]`, `likeCount Int`, `readingTime Int` (estimated minutes). Articles will be single-language, not bilingual. See `tasks.md` Phase 4.
+> **Note**: Articles are single-language (no `*Fa` fields). The public list endpoint filters by language via `GET /api/articles?lang=fa`. `readingTime` is recalculated on every create/update from the content word count.
+
+### ArticleLike
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| articleId | String FK → Articles.id | `onDelete: Cascade` |
+| ipHash | String | SHA-256 hash of requester IP |
+| createdAt | DateTime | |
+| UNIQUE (articleId, ipHash) | | one like per IP per article |
 
 ### Media
 | Field | Type | Notes |
@@ -146,15 +157,6 @@
 ---
 
 ## Planned Tables (future phases)
-
-### ArticleLike (Phase 4)
-| Field | Type | Notes |
-|---|---|---|
-| id | String UUID PK | |
-| articleId | String FK → Articles.id | cascade delete |
-| ipHash | String | prevent duplicate likes |
-| createdAt | DateTime | |
-| UNIQUE (articleId, ipHash) | | |
 
 ### Videos (Phase 5)
 | Field | Type | Notes |

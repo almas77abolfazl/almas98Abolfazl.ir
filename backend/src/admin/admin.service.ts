@@ -104,14 +104,25 @@ export class AdminService {
   }
 
   // Articles
+  private calcReadingTime(content: string): number {
+    const words = content?.trim() ? content.trim().split(/\s+/).length : 0;
+    return words > 0 ? Math.ceil(words / 200) : 0;
+  }
+
   async createArticle(data: {
-    title: string; titleFa?: string;
+    title: string;
     slug: string;
-    content: string; contentFa?: string;
-    excerpt?: string; excerptFa?: string;
-    coverUrl?: string; published?: boolean; publishedAt?: Date;
+    content: string;
+    excerpt?: string;
+    coverUrl?: string;
+    language?: string;
+    tags?: string[];
+    published?: boolean;
+    publishedAt?: Date;
   }) {
-    return this.prisma.articles.create({ data });
+    return this.prisma.articles.create({
+      data: { ...data, readingTime: this.calcReadingTime(data.content) },
+    });
   }
 
   async findAllArticles() {
@@ -119,13 +130,21 @@ export class AdminService {
   }
 
   async updateArticle(id: string, data: {
-    title?: string; titleFa?: string;
+    title?: string;
     slug?: string;
-    content?: string; contentFa?: string;
-    excerpt?: string; excerptFa?: string;
-    coverUrl?: string; published?: boolean; publishedAt?: Date;
+    content?: string;
+    excerpt?: string;
+    coverUrl?: string;
+    language?: string;
+    tags?: string[];
+    published?: boolean;
+    publishedAt?: Date;
   }) {
-    return this.prisma.articles.update({ where: { id }, data });
+    const patch: typeof data & { readingTime?: number } = { ...data };
+    if (data.content !== undefined) {
+      patch.readingTime = this.calcReadingTime(data.content);
+    }
+    return this.prisma.articles.update({ where: { id }, data: patch });
   }
 
   async deleteArticle(id: string) {

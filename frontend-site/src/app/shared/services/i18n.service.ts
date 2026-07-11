@@ -20,6 +20,15 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     experiencesTitle: 'Work Experiences',
     skillsTitle: 'Skills',
     educationTitle: 'Education',
+    minRead: 'min read',
+    likes: 'likes',
+    like: 'Like',
+    liked: 'Liked',
+    noArticles: 'No articles yet',
+    articleNotFound: 'Article not found',
+    backToBlog: 'Back to Blog',
+    goBack: 'Go back',
+    writing: 'Writing',
   },
   fa: {
     home: 'خانه',
@@ -37,6 +46,15 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     experiencesTitle: 'تجربیات کاری',
     skillsTitle: 'مهارت‌ها',
     educationTitle: 'تحصیلات',
+    minRead: 'دقیقه مطالعه',
+    likes: 'پسند',
+    like: 'پسندیدن',
+    liked: 'پسندیده شد',
+    noArticles: 'هنوز مقاله‌ای وجود ندارد',
+    articleNotFound: 'مقاله یافت نشد',
+    backToBlog: 'بازگشت به مقالات',
+    goBack: 'بازگشت',
+    writing: 'نوشته‌ها',
   }
 };
 

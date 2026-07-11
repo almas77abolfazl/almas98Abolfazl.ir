@@ -68,17 +68,29 @@ model Skills {
 model Articles {
   id          String   @id @default(uuid())
   title       String
-  titleFa     String?
   slug        String   @unique
   content     String   @db.Text
-  contentFa   String?  @db.Text
   excerpt     String?  @db.Text
-  excerptFa   String?  @db.Text
   coverUrl    String?
+  language    String   @default("en")
+  tags        String[]
+  readingTime Int      @default(0)
+  likeCount   Int      @default(0)
   published   Boolean  @default(false)
   publishedAt DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  likes       ArticleLike[]
+}
+
+model ArticleLike {
+  id        String   @id @default(uuid())
+  articleId String
+  article   Articles @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  ipHash    String
+  createdAt DateTime @default(now())
+
+  @@unique([articleId, ipHash])
 }
 
 model Media {

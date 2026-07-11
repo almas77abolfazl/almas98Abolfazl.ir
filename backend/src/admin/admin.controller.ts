@@ -137,11 +137,14 @@ export class AdminController {
 
   @Post('articles')
   createArticle(@Body() body: {
-    title: string; titleFa?: string;
+    title: string;
     slug: string;
-    content: string; contentFa?: string;
-    excerpt?: string; excerptFa?: string;
-    coverUrl?: string; published?: boolean; publishedAt?: string;
+    content: string;
+    excerpt?: string;
+    coverUrl?: string;
+    language?: string;
+    tags?: string[];
+    published?: boolean; publishedAt?: string;
   }) {
     return this.adminService.createArticle({
       ...body,
@@ -151,11 +154,14 @@ export class AdminController {
 
   @Put('articles/:id')
   updateArticle(@Param('id') id: string, @Body() body: {
-    title?: string; titleFa?: string;
+    title?: string;
     slug?: string;
-    content?: string; contentFa?: string;
-    excerpt?: string; excerptFa?: string;
-    coverUrl?: string; published?: boolean; publishedAt?: string;
+    content?: string;
+    excerpt?: string;
+    coverUrl?: string;
+    language?: string;
+    tags?: string[];
+    published?: boolean; publishedAt?: string;
   }) {
     const data: any = { ...body };
     if (body.publishedAt) data.publishedAt = new Date(body.publishedAt);

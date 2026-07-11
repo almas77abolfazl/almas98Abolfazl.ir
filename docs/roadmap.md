@@ -103,7 +103,7 @@ Deliverables:
 - Blog + article-detail migrated to Angular 20 control flow syntax
 - VS Code full-stack debug setup (`launch.json` + `tasks.json`)
 
-## Phase 4: Article System Overhaul 🔲
+## Phase 4: Article System Overhaul ✅
 
 **Goal:** Replace bilingual article fields with a proper per-language system.
 
@@ -167,7 +167,7 @@ Deliverables:
 | 2 | Admin Panel + Testimonials | ✅ Done |
 | 3 | Analytics | ✅ Done |
 | 3.5 | Bilingual + UI Polish | ✅ Done |
-| 4 | Article System Overhaul | 🔲 Not started |
+| 4 | Article System Overhaul | ✅ Done |
 | 5 | Video Embeds | 🔲 Not started |
 | 6 | SEO Optimization | 🔲 Not started |
 | 7 | Dark/Light Theme Polish | 🔲 Not started |
