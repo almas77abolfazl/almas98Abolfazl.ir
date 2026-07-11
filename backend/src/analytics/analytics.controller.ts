@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, UseGuards, Query } from '@nestjs/common';
+import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthGuard } from '../auth/auth.guard';
 
@@ -35,8 +35,14 @@ export class AnalyticsController {
 
     return {
       total: Number(total),
-      topPages: topPages.map(p => ({ url: p.url, count: Number(p._count.url) })),
-      daily: (daily as any[]).map(d => ({ date: d.date, count: Number(d.count) })),
+      topPages: topPages.map((p) => ({
+        url: p.url,
+        count: Number(p._count.url),
+      })),
+      daily: (daily as any[]).map((d) => ({
+        date: d.date,
+        count: Number(d.count),
+      })),
     };
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TestimonialStatus } from '@prisma/client';
 
@@ -7,12 +7,7 @@ export class AdminService {
   constructor(private readonly prisma: PrismaService) {}
 
   // AboutMe (singleton)
-  async upsertAboutMe(data: {
-    fullName: string; fullNameFa?: string;
-    title: string; titleFa?: string;
-    bio?: string; bioFa?: string;
-    avatarUrl?: string; resumeUrl?: string;
-  }) {
+  async upsertAboutMe(data: { fullName: string; fullNameFa?: string; title: string; titleFa?: string; bio?: string; bioFa?: string; avatarUrl?: string; resumeUrl?: string }) {
     const existing = await this.prisma.aboutMe.findFirst();
     if (existing) {
       return this.prisma.aboutMe.update({ where: { id: existing.id }, data });
@@ -29,13 +24,7 @@ export class AdminService {
   }
 
   // Experiences
-  async createExperience(data: {
-    role: string; roleFa?: string;
-    company: string; companyFa?: string;
-    startDate: Date; endDate?: Date;
-    description?: string; descriptionFa?: string;
-    technologies: string[];
-  }) {
+  async createExperience(data: { role: string; roleFa?: string; company: string; companyFa?: string; startDate: Date; endDate?: Date; description?: string; descriptionFa?: string; technologies: string[] }) {
     return this.prisma.experiences.create({ data });
   }
 
@@ -43,13 +32,20 @@ export class AdminService {
     return this.prisma.experiences.findMany({ orderBy: { order: 'asc' } });
   }
 
-  async updateExperience(id: string, data: {
-    role?: string; roleFa?: string;
-    company?: string; companyFa?: string;
-    startDate?: Date; endDate?: Date;
-    description?: string; descriptionFa?: string;
-    technologies?: string[];
-  }) {
+  async updateExperience(
+    id: string,
+    data: {
+      role?: string;
+      roleFa?: string;
+      company?: string;
+      companyFa?: string;
+      startDate?: Date;
+      endDate?: Date;
+      description?: string;
+      descriptionFa?: string;
+      technologies?: string[];
+    },
+  ) {
     return this.prisma.experiences.update({ where: { id }, data });
   }
 
@@ -58,13 +54,7 @@ export class AdminService {
   }
 
   // Educations
-  async createEducation(data: {
-    degree: string; degreeFa?: string;
-    institution: string; institutionFa?: string;
-    field?: string; fieldFa?: string;
-    startDate: Date; endDate?: Date;
-    description?: string; descriptionFa?: string;
-  }) {
+  async createEducation(data: { degree: string; degreeFa?: string; institution: string; institutionFa?: string; field?: string; fieldFa?: string; startDate: Date; endDate?: Date; description?: string; descriptionFa?: string }) {
     return this.prisma.educations.create({ data });
   }
 
@@ -72,13 +62,21 @@ export class AdminService {
     return this.prisma.educations.findMany({ orderBy: { order: 'asc' } });
   }
 
-  async updateEducation(id: string, data: {
-    degree?: string; degreeFa?: string;
-    institution?: string; institutionFa?: string;
-    field?: string; fieldFa?: string;
-    startDate?: Date; endDate?: Date;
-    description?: string; descriptionFa?: string;
-  }) {
+  async updateEducation(
+    id: string,
+    data: {
+      degree?: string;
+      degreeFa?: string;
+      institution?: string;
+      institutionFa?: string;
+      field?: string;
+      fieldFa?: string;
+      startDate?: Date;
+      endDate?: Date;
+      description?: string;
+      descriptionFa?: string;
+    },
+  ) {
     return this.prisma.educations.update({ where: { id }, data });
   }
 
@@ -95,7 +93,16 @@ export class AdminService {
     return this.prisma.skills.findMany({ orderBy: { order: 'asc' } });
   }
 
-  async updateSkill(id: string, data: { name?: string; nameFa?: string; category?: string; categoryFa?: string; proficiency?: number }) {
+  async updateSkill(
+    id: string,
+    data: {
+      name?: string;
+      nameFa?: string;
+      category?: string;
+      categoryFa?: string;
+      proficiency?: number;
+    },
+  ) {
     return this.prisma.skills.update({ where: { id }, data });
   }
 
@@ -109,17 +116,7 @@ export class AdminService {
     return words > 0 ? Math.ceil(words / 200) : 0;
   }
 
-  async createArticle(data: {
-    title: string;
-    slug: string;
-    content: string;
-    excerpt?: string;
-    coverUrl?: string;
-    language?: string;
-    tags?: string[];
-    published?: boolean;
-    publishedAt?: Date;
-  }) {
+  async createArticle(data: { title: string; slug: string; content: string; excerpt?: string; coverUrl?: string; language?: string; tags?: string[]; published?: boolean; publishedAt?: Date }) {
     return this.prisma.articles.create({
       data: { ...data, readingTime: this.calcReadingTime(data.content) },
     });
@@ -129,17 +126,20 @@ export class AdminService {
     return this.prisma.articles.findMany({ orderBy: { createdAt: 'desc' } });
   }
 
-  async updateArticle(id: string, data: {
-    title?: string;
-    slug?: string;
-    content?: string;
-    excerpt?: string;
-    coverUrl?: string;
-    language?: string;
-    tags?: string[];
-    published?: boolean;
-    publishedAt?: Date;
-  }) {
+  async updateArticle(
+    id: string,
+    data: {
+      title?: string;
+      slug?: string;
+      content?: string;
+      excerpt?: string;
+      coverUrl?: string;
+      language?: string;
+      tags?: string[];
+      published?: boolean;
+      publishedAt?: Date;
+    },
+  ) {
     const patch: typeof data & { readingTime?: number } = { ...data };
     if (data.content !== undefined) {
       patch.readingTime = this.calcReadingTime(data.content);
@@ -156,7 +156,17 @@ export class AdminService {
     return this.prisma.media.create({ data });
   }
 
-  async updateMedia(id: string, data: { filename?: string; originalName?: string; mimeType?: string; sizeBytes?: number; url?: string; alt?: string }) {
+  async updateMedia(
+    id: string,
+    data: {
+      filename?: string;
+      originalName?: string;
+      mimeType?: string;
+      sizeBytes?: number;
+      url?: string;
+      alt?: string;
+    },
+  ) {
     return this.prisma.media.update({ where: { id }, data });
   }
 
@@ -166,7 +176,9 @@ export class AdminService {
 
   // ContactMessages
   async findAllContactMessages() {
-    return this.prisma.contactMessage.findMany({ orderBy: { createdAt: 'desc' } });
+    return this.prisma.contactMessage.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
   async updateContactMessage(id: string, data: { isRead?: boolean }) {
@@ -182,21 +194,23 @@ export class AdminService {
     return this.prisma.testimonial.findMany({ orderBy: { createdAt: 'desc' } });
   }
 
-  async createTestimonial(data: {
-    authorName: string; authorNameFa?: string;
-    companyRole?: string; companyRoleFa?: string;
-    content: string; contentFa?: string;
-    rating?: number; status?: TestimonialStatus;
-  }) {
+  async createTestimonial(data: { authorName: string; authorNameFa?: string; companyRole?: string; companyRoleFa?: string; content: string; contentFa?: string; rating?: number; status?: TestimonialStatus }) {
     return this.prisma.testimonial.create({ data });
   }
 
-  async updateTestimonial(id: string, data: {
-    authorName?: string; authorNameFa?: string;
-    companyRole?: string; companyRoleFa?: string;
-    content?: string; contentFa?: string;
-    rating?: number; status?: TestimonialStatus;
-  }) {
+  async updateTestimonial(
+    id: string,
+    data: {
+      authorName?: string;
+      authorNameFa?: string;
+      companyRole?: string;
+      companyRoleFa?: string;
+      content?: string;
+      contentFa?: string;
+      rating?: number;
+      status?: TestimonialStatus;
+    },
+  ) {
     return this.prisma.testimonial.update({ where: { id }, data });
   }
 

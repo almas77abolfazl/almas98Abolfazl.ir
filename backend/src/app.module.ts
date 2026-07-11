@@ -14,19 +14,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
-  imports: [
-    PrismaModule,
-    AboutMeModule,
-    ExperiencesModule,
-    EducationsModule,
-    SkillsModule,
-    ArticlesModule,
-    MediaModule,
-    AuthModule,
-    AdminModule,
-    ContactMessagesModule,
-    AnalyticsModule,
-  ],
+  imports: [PrismaModule, AboutMeModule, ExperiencesModule, EducationsModule, SkillsModule, ArticlesModule, MediaModule, AuthModule, AdminModule, ContactMessagesModule, AnalyticsModule],
   controllers: [AppController],
   providers: [AppService],
 })

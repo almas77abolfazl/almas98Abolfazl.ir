@@ -7,7 +7,15 @@ export class ContactMessagesController {
 
   @Post()
   @HttpCode(201)
-  async create(@Body() body: { name: string; email: string; subject?: string; message: string }) {
+  async create(
+    @Body()
+    body: {
+      name: string;
+      email: string;
+      subject?: string;
+      message: string;
+    },
+  ) {
     return this.prisma.contactMessage.create({
       data: {
         name: body.name,
