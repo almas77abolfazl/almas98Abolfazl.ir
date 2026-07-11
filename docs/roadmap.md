@@ -112,7 +112,7 @@ Deliverables:
 - Admin: language dropdown, tags input, remove FA fields
 - Frontend: language-filtered blog, tags, reading time, like button, reading progress bar
 
-## Phase 5: Video Embeds 🔲
+## Phase 5: Video Embeds ✅
 
 **Goal:** Add a Videos section supporting YouTube and Aparat embeds.
 
@@ -168,7 +168,7 @@ Deliverables:
 | 3 | Analytics | ✅ Done |
 | 3.5 | Bilingual + UI Polish | ✅ Done |
 | 4 | Article System Overhaul | ✅ Done |
-| 5 | Video Embeds | 🔲 Not started |
+| 5 | Video Embeds | ✅ Done |
 | 6 | SEO Optimization | 🔲 Not started |
 | 7 | Dark/Light Theme Polish | 🔲 Not started |
 | 8 | Admin Panel UI Overhaul | 🔲 Not started |

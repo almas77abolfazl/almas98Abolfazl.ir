@@ -41,19 +41,20 @@ almas98Abolfazl.ir/
 │       ├── experiences/      # Public GET endpoint
 │       ├── educations/       # Public GET endpoint
 │       ├── skills/           # Public GET endpoint
-│       ├── articles/         # Public GET endpoints
-│       ├── media/            # Public GET endpoint
+│       ├── articles/          # Public GET endpoints
+│       ├── media/             # Public GET endpoint
+│       ├── videos/            # Public GET endpoint (YouTube/Aparat embeds)
 │       ├── contact-messages/ # Public POST + admin GET/DELETE
 │       ├── analytics/        # PageView tracking + admin stats
 │       └── prisma/           # PrismaService (singleton)
 ├── frontend-site/            # Angular public site
 │   └── src/app/
-│       ├── features/         # home, about-me, experiences, skills, blog, article-detail
+│       ├── features/         # home, about-me, experiences, skills, blog, article-detail, videos
 │       └── shared/           # header, footer, i18n.service, theme.service, api.service
 ├── frontend-admin/           # Angular admin SPA
 │   └── src/app/
 │       ├── features/         # dashboard, about-me, experiences, educations, skills,
-│       │                     # articles, testimonials, contact-messages
+│       │                     # articles, videos, testimonials, contact-messages
 │       └── core/             # auth interceptor, error interceptor, auth guard, services
 ├── nginx/                    # Nginx config
 ├── docker-compose.yml        # Production compose

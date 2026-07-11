@@ -14,6 +14,7 @@ export const routes: Routes = [
       { path: 'educations', loadComponent: () => import('./features/educations/educations.component').then(m => m.EducationsComponent) },
       { path: 'skills', loadComponent: () => import('./features/skills/skills.component').then(m => m.SkillsComponent) },
       { path: 'articles', loadComponent: () => import('./features/articles/articles.component').then(m => m.ArticlesComponent) },
+      { path: 'videos', loadComponent: () => import('./features/videos/videos.component').then(m => m.VideosComponent) },
       { path: 'testimonials', loadComponent: () => import('./features/testimonials/testimonials.component').then(m => m.TestimonialsComponent) },
       { path: 'messages', loadComponent: () => import('./features/contact-messages/contact-messages.component').then(m => m.ContactMessagesComponent) },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

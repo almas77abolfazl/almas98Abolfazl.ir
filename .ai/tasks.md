@@ -91,11 +91,11 @@
 
 ---
 
-## Phase 5: Video Embeds 🔲
+## Phase 5: Video Embeds ✅
 
 > **Goal**: Add a Videos section to the portfolio where YouTube and Aparat videos can be embedded and displayed.
 
-- [ ] 5.1 **Schema: `Videos` model**
+- [x] 5.1 **Schema: `Videos` model**
   ```prisma
   model Videos {
     id           String   @id @default(uuid())
@@ -113,27 +113,29 @@
   ```
   - Run `prisma db push` + `prisma generate`
 
-- [ ] 5.2 **Backend: Public GET + Admin CRUD**
+- [x] 5.2 **Backend: Public GET + Admin CRUD**
   - `GET /api/videos` — public, ordered by `order asc`
+  - `GET /api/admin/videos` — admin list
   - `POST /api/admin/videos` — create
   - `PUT /api/admin/videos/:id` — update
   - `DELETE /api/admin/videos/:id` — delete
-  - Helper: generate embed URL from platform + videoId:
+  - Helper (`videos/embed-url.util.ts`): generate embed URL from platform + videoId, exposed as computed `embedUrl` in the public response:
     - YouTube: `https://www.youtube.com/embed/{videoId}`
     - Aparat: `https://www.aparat.com/video/video/embed/videohash/{videoId}/t/1`
 
-- [ ] 5.3 **Admin: Videos management page**
+- [x] 5.3 **Admin: Videos management page**
   - New route: `/admin/videos`
-  - Add to shell sidebar nav
+  - Added to shell sidebar nav
   - Form: title (EN/FA), platform dropdown, videoId input, description (EN/FA), thumbnailUrl, order
-  - List with preview thumbnail
+  - List with preview thumbnail (auto-derives YouTube thumbnail when none provided)
 
-- [ ] 5.4 **Frontend: Videos page or section**
-  - New route: `/videos` or integrate into homepage as a section
+- [x] 5.4 **Frontend: Videos page**
+  - New route: `/videos` + header nav link
   - Responsive grid of video cards with thumbnail + title
-  - Clicking a card opens an inline embed (or modal) using `<iframe>` with the embed URL
-  - Lazy load iframes (only embed when user clicks play / enters viewport)
-  - Support `allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"` attributes
+  - Clicking a card swaps the thumbnail for an inline `<iframe>` using the embed URL
+  - Lazy load iframes (only rendered when user clicks play; YouTube gets `autoplay=1`)
+  - `allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"` + `allowfullscreen`
+  - iframe URLs sanitized via `DomSanitizer.bypassSecurityTrustResourceUrl`
 
 ---
 

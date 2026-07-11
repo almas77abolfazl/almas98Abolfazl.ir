@@ -151,6 +151,35 @@ export class AdminService {
     return this.prisma.articles.delete({ where: { id } });
   }
 
+  // Videos
+  async findAllVideos() {
+    return this.prisma.videos.findMany({ orderBy: { order: 'asc' } });
+  }
+
+  async createVideo(data: { title: string; titleFa?: string; description?: string; descriptionFa?: string; platform: string; videoId: string; thumbnailUrl?: string; order?: number }) {
+    return this.prisma.videos.create({ data });
+  }
+
+  async updateVideo(
+    id: string,
+    data: {
+      title?: string;
+      titleFa?: string;
+      description?: string;
+      descriptionFa?: string;
+      platform?: string;
+      videoId?: string;
+      thumbnailUrl?: string;
+      order?: number;
+    },
+  ) {
+    return this.prisma.videos.update({ where: { id }, data });
+  }
+
+  async deleteVideo(id: string) {
+    return this.prisma.videos.delete({ where: { id } });
+  }
+
   // Media
   async createMedia(data: { filename: string; originalName: string; mimeType: string; sizeBytes: number; url: string; alt?: string }) {
     return this.prisma.media.create({ data });

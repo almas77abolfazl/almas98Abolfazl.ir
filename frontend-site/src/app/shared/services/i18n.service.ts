@@ -10,6 +10,7 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     experiences: 'Experiences',
     skills: 'Skills',
     articles: 'Articles',
+    videos: 'Videos',
     contact: 'Contact',
     toggleTheme: 'Toggle theme',
     toggleLang: 'Toggle language',
@@ -29,6 +30,10 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     backToBlog: 'Back to Blog',
     goBack: 'Go back',
     writing: 'Writing',
+    videosTitle: 'Videos',
+    videosSubtitle: 'Watch',
+    noVideos: 'No videos yet',
+    playVideo: 'Play video',
   },
   fa: {
     home: 'خانه',
@@ -36,6 +41,7 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     experiences: 'تجربیات',
     skills: 'مهارت‌ها',
     articles: 'مقالات',
+    videos: 'ویدیوها',
     contact: 'تماس',
     toggleTheme: 'تغییر تم',
     toggleLang: 'تغییر زبان',
@@ -55,6 +61,10 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     backToBlog: 'بازگشت به مقالات',
     goBack: 'بازگشت',
     writing: 'نوشته‌ها',
+    videosTitle: 'ویدیوها',
+    videosSubtitle: 'تماشا',
+    noVideos: 'هنوز ویدیویی وجود ندارد',
+    playVideo: 'پخش ویدیو',
   }
 };
 

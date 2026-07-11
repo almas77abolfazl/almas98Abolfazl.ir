@@ -80,6 +80,19 @@ export interface Media {
   updatedAt: string;
 }
 
+export interface Video {
+  id: string;
+  title: string; titleFa?: string;
+  description?: string; descriptionFa?: string;
+  platform: string;
+  videoId: string;
+  thumbnailUrl?: string;
+  embedUrl: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private baseUrl = '/api';
@@ -121,5 +134,9 @@ export class ApiService {
 
   getMedia(): Observable<Media[]> {
     return this.http.get<Media[]>(`${this.baseUrl}/media`);
+  }
+
+  getVideos(): Observable<Video[]> {
+    return this.http.get<Video[]>(`${this.baseUrl}/videos`);
   }
 }

@@ -5,6 +5,7 @@ import { ExperiencesComponent } from './features/experiences/experiences.compone
 import { SkillsComponent } from './features/skills/skills.component';
 import { BlogComponent } from './features/blog/blog.component';
 import { ArticleDetailComponent } from './features/article-detail/article-detail.component';
+import { VideosComponent } from './features/videos/videos.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -13,5 +14,6 @@ export const routes: Routes = [
   { path: 'skills', component: SkillsComponent },
   { path: 'blog', component: BlogComponent },
   { path: 'blog/:slug', component: ArticleDetailComponent },
+  { path: 'videos', component: VideosComponent },
   { path: '**', redirectTo: '' }
 ];

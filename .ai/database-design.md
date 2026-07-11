@@ -108,6 +108,23 @@
 | createdAt | DateTime | |
 | UNIQUE (articleId, ipHash) | | one like per IP per article |
 
+### Videos
+| Field | Type | Notes |
+|---|---|---|
+| id | String UUID PK | |
+| title | String | EN title |
+| titleFa | String? | FA title |
+| description | String? Text | EN description |
+| descriptionFa | String? Text | FA description |
+| platform | String | `'youtube'` \| `'aparat'` |
+| videoId | String | YouTube video ID or Aparat video hash |
+| thumbnailUrl | String? | optional custom thumbnail |
+| order | Int default 0 | display order (asc) |
+| createdAt | DateTime | |
+| updatedAt | DateTime | @updatedAt |
+
+> **Note**: `embedUrl` is **not stored** — it is computed at read time by `backend/src/videos/embed-url.util.ts` (`buildEmbedUrl(platform, videoId)`) and returned in the public `GET /api/videos` response. The public site derives a YouTube thumbnail (`img.youtube.com/vi/{id}/hqdefault.jpg`) when `thumbnailUrl` is empty.
+
 ### Media
 | Field | Type | Notes |
 |---|---|---|
@@ -158,20 +175,7 @@
 
 ## Planned Tables (future phases)
 
-### Videos (Phase 5)
-| Field | Type | Notes |
-|---|---|---|
-| id | String UUID PK | |
-| title | String | EN title |
-| titleFa | String? | FA title |
-| platform | String | 'youtube' \| 'aparat' |
-| videoId | String | platform video ID |
-| embedUrl | String | computed embed URL |
-| thumbnailUrl | String? | |
-| description | String? Text | |
-| order | Int default 0 | |
-| createdAt | DateTime | |
-| updatedAt | DateTime | @updatedAt |
+_None currently — Phase 4 (`ArticleLike`) and Phase 5 (`Videos`) tables are now live and documented above._
 
 ---
 

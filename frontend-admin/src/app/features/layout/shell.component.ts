@@ -26,6 +26,7 @@ import { AsyncPipe } from '@angular/common';
           <a routerLink="/educations" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Educations</a>
           <a routerLink="/skills" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Skills</a>
           <a routerLink="/articles" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Articles</a>
+          <a routerLink="/videos" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Videos</a>
           <a routerLink="/testimonials" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Testimonials</a>
           <a routerLink="/messages" routerLinkActive="bg-gray-700 dark:bg-gray-800" class="block px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-800">Messages</a>
         </nav>

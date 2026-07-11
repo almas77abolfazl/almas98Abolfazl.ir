@@ -240,19 +240,43 @@ export class AdminController {
     return this.adminService.deleteArticle(id);
   }
 
-  // Media
-  @Post('media')
-  createMedia(
+  // Videos
+  @Get('videos')
+  findAllVideos() {
+    return this.adminService.findAllVideos();
+  }
+
+  @Post('videos')
+  createVideo(@Body() body: { title: string; titleFa?: string; description?: string; descriptionFa?: string; platform: string; videoId: string; thumbnailUrl?: string; order?: number }) {
+    return this.adminService.createVideo(body);
+  }
+
+  @Put('videos/:id')
+  updateVideo(
+    @Param('id') id: string,
     @Body()
     body: {
-      filename: string;
-      originalName: string;
-      mimeType: string;
-      sizeBytes: number;
-      url: string;
-      alt?: string;
+      title?: string;
+      titleFa?: string;
+      description?: string;
+      descriptionFa?: string;
+      platform?: string;
+      videoId?: string;
+      thumbnailUrl?: string;
+      order?: number;
     },
   ) {
+    return this.adminService.updateVideo(id, body);
+  }
+
+  @Delete('videos/:id')
+  deleteVideo(@Param('id') id: string) {
+    return this.adminService.deleteVideo(id);
+  }
+
+  // Media
+  @Post('media')
+  createMedia(@Body() body: { filename: string; originalName: string; mimeType: string; sizeBytes: number; url: string; alt?: string }) {
     return this.adminService.createMedia(body);
   }
 
