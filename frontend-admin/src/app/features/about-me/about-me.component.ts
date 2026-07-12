@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { AdminI18nService } from '../../core/services/admin-i18n.service';
 
 interface AboutMe {
   id?: string;
@@ -17,7 +18,7 @@ interface AboutMe {
   imports: [CommonModule, FormsModule],
   template: `
     <div>
-      <h1 class="admin-title mb-6">About Me</h1>
+      <h1 class="admin-title mb-6">{{ i18n.t('nav_about') }}</h1>
       <form (ngSubmit)="onSubmit()" #f="ngForm" class="admin-card space-y-6">
 
         <!-- Full Name -->
@@ -59,18 +60,18 @@ interface AboutMe {
         <!-- URLs -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="admin-field-label">Avatar URL</label>
+            <label class="admin-field-label">{{ i18n.t('about_avatarUrl') }}</label>
             <input [(ngModel)]="model.avatarUrl" name="avatarUrl" class="admin-input" />
           </div>
           <div>
-            <label class="admin-field-label">Resume URL</label>
+            <label class="admin-field-label">{{ i18n.t('about_resumeUrl') }}</label>
             <input [(ngModel)]="model.resumeUrl" name="resumeUrl" class="admin-input" />
           </div>
         </div>
 
         <div class="flex items-center gap-3">
-          <button type="submit" class="admin-btn admin-btn-primary">Save</button>
-          @if (saved) { <span class="text-emerald-600 text-sm">Saved successfully!</span> }
+          <button type="submit" class="admin-btn admin-btn-primary">{{ i18n.t('save') }}</button>
+          @if (saved) { <span class="text-emerald-600 text-sm">{{ i18n.t('about_saved') }}</span> }
         </div>
       </form>
     </div>
@@ -83,7 +84,7 @@ export class AboutMeComponent implements OnInit {
   model: AboutMe = { fullName: '', title: '' };
   saved = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, public i18n: AdminI18nService) {}
 
   ngOnInit(): void {
     this.http.get<AboutMe>('/api/admin/about-me').subscribe({

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { AdminI18nService } from '../../core/services/admin-i18n.service';
 
 interface Testimonial {
   id: string;
@@ -16,22 +17,33 @@ interface Testimonial {
   imports: [CommonModule],
   template: `
     <div>
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Testimonials</h1>
+      <h1 class="admin-title mb-6">{{ i18n.t('nav_testimonials') }}</h1>
       <div class="space-y-4">
-        <div *ngFor="let item of items" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <div class="flex justify-between items-start mb-2">
-            <div>
-              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ item.authorName }}</h3>
-              <p class="text-sm text-gray-500 dark:text-gray-400">{{ item.companyRole }}</p>
+        @for (item of items; track item.id) {
+          <div class="admin-card">
+            <div class="mb-2 flex items-start justify-between gap-4">
+              <div>
+                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ item.authorName }}</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400">{{ item.companyRole }}</p>
+              </div>
+              <span class="admin-badge"
+                [class.admin-badge-success]="item.status === 'APPROVED'"
+                [class.admin-badge-danger]="item.status === 'REJECTED'"
+                [class.admin-badge-warning]="item.status === 'PENDING'">
+                {{ item.status === 'APPROVED' ? i18n.t('test_approved') : item.status === 'REJECTED' ? i18n.t('test_rejected') : i18n.t('test_pending') }}
+              </span>
             </div>
-            <span class="px-2 py-1 text-xs font-semibold rounded" [class]="getStatusClass(item.status)">{{ item.status }}</span>
+            <p class="mb-4 text-slate-700 dark:text-slate-300">{{ item.content }}</p>
+            <div class="flex gap-2">
+              @if (item.status !== 'APPROVED') {
+                <button (click)="setStatus(item.id, 'APPROVED')" class="admin-btn admin-btn-primary">{{ i18n.t('test_approve') }}</button>
+              }
+              @if (item.status !== 'REJECTED') {
+                <button (click)="setStatus(item.id, 'REJECTED')" class="admin-btn admin-btn-danger">{{ i18n.t('test_reject') }}</button>
+              }
+            </div>
           </div>
-          <p class="text-gray-700 dark:text-gray-300 mb-4">{{ item.content }}</p>
-          <div class="flex gap-2">
-            <button *ngIf="item.status !== 'APPROVED'" (click)="setStatus(item.id, 'APPROVED')" class="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700">Approve</button>
-            <button *ngIf="item.status !== 'REJECTED'" (click)="setStatus(item.id, 'REJECTED')" class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700">Reject</button>
-          </div>
-        </div>
+        }
       </div>
     </div>
   `,
@@ -40,7 +52,7 @@ interface Testimonial {
 export class TestimonialsComponent implements OnInit {
   items: Testimonial[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, public i18n: AdminI18nService) {}
 
   ngOnInit(): void {
     this.load();
@@ -52,16 +64,5 @@ export class TestimonialsComponent implements OnInit {
 
   setStatus(id: string, status: string): void {
     this.http.patch(`/api/admin/testimonials/${id}/status`, { status }).subscribe(() => this.load());
-  }
-
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'APPROVED':
-        return 'bg-green-100 text-green-800';
-      case 'REJECTED':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-yellow-100 text-yellow-800';
-    }
   }
 }

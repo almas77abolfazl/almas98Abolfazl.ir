@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { AdminI18nService } from '../../core/services/admin-i18n.service';
 
 interface Article {
   id?: string;
@@ -23,47 +24,45 @@ interface Article {
   imports: [CommonModule, FormsModule],
   template: `
     <div>
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Articles</h1>
+      <h1 class="admin-title mb-6">{{ i18n.t('nav_articles') }}</h1>
 
-      <form (ngSubmit)="onSubmit()" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-5 mb-6">
+      <form (ngSubmit)="onSubmit()" class="admin-card space-y-5 mb-6">
         <!-- Title + Language -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
+            <label class="admin-field-label">
+              <span class="admin-lang" [class.admin-lang-en]="model.language === 'en'" [class.admin-lang-fa]="model.language === 'fa'">{{ model.language === 'fa' ? 'FA' : 'EN' }}</span>
+              {{ model.language === 'fa' ? 'عنوان' : 'Title' }}
+            </label>
             <input [(ngModel)]="model.title" name="title" required
               [dir]="model.language === 'fa' ? 'rtl' : 'ltr'"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              [class.font-fa]="model.language === 'fa'" />
+              class="admin-input" [class.font-fa]="model.language === 'fa'" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Language</label>
-            <select [(ngModel)]="model.language" name="language"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-              <option value="en">English</option>
-              <option value="fa">فارسی</option>
+            <label class="admin-field-label">{{ i18n.t('art_language') }}</label>
+            <select [(ngModel)]="model.language" name="language" class="admin-input">
+              <option value="en">{{ i18n.t('art_langEn') }}</option>
+              <option value="fa">{{ i18n.t('art_langFa') }}</option>
             </select>
           </div>
         </div>
 
         <!-- Slug -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slug</label>
-          <input [(ngModel)]="model.slug" name="slug" required
-            class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+          <label class="admin-field-label">{{ i18n.t('art_slug') }}</label>
+          <input [(ngModel)]="model.slug" name="slug" required class="admin-input" />
         </div>
 
         <!-- Tags -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tags (comma-separated)</label>
+          <label class="admin-field-label">{{ i18n.t('art_tags') }}</label>
           <input [(ngModel)]="tagsInput" name="tags"
             [dir]="model.language === 'fa' ? 'rtl' : 'ltr'"
-            placeholder="angular, typescript, web"
-            class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            [class.font-fa]="model.language === 'fa'" />
+            class="admin-input" [class.font-fa]="model.language === 'fa'" />
           @if (parsedTags().length) {
-            <div class="flex flex-wrap gap-2 mt-2">
+            <div class="mt-2 flex flex-wrap gap-2">
               @for (tag of parsedTags(); track tag) {
-                <span class="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200">{{ tag }}</span>
+                <span class="admin-badge admin-badge-info">{{ tag }}</span>
               }
             </div>
           }
@@ -71,83 +70,78 @@ interface Article {
 
         <!-- Excerpt -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Excerpt</label>
+          <label class="admin-field-label">{{ i18n.t('art_excerpt') }}</label>
           <textarea [(ngModel)]="model.excerpt" name="excerpt" rows="2"
             [dir]="model.language === 'fa' ? 'rtl' : 'ltr'"
-            class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            [class.font-fa]="model.language === 'fa'"></textarea>
+            class="admin-input" [class.font-fa]="model.language === 'fa'"></textarea>
         </div>
 
         <!-- Content -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Content</label>
+          <label class="admin-field-label">{{ i18n.t('art_content') }}</label>
           <textarea [(ngModel)]="model.content" name="content" rows="12" required
             [dir]="model.language === 'fa' ? 'rtl' : 'ltr'"
-            class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-            [class.font-fa]="model.language === 'fa'"
+            class="admin-input" [class.font-fa]="model.language === 'fa'"
             [class.font-mono]="model.language !== 'fa'"></textarea>
-          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Estimated reading time: {{ estimatedReadingTime() }} min (auto-calculated on save)
+          <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            {{ i18n.t('art_readingTime', { n: estimatedReadingTime() }) }}
           </p>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <!-- Cover URL + Published -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cover URL</label>
-            <input [(ngModel)]="model.coverUrl" name="coverUrl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label">{{ i18n.t('art_coverUrl') }}</label>
+            <input [(ngModel)]="model.coverUrl" name="coverUrl" class="admin-input" />
           </div>
-          <div class="flex items-center mt-6">
-            <input type="checkbox" [(ngModel)]="model.published" name="published" id="published" class="mr-2 h-4 w-4" />
-            <label for="published" class="text-sm font-medium text-gray-700 dark:text-gray-300">Published</label>
+          <div class="flex items-center sm:mt-6">
+            <input type="checkbox" [(ngModel)]="model.published" name="published" id="published" class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900" />
+            <label for="published" class="ms-2 text-sm font-medium text-slate-700 dark:text-slate-300">{{ i18n.t('art_published') }}</label>
           </div>
         </div>
 
         <div class="flex gap-3">
-          <button type="submit" class="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            {{ editId ? 'Update' : 'Add' }}
-          </button>
+          <button type="submit" class="admin-btn admin-btn-primary">{{ editId ? i18n.t('update') : i18n.t('add') }}</button>
           @if (editId) {
-            <button type="button" (click)="reset()" class="px-5 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white rounded hover:bg-gray-300">Cancel</button>
+            <button type="button" (click)="reset()" class="admin-btn admin-btn-ghost">{{ i18n.t('cancel') }}</button>
           }
         </div>
       </form>
 
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+      <div class="admin-card overflow-hidden">
         <table class="min-w-full">
-          <thead class="bg-gray-50 dark:bg-gray-700">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Title</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Lang</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Read</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Likes</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Status</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
+          <thead>
+            <tr class="border-b border-slate-200 dark:border-slate-700">
+              <th class="admin-th">{{ i18n.t('art_content') }}</th>
+              <th class="admin-th">{{ i18n.t('art_language') }}</th>
+              <th class="admin-th">{{ i18n.t('art_read') }}</th>
+              <th class="admin-th">{{ i18n.t('art_likes') }}</th>
+              <th class="admin-th">{{ i18n.t('status') }}</th>
+              <th class="admin-th text-end">{{ i18n.t('actions') }}</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-700/70">
             @for (item of items; track item.id) {
               <tr>
-                <td class="px-6 py-4 text-gray-900 dark:text-white"
+                <td class="admin-td"
                   [dir]="item.language === 'fa' ? 'rtl' : 'ltr'"
                   [class.font-fa]="item.language === 'fa'">
                   {{ item.title }}
                   @if (item.tags?.length) {
-                    <span class="block text-xs text-gray-400 mt-1">{{ item.tags?.join(', ') }}</span>
+                    <span class="mt-1 block text-xs text-slate-400">{{ item.tags?.join(', ') }}</span>
                   }
                 </td>
-                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-xs uppercase">{{ item.language }}</td>
-                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">{{ item.readingTime || 0 }}m</td>
-                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">{{ item.likeCount || 0 }}</td>
-                <td class="px-6 py-4">
-                  <span class="px-2 py-1 text-xs rounded font-medium"
-                    [class]="item.published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'">
-                    {{ item.published ? 'Published' : 'Draft' }}
+                <td class="admin-td text-xs uppercase">{{ item.language }}</td>
+                <td class="admin-td text-sm">{{ item.readingTime || 0 }}m</td>
+                <td class="admin-td text-sm">{{ item.likeCount || 0 }}</td>
+                <td class="admin-td">
+                  <span class="admin-badge" [class.admin-badge-success]="item.published" [class.admin-badge-warning]="!item.published">
+                    {{ item.published ? i18n.t('published') : i18n.t('draft') }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-right">
-                  <button (click)="edit(item)" class="text-blue-600 mr-3 hover:underline">Edit</button>
-                  <button (click)="del(item.id!)" class="text-red-600 hover:underline">Delete</button>
+                <td class="admin-td text-end">
+                  <button (click)="edit(item)" class="text-indigo-600 hover:underline dark:text-indigo-400">{{ i18n.t('edit') }}</button>
+                  <button (click)="del(item.id!)" class="text-rose-600 hover:underline dark:text-rose-400 ms-3">{{ i18n.t('delete') }}</button>
                 </td>
               </tr>
             }
@@ -164,7 +158,7 @@ export class ArticlesComponent implements OnInit {
   items: Article[] = [];
   editId?: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, public i18n: AdminI18nService) {}
 
   ngOnInit(): void { this.load(); }
 

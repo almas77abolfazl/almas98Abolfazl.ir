@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { AdminI18nService } from '../../core/services/admin-i18n.service';
 
 interface Education {
   id?: string;
@@ -17,7 +18,7 @@ interface Education {
   imports: [CommonModule, FormsModule],
   template: `
     <div>
-      <h1 class="admin-title mb-6">Educations</h1>
+      <h1 class="admin-title mb-6">{{ i18n.t('nav_educations') }}</h1>
 
       <form (ngSubmit)="onSubmit()" class="admin-card space-y-5 mb-6">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -76,9 +77,9 @@ interface Education {
         </div>
 
         <div class="flex gap-3">
-          <button type="submit" class="admin-btn admin-btn-primary">{{ editId ? 'Update' : 'Add' }}</button>
+          <button type="submit" class="admin-btn admin-btn-primary">{{ editId ? i18n.t('update') : i18n.t('add') }}</button>
           @if (editId) {
-            <button type="button" (click)="reset()" class="admin-btn admin-btn-ghost">Cancel</button>
+            <button type="button" (click)="reset()" class="admin-btn admin-btn-ghost">{{ i18n.t('cancel') }}</button>
           }
         </div>
       </form>
@@ -87,9 +88,9 @@ interface Education {
         <table class="min-w-full">
           <thead>
             <tr class="border-b border-slate-200 dark:border-slate-700">
-              <th class="admin-th">Degree</th>
-              <th class="admin-th">Institution</th>
-              <th class="admin-th text-end">Actions</th>
+              <th class="admin-th">{{ i18n.t('edu_degree') }}</th>
+              <th class="admin-th">{{ i18n.t('edu_institution') }}</th>
+              <th class="admin-th text-end">{{ i18n.t('actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700/70">
@@ -104,8 +105,8 @@ interface Education {
                   @if (item.institutionFa) { <span class="block text-xs font-fa text-emerald-600" dir="rtl">{{ item.institutionFa }}</span> }
                 </td>
                 <td class="admin-td text-end">
-                  <button (click)="edit(item)" class="text-indigo-600 hover:underline dark:text-indigo-400">Edit</button>
-                  <button (click)="del(item.id!)" class="text-rose-600 hover:underline dark:text-rose-400 ms-3">Delete</button>
+                  <button (click)="edit(item)" class="text-indigo-600 hover:underline dark:text-indigo-400">{{ i18n.t('edit') }}</button>
+                  <button (click)="del(item.id!)" class="text-rose-600 hover:underline dark:text-rose-400 ms-3">{{ i18n.t('delete') }}</button>
                 </td>
               </tr>
             }
@@ -121,7 +122,7 @@ export class EducationsComponent implements OnInit {
   items: Education[] = [];
   editId?: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, public i18n: AdminI18nService) {}
 
   ngOnInit(): void { this.load(); }
 

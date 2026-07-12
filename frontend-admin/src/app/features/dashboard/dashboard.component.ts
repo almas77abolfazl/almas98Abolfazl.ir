@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { AdminI18nService } from '../../core/services/admin-i18n.service';
 
 interface DailyStat {
   date: string;
@@ -17,7 +18,7 @@ interface TopPage {
   imports: [CommonModule],
   template: `
     <div>
-      <h1 class="admin-title mb-6">Dashboard</h1>
+      <h1 class="admin-title mb-6">{{ i18n.t('nav_dashboard') }}</h1>
 
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
         <div class="admin-stat">
@@ -27,7 +28,7 @@ interface TopPage {
             </svg>
           </div>
           <div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Messages</p>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('dash_messages') }}</p>
             <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ messageCount }}</p>
           </div>
         </div>
@@ -39,7 +40,7 @@ interface TopPage {
             </svg>
           </div>
           <div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Pending Testimonials</p>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('dash_pending') }}</p>
             <p class="text-2xl font-bold text-amber-600 dark:text-amber-400">{{ pendingCount }}</p>
           </div>
         </div>
@@ -52,7 +53,7 @@ interface TopPage {
             </svg>
           </div>
           <div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Page Views</p>
+            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('dash_views') }}</p>
             <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ totalViews }}</p>
           </div>
         </div>
@@ -60,7 +61,7 @@ interface TopPage {
 
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div class="admin-card">
-          <h2 class="mb-4 text-lg font-bold text-slate-900 dark:text-white">Top Pages</h2>
+          <h2 class="mb-4 text-lg font-bold text-slate-900 dark:text-white">{{ i18n.t('dash_topPages') }}</h2>
           <div class="space-y-3">
             @for (page of topPages; track page.url) {
               <div class="flex items-center justify-between">
@@ -69,13 +70,13 @@ interface TopPage {
               </div>
             }
             @if (!topPages.length) {
-              <div class="text-slate-500 dark:text-slate-400">No data yet</div>
+              <div class="text-slate-500 dark:text-slate-400">{{ i18n.t('noData') }}</div>
             }
           </div>
         </div>
 
         <div class="admin-card">
-          <h2 class="mb-4 text-lg font-bold text-slate-900 dark:text-white">Daily Traffic (Last 30 Days)</h2>
+          <h2 class="mb-4 text-lg font-bold text-slate-900 dark:text-white">{{ i18n.t('dash_dailyTraffic') }}</h2>
           <div class="flex h-48 items-end gap-1">
             @for (day of daily; track day.date) {
               <div class="flex flex-1 flex-col items-center">
@@ -84,7 +85,7 @@ interface TopPage {
               </div>
             }
             @if (!daily.length) {
-              <div class="w-full text-center text-slate-500 dark:text-slate-400">No data yet</div>
+              <div class="w-full text-center text-slate-500 dark:text-slate-400">{{ i18n.t('noData') }}</div>
             }
           </div>
         </div>
@@ -101,7 +102,7 @@ export class DashboardComponent implements OnInit {
   topPages: TopPage[] = [];
   daily: DailyStat[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, public i18n: AdminI18nService) {}
 
   ngOnInit(): void {
     this.http.get<any[]>('/api/admin/contact-messages').subscribe({

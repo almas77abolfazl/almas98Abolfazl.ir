@@ -250,6 +250,12 @@
   - Stat cards rebuilt as `.admin-stat` (icon chip + label + value); messages, pending testimonials (amber), page views
   - Daily-traffic bar chart recolored to iris→orchid gradient; Top Pages list kept; rhythm via `admin-title` + spacing tokens
 
+- [x] 8.10 **Bilingual admin UI (language toggle)**
+  - New `AdminI18nService` (`core/services/admin-i18n.service.ts`): signal-based `currentLang` ('en'/'fa'), `t(key, params?)` with `{n}` interpolation, `toggleLang()`, persistence in `localStorage('admin_lang')`, applies `html.lang`/`html.dir` (defaults to **fa** so the owner's panel opens in Persian/RTL)
+  - Language toggle button added to the shell header (next to the theme toggle)
+  - All admin chrome translatable: nav, titles, buttons (Add/Update/Cancel/Save/Edit/Delete), table headers, status badges, login form, dashboard labels
+  - Remaining admin forms restyled to the Iris Violet design system + bilingual EN/FA content fields: `articles`, `videos`, `testimonials`, `contact-messages`, `auth/login` (previously raw `bg-gray-*` Tailwind)
+
 - [ ] 8.3 **Table improvements** (pending)
 - [ ] 8.4 **Form improvements** (pending)
 - [ ] 8.5 **Article rich text editor** (pending)

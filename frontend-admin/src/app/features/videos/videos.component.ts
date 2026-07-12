@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { AdminI18nService } from '../../core/services/admin-i18n.service';
 
 interface Video {
   id?: string;
@@ -18,113 +19,100 @@ interface Video {
   imports: [CommonModule, FormsModule],
   template: `
     <div>
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Videos</h1>
+      <h1 class="admin-title mb-6">{{ i18n.t('nav_videos') }}</h1>
 
-      <form (ngSubmit)="onSubmit()" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-5 mb-6">
+      <form (ngSubmit)="onSubmit()" class="admin-card space-y-5 mb-6">
         <!-- Title -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Title (EN)</label>
-            <input [(ngModel)]="model.title" name="title" required
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> {{ i18n.t('vid_title') }}</label>
+            <input [(ngModel)]="model.title" name="title" required class="admin-input" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">عنوان (FA)</label>
-            <input [(ngModel)]="model.titleFa" name="titleFa" dir="rtl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-fa" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> {{ i18n.t('vid_title') }}</label>
+            <input [(ngModel)]="model.titleFa" name="titleFa" dir="rtl" class="admin-input font-fa" />
           </div>
         </div>
 
         <!-- Platform + Video ID -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Platform</label>
-            <select [(ngModel)]="model.platform" name="platform"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-              <option value="youtube">YouTube</option>
-              <option value="aparat">Aparat</option>
+            <label class="admin-field-label">{{ i18n.t('vid_platform') }}</label>
+            <select [(ngModel)]="model.platform" name="platform" class="admin-input">
+              <option value="youtube">{{ i18n.t('vid_youtube') }}</option>
+              <option value="aparat">{{ i18n.t('vid_aparat') }}</option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Video ID / Hash
-            </label>
+            <label class="admin-field-label">{{ i18n.t('vid_videoId') }}</label>
             <input [(ngModel)]="model.videoId" name="videoId" required
               [placeholder]="model.platform === 'aparat' ? 'e.g. aBcD1' : 'e.g. dQw4w9WgXcQ'"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              {{ model.platform === 'aparat'
-                ? 'Aparat video hash (from the share/embed URL).'
-                : 'YouTube video ID (the v= part of the URL).' }}
+              class="admin-input" />
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              {{ model.platform === 'aparat' ? i18n.t('vid_videoIdHelpAparat') : i18n.t('vid_videoIdHelpYoutube') }}
             </p>
           </div>
         </div>
 
         <!-- Description -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Description (EN)</label>
-            <textarea [(ngModel)]="model.description" name="description" rows="2"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"></textarea>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> {{ i18n.t('vid_description') }}</label>
+            <textarea [(ngModel)]="model.description" name="description" rows="2" class="admin-input"></textarea>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">توضیحات (FA)</label>
-            <textarea [(ngModel)]="model.descriptionFa" name="descriptionFa" rows="2" dir="rtl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-fa"></textarea>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> {{ i18n.t('vid_description') }}</label>
+            <textarea [(ngModel)]="model.descriptionFa" name="descriptionFa" rows="2" dir="rtl" class="admin-input font-fa"></textarea>
           </div>
         </div>
 
         <!-- Thumbnail + Order -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Thumbnail URL (optional)</label>
-            <input [(ngModel)]="model.thumbnailUrl" name="thumbnailUrl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label">{{ i18n.t('vid_thumbnail') }}</label>
+            <input [(ngModel)]="model.thumbnailUrl" name="thumbnailUrl" class="admin-input" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Order</label>
-            <input type="number" [(ngModel)]="model.order" name="order"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label">{{ i18n.t('vid_order') }}</label>
+            <input type="number" [(ngModel)]="model.order" name="order" class="admin-input" />
           </div>
         </div>
 
         <div class="flex gap-3">
-          <button type="submit" class="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            {{ editId ? 'Update' : 'Add' }}
-          </button>
+          <button type="submit" class="admin-btn admin-btn-primary">{{ editId ? i18n.t('update') : i18n.t('add') }}</button>
           @if (editId) {
-            <button type="button" (click)="reset()" class="px-5 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white rounded hover:bg-gray-300">Cancel</button>
+            <button type="button" (click)="reset()" class="admin-btn admin-btn-ghost">{{ i18n.t('cancel') }}</button>
           }
         </div>
       </form>
 
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+      <div class="admin-card overflow-hidden">
         <table class="min-w-full">
-          <thead class="bg-gray-50 dark:bg-gray-700">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Preview</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Title</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Platform</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Order</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
+          <thead>
+            <tr class="border-b border-slate-200 dark:border-slate-700">
+              <th class="admin-th">{{ i18n.t('vid_preview') }}</th>
+              <th class="admin-th">{{ i18n.t('vid_title') }}</th>
+              <th class="admin-th">{{ i18n.t('vid_platform') }}</th>
+              <th class="admin-th">{{ i18n.t('vid_order') }}</th>
+              <th class="admin-th text-end">{{ i18n.t('actions') }}</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-700/70">
             @for (item of items; track item.id) {
               <tr>
-                <td class="px-6 py-4">
+                <td class="admin-td">
                   <img [src]="thumb(item)" [alt]="item.title"
-                    class="w-24 h-14 object-cover rounded bg-gray-200 dark:bg-gray-700" />
+                    class="h-14 w-24 rounded bg-slate-200 object-cover dark:bg-slate-700" />
                 </td>
-                <td class="px-6 py-4 text-gray-900 dark:text-white">
+                <td class="admin-td">
                   {{ item.title }}
-                  @if (item.titleFa) { <span class="block text-xs text-green-600 font-fa" dir="rtl">{{ item.titleFa }}</span> }
+                  @if (item.titleFa) { <span class="block text-xs font-fa text-emerald-600" dir="rtl">{{ item.titleFa }}</span> }
                 </td>
-                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm capitalize">{{ item.platform }}</td>
-                <td class="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm">{{ item.order ?? 0 }}</td>
-                <td class="px-6 py-4 text-right">
-                  <button (click)="edit(item)" class="text-blue-600 mr-3 hover:underline">Edit</button>
-                  <button (click)="del(item.id!)" class="text-red-600 hover:underline">Delete</button>
+                <td class="admin-td text-sm capitalize">{{ item.platform }}</td>
+                <td class="admin-td text-sm">{{ item.order ?? 0 }}</td>
+                <td class="admin-td text-end">
+                  <button (click)="edit(item)" class="text-indigo-600 hover:underline dark:text-indigo-400">{{ i18n.t('edit') }}</button>
+                  <button (click)="del(item.id!)" class="text-rose-600 hover:underline dark:text-rose-400 ms-3">{{ i18n.t('delete') }}</button>
                 </td>
               </tr>
             }
@@ -140,7 +128,7 @@ export class VideosComponent implements OnInit {
   items: Video[] = [];
   editId?: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, public i18n: AdminI18nService) {}
 
   ngOnInit(): void { this.load(); }
 
@@ -163,7 +151,7 @@ export class VideosComponent implements OnInit {
   onSubmit(): void {
     const req = this.editId
       ? this.http.put(`/api/admin/videos/${this.editId}`, this.model)
-      : this.http.post('/api/admin/videos', this.model);
+      : this.http.post(`/api/admin/videos`, this.model);
     req.subscribe(() => { this.reset(); this.load(); });
   }
 

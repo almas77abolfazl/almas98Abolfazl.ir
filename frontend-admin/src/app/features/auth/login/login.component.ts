@@ -2,47 +2,50 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AdminI18nService } from '../../../core/services/admin-i18n.service';
 
 @Component({
   selector: 'app-login',
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
-        <h1 class="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">Admin Login</h1>
+    <div class="flex min-h-screen items-center justify-center bg-slate-100 px-4 dark:bg-slate-950">
+      <div class="w-full max-w-md admin-card">
+        <div class="mb-6 flex items-center justify-center gap-2">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-indigo-500 to-violet-400 text-base font-bold text-white">A</div>
+          <h1 class="text-xl font-bold text-slate-800 dark:text-slate-100">{{ i18n.t('login_title') }}</h1>
+        </div>
         <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-4">
           <div>
-            <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Username</label>
+            <label for="username" class="admin-field-label">{{ i18n.t('username') }}</label>
             <input
               type="text"
               id="username"
               name="username"
               [(ngModel)]="username"
               required
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              placeholder="Enter username"
+              class="admin-input"
             />
           </div>
           <div>
-            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+            <label for="password" class="admin-field-label">{{ i18n.t('password') }}</label>
             <input
               type="password"
               id="password"
               name="password"
               [(ngModel)]="password"
               required
-              class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-              placeholder="Enter password"
+              class="admin-input"
             />
           </div>
-          <div *ngIf="error" class="text-red-500 text-sm text-center">{{ error }}</div>
+          @if (error) {
+            <div class="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-300">{{ error }}</div>
+          }
           <button
             type="submit"
             [disabled]="loading"
-            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="admin-btn admin-btn-primary w-full"
           >
-            <span *ngIf="!loading">Sign In</span>
-            <span *ngIf="loading">Signing in...</span>
+            {{ loading ? i18n.t('signingIn') : i18n.t('signIn') }}
           </button>
         </form>
       </div>
@@ -56,7 +59,7 @@ export class LoginComponent {
   loading = false;
   error = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, public i18n: AdminI18nService) {}
 
   onSubmit() {
     this.loading = true;
