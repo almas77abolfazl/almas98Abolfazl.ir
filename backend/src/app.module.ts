@@ -12,11 +12,12 @@ import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { ContactMessagesModule } from './contact-messages/contact-messages.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { SiteSettingsModule } from './site-settings/site-settings.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
-  imports: [PrismaModule, AboutMeModule, ExperiencesModule, EducationsModule, SkillsModule, ArticlesModule, MediaModule, VideosModule, SitemapModule, AuthModule, AdminModule, ContactMessagesModule, AnalyticsModule],
+  imports: [PrismaModule, AboutMeModule, ExperiencesModule, EducationsModule, SkillsModule, ArticlesModule, MediaModule, VideosModule, SitemapModule, AuthModule, AdminModule, ContactMessagesModule, AnalyticsModule, SiteSettingsModule],
   controllers: [AppController],
   providers: [AppService],
 })

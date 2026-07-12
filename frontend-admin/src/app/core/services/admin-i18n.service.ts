@@ -124,6 +124,9 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     skill_name: 'Name',
     skill_category: 'Category',
     skill_proficiency: 'Proficiency (0-100)',
+    skills_display: 'Skill display',
+    skills_display_help: 'Show skills as cards (hide proficiency bars) or with proficiency bars',
+    save_failed: 'Could not save changes',
   },
   fa: {
     appName: 'پنل ادمین',
@@ -233,6 +236,9 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     skill_name: 'نام',
     skill_category: 'دسته‌بندی',
     skill_proficiency: 'تسلط (۰-۱۰۰)',
+    skills_display: 'نمایش مهارت‌ها',
+    skills_display_help: 'نمایش به صورت کارت (بدون نوار تسلط) یا با نوار تسلط',
+    save_failed: 'ذخیره تغییرات ناموفق بود',
   },
 };
 

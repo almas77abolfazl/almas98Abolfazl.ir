@@ -299,10 +299,19 @@
   - Article form uses `ImageUploadComponent` bound to `coverUrl` (the `Articles` model already had `coverUrl` — no schema migration required)
   - Shown at the top of the article-detail header and already used as `og:image` (wired in Phase 6 SEO)
 
-- [ ] 8.7 **Drag-and-drop ordering**
+- [x] 8.7 **Drag-and-drop ordering** ✅
   - Experiences, Educations, Skills list have an `order` field
-  - Implement drag-and-drop reordering (CDK DragDrop or similar)
-  - `PATCH /api/admin/{entity}/reorder` — accept `[{ id, order }]` and bulk update
+  - Implement drag-and-drop reordering via Angular CDK `DragDropModule` (drag handle + preview/placeholder global styles in `frontend-admin/src/styles.css`)
+  - Backend: `PATCH /api/admin/{experiences,educations,skills}/reorder` — accept `[{ id, order }]` and bulk-update inside a `$transaction`
+  - Admin tables (educations, experiences, skills) use `cdkDropList`/`cdkDrag`/`cdkDragHandle`; `reorder()` calls the endpoint, reloads, and toasts
+
+- [x] 8.11 **Site settings** ✅
+  - New `SiteSettings` Prisma model: `{ id, skillsCardView Boolean @default(false), createdAt, updatedAt }` (singleton row)
+  - Backend `SiteSettingsModule` (`site-settings/`): public `GET /api/settings` (returns/creates the singleton), reused by `AdminController` for admin `GET/PUT /api/admin/settings`
+  - `SiteSettingsService.getSettings()` lazily creates the row on first read
+  - Admin: skills page has a toggle card (`.admin-card`) controlling `skillsCardView` — bilingual label `skills_display`/`skills_display_help`, persisted via `PUT /api/admin/settings`
+  - Public site: `ApiService.getSettings()` → `skillsCardView`; Skills page renders either proficiency bars (default) or compact pill cards (`cardView()` signal)
+  - Run `prisma db push` + `prisma generate` to create the `SiteSettings` table
 
 ---
 

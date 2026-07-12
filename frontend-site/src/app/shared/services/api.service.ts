@@ -93,6 +93,13 @@ export interface Video {
   updatedAt: string;
 }
 
+export interface SiteSettings {
+  id: string;
+  skillsCardView: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private baseUrl = '/api';
@@ -138,5 +145,9 @@ export class ApiService {
 
   getVideos(): Observable<Video[]> {
     return this.http.get<Video[]>(`${this.baseUrl}/videos`);
+  }
+
+  getSettings(): Observable<SiteSettings> {
+    return this.http.get<SiteSettings>(`${this.baseUrl}/settings`);
   }
 }

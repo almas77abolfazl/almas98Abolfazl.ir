@@ -396,4 +396,31 @@ export class AdminController {
   deleteTestimonial(@Param('id') id: string) {
     return this.adminService.deleteTestimonial(id);
   }
+
+  // Site settings
+  @Get('settings')
+  getSettings() {
+    return this.adminService.getSettings();
+  }
+
+  @Put('settings')
+  updateSettings(@Body() body: { skillsCardView?: boolean }) {
+    return this.adminService.updateSettings(body);
+  }
+
+  // Drag-and-drop reordering
+  @Patch('experiences/reorder')
+  reorderExperiences(@Body() body: { items: { id: string; order: number }[] }) {
+    return this.adminService.reorderExperiences(body.items);
+  }
+
+  @Patch('educations/reorder')
+  reorderEducations(@Body() body: { items: { id: string; order: number }[] }) {
+    return this.adminService.reorderEducations(body.items);
+  }
+
+  @Patch('skills/reorder')
+  reorderSkills(@Body() body: { items: { id: string; order: number }[] }) {
+    return this.adminService.reorderSkills(body.items);
+  }
 }

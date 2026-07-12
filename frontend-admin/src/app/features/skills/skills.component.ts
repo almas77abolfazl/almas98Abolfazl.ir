@@ -2,6 +2,7 @@ import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ConfirmService } from '../../core/services/confirm.service';
@@ -17,7 +18,7 @@ type SortCol = 'name' | 'category' | 'proficiency' | null;
 
 @Component({
   selector: 'app-skills',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DragDropModule],
   templateUrl: './skills.component.html',
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })
@@ -26,6 +27,7 @@ export class SkillsComponent implements OnInit {
   items = signal<Skill[]>([]);
   editId?: string;
   dirty = signal(false);
+  settings = signal<{ skillsCardView: boolean }>({ skillsCardView: false });
 
   markDirty(): void {
     this.dirty.set(true);
@@ -61,7 +63,13 @@ export class SkillsComponent implements OnInit {
     private confirm: ConfirmService,
   ) {}
 
-  ngOnInit(): void { this.load(); }
+  ngOnInit(): void {
+    this.http.get<{ skillsCardView: boolean }>('/api/admin/settings').subscribe({
+      next: (s) => this.settings.set(s),
+      error: () => {},
+    });
+    this.load();
+  }
 
   load(): void {
     this.http.get<Skill[]>('/api/admin/skills').subscribe((data) => this.items.set(data));
@@ -79,6 +87,31 @@ export class SkillsComponent implements OnInit {
   sortArrow(col: SortCol): string {
     if (this.sortCol() !== col) return '↕';
     return this.sortDir() === 'asc' ? '↑' : '↓';
+  }
+
+  reorder(event: CdkDragDrop<Skill[]>): void {
+    if (event.previousIndex === event.currentIndex) return;
+    const list = [...this.view()];
+    const [moved] = list.splice(event.previousIndex, 1);
+    list.splice(event.currentIndex, 0, moved);
+    const items = list.map((it, i) => ({ id: it.id!, order: i }));
+    this.sortCol.set(null);
+    this.http.patch('/api/admin/skills/reorder', { items }).subscribe({
+      next: () => {
+        this.load();
+        this.toast.success(this.i18n.t('toast_updated'));
+      },
+      error: () => this.toast.error(this.i18n.t('save_failed')),
+    });
+  }
+
+  toggleCardView(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.settings.update((s) => ({ ...s, skillsCardView: checked }));
+    this.http.put('/api/admin/settings', { skillsCardView: checked }).subscribe({
+      next: () => this.toast.success(this.i18n.t('toast_saved')),
+      error: () => this.toast.error(this.i18n.t('save_failed')),
+    });
   }
 
   onSubmit(): void {

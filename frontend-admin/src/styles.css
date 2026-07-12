@@ -182,3 +182,24 @@ html[dir="rtl"] body {
 [dir="rtl"] .admin-title {
   letter-spacing: normal;
 }
+
+/* Drag-and-drop reordering (CDK) — preview is appended to <body>, so styles must be global */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  background: #ffffff;
+  display: table;
+}
+.dark .cdk-drag-preview {
+  background: #1a1a26;
+}
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.cdk-drop-list-dragging .admin-row:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}

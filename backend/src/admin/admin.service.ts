@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UploadsService, UploadedFile } from '../uploads/uploads.service';
+import { SiteSettingsService } from '../site-settings/site-settings.service';
 import { TestimonialStatus } from '@prisma/client';
 
 @Injectable()
@@ -8,6 +9,7 @@ export class AdminService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly uploads: UploadsService,
+    private readonly siteSettings: SiteSettingsService,
   ) {}
 
   // AboutMe (singleton)
@@ -258,5 +260,39 @@ export class AdminService {
 
   async deleteTestimonial(id: string) {
     return this.prisma.testimonial.delete({ where: { id } });
+  }
+
+  // Site settings
+  async getSettings() {
+    return this.siteSettings.getSettings();
+  }
+
+  async updateSettings(data: { skillsCardView?: boolean }) {
+    return this.siteSettings.updateSettings(data);
+  }
+
+  // Drag-and-drop reordering
+  async reorderExperiences(items: { id: string; order: number }[]) {
+    return this.bulkReorder('experiences', items);
+  }
+
+  async reorderEducations(items: { id: string; order: number }[]) {
+    return this.bulkReorder('educations', items);
+  }
+
+  async reorderSkills(items: { id: string; order: number }[]) {
+    return this.bulkReorder('skills', items);
+  }
+
+  private async bulkReorder(
+    model: 'experiences' | 'educations' | 'skills',
+    items: { id: string; order: number }[],
+  ) {
+    await this.prisma.$transaction(
+      items.map((item) =>
+        (this.prisma[model] as any).update({ where: { id: item.id }, data: { order: item.order } }),
+      ),
+    );
+    return { updated: items.length };
   }
 }

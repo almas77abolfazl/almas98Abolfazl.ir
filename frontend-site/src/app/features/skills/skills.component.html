@@ -20,26 +20,36 @@
             {{ i18n.isFa ? (group.value[0]?.categoryFa || group.key) : group.key }}
           </h3>
 
-          <div class="space-y-4">
-            @for (skill of group.value; track skill.id) {
-              <div>
-                <div class="flex justify-between items-center mb-1.5">
-                  <span class="text-sm font-medium text-slate-700 dark:text-slate-200">
-                    {{ i18n.isFa ? (skill.nameFa || skill.name) : skill.name }}
-                  </span>
-                  <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 tabular-nums">
-                    {{ skill.proficiency ?? 0 }}%
-                  </span>
-                </div>
-                <div class="w-full h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                  <div
-                    class="h-full rounded-full bg-linear-to-r from-indigo-500 to-violet-400 progress-bar"
-                    [style.width.%]="getProficiencyWidth(skill.proficiency)">
+          @if (cardView()) {
+            <div class="flex flex-wrap gap-2">
+              @for (skill of group.value; track skill.id) {
+                <span class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                  {{ i18n.isFa ? (skill.nameFa || skill.name) : skill.name }}
+                </span>
+              }
+            </div>
+          } @else {
+            <div class="space-y-4">
+              @for (skill of group.value; track skill.id) {
+                <div>
+                  <div class="flex justify-between items-center mb-1.5">
+                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200">
+                      {{ i18n.isFa ? (skill.nameFa || skill.name) : skill.name }}
+                    </span>
+                    <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 tabular-nums">
+                      {{ skill.proficiency ?? 0 }}%
+                    </span>
+                  </div>
+                  <div class="w-full h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                    <div
+                      class="h-full rounded-full bg-linear-to-r from-indigo-500 to-violet-400 progress-bar"
+                      [style.width.%]="getProficiencyWidth(skill.proficiency)">
+                    </div>
                   </div>
                 </div>
-              </div>
-            }
-          </div>
+              }
+            </div>
+          }
         </div>
       }
     </div>

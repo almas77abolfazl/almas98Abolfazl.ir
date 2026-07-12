@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
@@ -16,6 +16,7 @@ export class SkillsComponent implements OnInit {
   skills: Skill[] = [];
   groupedSkills: Record<string, Skill[]> = {};
   isLoading = true;
+  cardView = signal(false);
 
   constructor(
     public i18n: I18nService,
@@ -28,6 +29,11 @@ export class SkillsComponent implements OnInit {
       title: this.i18n.t('skillsTitle'),
       description: this.i18n.t('seoSkillsDesc'),
       path: '/skills',
+    });
+
+    this.api.getSettings().subscribe({
+      next: (settings) => this.cardView.set(settings.skillsCardView),
+      error: () => this.cardView.set(false),
     });
 
     this.api.getSkills().subscribe({

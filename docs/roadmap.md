@@ -142,7 +142,7 @@ Deliverables:
 
 **Goal:** Turn the functional admin panel into a modern dashboard.
 
-**Status:** 8.0–8.6, 8.8, 8.9 done (8.7 drag-and-drop ordering pending).
+**Status:** 8.0–8.7, 8.8, 8.9, 8.10, 8.11 done. 8.7 drag-and-drop ordering (Angular CDK) and 8.11 site settings (skills card-view toggle) now complete.
 
 Completed deliverables:
 - Responsive sidebar, mobile drawer, active route highlighting (8.1)
@@ -152,7 +152,8 @@ Completed deliverables:
 - Form validation, unsaved-changes guard (8.4)
 - Markdown rich-text editor for articles (8.5)
 - Media / avatar / article cover image uploads (8.6, 8.8, 8.9) — see *Media & Uploads* below
-- Drag-and-drop ordering (8.7) — pending
+- Drag-and-drop ordering (8.7) — Angular CDK reorder of experiences/educations/skills via `PATCH /api/admin/{entity}/reorder`
+- Site settings (8.11) — singleton `SiteSettings` (skills card-view toggle); public `GET /api/settings`, admin `GET/PUT /api/admin/settings`; see *Site Settings* below
 
 ### Media & Uploads (8.6 / 8.8 / 8.9)
 
@@ -163,6 +164,15 @@ A single generic image-upload pipeline serves every image need:
 - **Inline article images**: the Markdown editor toolbar has an "Insert image" button that uploads and inserts `![alt](url)` at the cursor; rendered inline on the public site.
 - **Persistence**: `docker-compose.yml` mounts `./uploads:/app/uploads`; `backend/uploads/` is git-ignored.
 - The public site already renders `coverUrl` (blog cards + article header + OG image), `thumbnailUrl` (videos), and `avatarUrl` (home hero).
+
+### Site Settings (8.11)
+
+A singleton settings row drives site-wide display options.
+
+- **Schema**: `SiteSettings` model `{ id, skillsCardView Boolean @default(false), createdAt, updatedAt }` — `prisma db push` applied.
+- **Backend**: `SiteSettingsModule` exposes public `GET /api/settings` (returns or lazily creates the singleton row) and is reused by `AdminController` for admin `GET/PUT /api/admin/settings` (admin-guarded). `SiteSettingsService.getSettings()` creates the row on first read.
+- **Admin UI**: a toggle card on the Skills page controls `skillsCardView` (bilingual `skills_display` / `skills_display_help`), persisted via `PUT /api/admin/settings`.
+- **Public site**: `ApiService.getSettings()` provides `skillsCardView`; the Skills page renders either proficiency bars (default) or compact pill cards.
 
 ## Phase 9: Additional Features 🔲
 
@@ -183,7 +193,7 @@ A single generic image-upload pipeline serves every image need:
 | 5 | Video Embeds | ✅ Done |
 | 6 | SEO Optimization | 🔶 6.1–6.6 done (6.7 SSR deferred) |
 | 7 | Dark/Light Theme Polish | 🔶 7.1–7.4 done (7.5 toggle animation pending) |
-| 8 | Admin Panel UI Overhaul | 🔶 8.0–8.6, 8.8, 8.9, 8.10 done (8.7 drag-and-drop pending) |
+| 8 | Admin Panel UI Overhaul | 🔶 8.0–8.7, 8.8, 8.9, 8.10, 8.11 done (8.7 reorder + 8.11 site settings complete) |
 | 9 | Additional Features | 🔲 Not started |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.

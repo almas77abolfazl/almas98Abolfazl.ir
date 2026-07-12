@@ -2,6 +2,7 @@ import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ConfirmService } from '../../core/services/confirm.service';
@@ -19,7 +20,7 @@ type SortCol = 'role' | 'company' | 'startDate' | null;
 
 @Component({
   selector: 'app-experiences',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DragDropModule],
   templateUrl: './experiences.component.html',
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })
@@ -77,6 +78,22 @@ export class ExperiencesComponent implements OnInit {
   sortArrow(col: SortCol): string {
     if (this.sortCol() !== col) return '↕';
     return this.sortDir() === 'asc' ? '↑' : '↓';
+  }
+
+  reorder(event: CdkDragDrop<Experience[]>): void {
+    if (event.previousIndex === event.currentIndex) return;
+    const list = [...this.view()];
+    const [moved] = list.splice(event.previousIndex, 1);
+    list.splice(event.currentIndex, 0, moved);
+    const items = list.map((it, i) => ({ id: it.id!, order: i }));
+    this.sortCol.set(null);
+    this.http.patch('/api/admin/experiences/reorder', { items }).subscribe({
+      next: () => {
+        this.load();
+        this.toast.success(this.i18n.t('toast_updated'));
+      },
+      error: () => this.toast.error(this.i18n.t('save_failed')),
+    });
   }
 
   onSubmit(): void {
