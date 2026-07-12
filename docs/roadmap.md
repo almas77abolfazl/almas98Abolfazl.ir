@@ -138,7 +138,7 @@ Deliverables:
 - Theme-aware color audit + semantic tokens ✅
 - Theme toggle animation 🔲
 
-## Phase 8: Admin Panel UI Overhaul 🔲
+## Phase 8: Admin Panel UI Overhaul 🔶
 
 **Goal:** Turn the functional admin panel into a modern dashboard.
 
@@ -169,7 +169,7 @@ Deliverables:
 | 5 | Video Embeds | ✅ Done |
 | 6 | SEO Optimization | 🔶 6.1–6.6 done (6.7 SSR deferred) |
 | 7 | Dark/Light Theme Polish | 🔶 7.1–7.4 done (7.5 toggle animation pending) |
-| 8 | Admin Panel UI Overhaul | 🔲 Not started |
+| 8 | Admin Panel UI Overhaul | 🔶 8.0–8.5, 8.10 done (8.6–8.9, 8.7 pending) |
 | 9 | Additional Features | 🔲 Not started |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.

@@ -61,10 +61,9 @@
 
       <div class="divider mb-8"></div>
 
-      <div class="prose-measure whitespace-pre-wrap text-base"
-        [dir]="art.language === 'fa' ? 'rtl' : 'ltr'">
-        {{ art.content }}
-      </div>
+      <div class="prose-measure article-content text-base"
+        [dir]="art.language === 'fa' ? 'rtl' : 'ltr'"
+        [innerHTML]="contentHtml()"></div>
 
       <!-- Like button -->
       <div class="mt-12 flex items-center justify-center">

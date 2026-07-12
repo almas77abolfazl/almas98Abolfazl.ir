@@ -50,10 +50,9 @@
 
         <div>
           <label class="admin-field-label">{{ i18n.t('art_content') }}</label>
-          <textarea [(ngModel)]="model.content" name="content" rows="12" required
+          <app-markdown-editor [(ngModel)]="model.content" name="content" required
             [dir]="model.language === 'fa' ? 'rtl' : 'ltr'"
-            class="admin-input" [class.font-fa]="model.language === 'fa'"
-            [class.font-mono]="model.language !== 'fa'"></textarea>
+            [isFa]="model.language === 'fa'"></app-markdown-editor>
           <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
             {{ i18n.t('art_readingTime', { n: estimatedReadingTime() }) }}
           </p>

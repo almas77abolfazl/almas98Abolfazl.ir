@@ -1,6 +1,7 @@
-import { Component, OnInit, signal, HostListener } from '@angular/core';
+import { Component, OnInit, signal, computed, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
+import { marked } from 'marked';
 import { ApiService, Article } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
@@ -17,6 +18,12 @@ export class ArticleDetailComponent implements OnInit {
   liked = signal(false);
   likeCount = signal(0);
   progress = signal(0);
+
+  contentHtml = computed<string>(() => {
+    const art = this.article();
+    if (!art?.content) return '';
+    return marked.parse(art.content, { async: false }) as string;
+  });
 
   constructor(public i18n: I18nService, private api: ApiService, private route: ActivatedRoute, private seo: SeoService) {}
 

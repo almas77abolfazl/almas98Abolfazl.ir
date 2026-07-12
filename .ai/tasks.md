@@ -269,16 +269,18 @@
   - Unsaved-changes warning before navigation via `pendingChangesGuard` (`core/guards`) + `canDeactivate()` on form components (tracks `dirty` via form `input`/`change` listeners)
   - Field validation: native `required` attributes preserved; *pagination/infinite scroll for very large lists is deferred* (current datasets are small)
 
-- [ ] 8.5 **Article rich text editor** (pending)
+- [x] 8.5 **Article rich text editor** ✅ (custom `app-markdown-editor` with live preview + toolbar)
 - [ ] 8.6 **Media upload** (pending)
 - [ ] 8.8 **Admin user avatar upload** (pending)
 - [ ] 8.9 **Article cover image upload** (pending)
 - [ ] 8.7 **Drag-and-drop ordering** (pending)
 
-- [ ] 8.5 **Article rich text editor**
-  - Replace plain `<textarea>` with a Markdown editor (e.g., `ngx-markdown-editor` or custom CodeMirror)
-  - Preview panel showing rendered Markdown
-  - Toolbar for common formatting (bold, italic, headings, code blocks, links)
+- [x] 8.5 **Article rich text editor** ✅
+  - Custom `MarkdownEditorComponent` (`core/components/markdown-editor.component.ts`) implementing `ControlValueAccessor`
+  - Uses `marked` (`package.json` dep) — live preview panel (`[innerHTML]` via `DomSanitizer`)
+  - Toolbar: bold, italic, H2/H3, inline code, code block, link, bullet/numbered list, quote
+  - Wired into the articles form (`articles.component.html`) replacing the plain content `<textarea>`; `dir`/`isFa` follow the article language
+  - Frontend-site `article-detail` now renders stored Markdown as HTML via `marked` (`[innerHTML]`, auto-sanitized by Angular); added `.article-content` prose styles in `frontend-site/src/styles.css` (headings, lists, code/codeblock, blockquote, links, images, RTL)
 
 - [ ] 8.6 **Media upload**
   - File upload UI (drag-and-drop zone)
