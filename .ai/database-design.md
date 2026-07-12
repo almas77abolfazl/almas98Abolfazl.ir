@@ -84,7 +84,7 @@
 | id | String UUID PK | |
 | title | String | article title (single language) |
 | slug | String @unique | URL slug |
-| content | String Text | article body |
+| content | String Text | article body — stored as **Markdown**, rendered to HTML on the public site via `marked` |
 | excerpt | String? Text | short summary |
 | coverUrl | String? | Cover image URL |
 | language | String default "en" | `'en'` \| `'fa'` — article is single-language |
@@ -133,7 +133,7 @@
 | originalName | String | original upload name |
 | mimeType | String | e.g., `image/jpeg` |
 | sizeBytes | Int | file size |
-| url | String | serving URL |
+| url | String | serving URL (e.g. `/api/uploads/<uuid>.<ext>`); served by the backend via `app.useStaticAssets` |
 | alt | String? | alt text |
 | createdAt | DateTime | |
 | updatedAt | DateTime | @updatedAt |

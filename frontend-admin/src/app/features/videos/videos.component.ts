@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ConfirmService } from '../../core/services/confirm.service';
+import { ImageUploadComponent } from '../../core/components/image-upload.component';
 
 interface Video {
   id?: string;
@@ -20,7 +21,7 @@ type SortCol = 'title' | 'platform' | 'order' | null;
 
 @Component({
   selector: 'app-videos',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ImageUploadComponent],
   templateUrl: './videos.component.html',
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })

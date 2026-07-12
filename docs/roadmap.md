@@ -142,13 +142,27 @@ Deliverables:
 
 **Goal:** Turn the functional admin panel into a modern dashboard.
 
-- Responsive sidebar, mobile menu, active route highlighting
-- Visual stat cards + sparklines
-- Sortable/paginated tables, empty states
-- Toast notifications, validation, confirmation modals
-- Markdown rich-text editor for articles
-- Media / avatar / article cover image uploads
-- Drag-and-drop ordering
+**Status:** 8.0–8.6, 8.8, 8.9 done (8.7 drag-and-drop ordering pending).
+
+Completed deliverables:
+- Responsive sidebar, mobile drawer, active route highlighting (8.1)
+- Visual stat cards + daily-traffic chart (8.2)
+- Bilingual admin UI with language toggle (8.10)
+- Sortable tables, empty states, toast + confirm modals (8.3)
+- Form validation, unsaved-changes guard (8.4)
+- Markdown rich-text editor for articles (8.5)
+- Media / avatar / article cover image uploads (8.6, 8.8, 8.9) — see *Media & Uploads* below
+- Drag-and-drop ordering (8.7) — pending
+
+### Media & Uploads (8.6 / 8.8 / 8.9)
+
+A single generic image-upload pipeline serves every image need:
+
+- **Backend**: `POST /api/admin/media/upload` (admin-guarded, `FileInterceptor`, images only, 5 MB cap) saves to `backend/uploads/` and creates a `Media` record. Files are served at `/api/uploads/*` by the NestJS app (`app.useStaticAssets` in `main.ts`).
+- **Admin UI**: reusable `ImageUploadComponent` (drag-and-drop + click, preview, progress, remove) bound to `coverUrl` (articles), `thumbnailUrl` (videos), `avatarUrl` (about-me).
+- **Inline article images**: the Markdown editor toolbar has an "Insert image" button that uploads and inserts `![alt](url)` at the cursor; rendered inline on the public site.
+- **Persistence**: `docker-compose.yml` mounts `./uploads:/app/uploads`; `backend/uploads/` is git-ignored.
+- The public site already renders `coverUrl` (blog cards + article header + OG image), `thumbnailUrl` (videos), and `avatarUrl` (home hero).
 
 ## Phase 9: Additional Features 🔲
 
@@ -169,7 +183,7 @@ Deliverables:
 | 5 | Video Embeds | ✅ Done |
 | 6 | SEO Optimization | 🔶 6.1–6.6 done (6.7 SSR deferred) |
 | 7 | Dark/Light Theme Polish | 🔶 7.1–7.4 done (7.5 toggle animation pending) |
-| 8 | Admin Panel UI Overhaul | 🔶 8.0–8.5, 8.10 done (8.6–8.9, 8.7 pending) |
+| 8 | Admin Panel UI Overhaul | 🔶 8.0–8.6, 8.8, 8.9, 8.10 done (8.7 drag-and-drop pending) |
 | 9 | Additional Features | 🔲 Not started |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.

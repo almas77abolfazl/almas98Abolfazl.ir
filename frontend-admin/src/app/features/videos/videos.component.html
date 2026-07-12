@@ -46,8 +46,10 @@
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="admin-field-label">{{ i18n.t('vid_thumbnail') }}</label>
-            <input [(ngModel)]="model.thumbnailUrl" name="thumbnailUrl" class="admin-input" />
+            <app-image-upload
+              [url]="model.thumbnailUrl"
+              (urlChange)="model.thumbnailUrl = $event; markDirty()"
+              [label]="i18n.t('vid_thumbnail')"></app-image-upload>
           </div>
           <div>
             <label class="admin-field-label">{{ i18n.t('vid_order') }}</label>

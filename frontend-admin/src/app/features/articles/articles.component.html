@@ -60,8 +60,11 @@
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="admin-field-label">{{ i18n.t('art_coverUrl') }}</label>
-            <input [(ngModel)]="model.coverUrl" name="coverUrl" class="admin-input" />
+            <app-image-upload
+              [url]="model.coverUrl"
+              (urlChange)="model.coverUrl = $event; markDirty()"
+              [label]="i18n.t('art_coverUrl')"
+              [dir]="model.language === 'fa' ? 'rtl' : 'ltr'"></app-image-upload>
           </div>
           <div class="flex items-center sm:mt-6">
             <input type="checkbox" [(ngModel)]="model.published" name="published" id="published" class="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-900" />

@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { UploadsService, UploadedFile } from '../uploads/uploads.service';
 import { TestimonialStatus } from '@prisma/client';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly uploads: UploadsService,
+  ) {}
 
   // AboutMe (singleton)
   async upsertAboutMe(data: { fullName: string; fullNameFa?: string; title: string; titleFa?: string; bio?: string; bioFa?: string; avatarUrl?: string; resumeUrl?: string }) {
@@ -183,6 +187,11 @@ export class AdminService {
   // Media
   async createMedia(data: { filename: string; originalName: string; mimeType: string; sizeBytes: number; url: string; alt?: string }) {
     return this.prisma.media.create({ data });
+  }
+
+  async uploadMedia(file: UploadedFile) {
+    const saved = this.uploads.save(file);
+    return this.prisma.media.create({ data: saved });
   }
 
   async updateMedia(

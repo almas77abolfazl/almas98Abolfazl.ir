@@ -1,7 +1,10 @@
 import { Component, ViewChild, ElementRef, computed, signal, inject, Input, ChangeDetectionStrategy, forwardRef } from '@angular/core';
 import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
+import { AdminI18nService } from '../../core/services/admin-i18n.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-markdown-editor',
@@ -14,12 +17,17 @@ import { marked } from 'marked';
 })
 export class MarkdownEditorComponent implements ControlValueAccessor {
   @ViewChild('ta') taRef?: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
   @Input() dir: 'ltr' | 'rtl' = 'ltr';
   @Input() isFa = false;
 
   private sanitizer = inject(DomSanitizer);
+  private http = inject(HttpClient);
+  private i18n = inject(AdminI18nService);
+  private toast = inject(ToastService);
 
   value = signal('');
+  uploading = signal(false);
   disabled = false;
 
   preview = computed<SafeHtml>(() => {
@@ -99,4 +107,49 @@ export class MarkdownEditorComponent implements ControlValueAccessor {
   ul(): void { this.prefixLines('- '); }
   ol(): void { this.prefixLines('1. '); }
   quote(): void { this.prefixLines('> '); }
+
+  openImagePicker(): void {
+    this.fileInput?.nativeElement.click();
+  }
+
+  onImageFile(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+    const form = new FormData();
+    form.append('file', file);
+    this.uploading.set(true);
+    this.http.post<{ url: string }>('/api/admin/media/upload', form).subscribe({
+      next: (res) => {
+        this.uploading.set(false);
+        this.insertImage(res.url, file.name.replace(/\.[^.]+$/, ''));
+        this.toast.success(this.i18n.t('toast_uploaded'));
+      },
+      error: () => {
+        this.uploading.set(false);
+        this.toast.error(this.i18n.t('upload_failed'));
+      },
+    });
+  }
+
+  private insertImage(url: string, alt: string): void {
+    const snippet = `![${alt || 'image'}](${url})`;
+    const ta = this.taRef?.nativeElement;
+    if (!ta) {
+      const next = this.value() + ' ' + snippet + ' ';
+      this.apply(next, next.length, next.length);
+      return;
+    }
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const val = this.value();
+    const before = val.slice(0, start);
+    const after = val.slice(end);
+    const padBefore = start > 0 && !/\s/.test(val[start - 1]) ? ' ' : '';
+    const padAfter = end < val.length && !/\s/.test(val[end]) ? ' ' : '';
+    const text = `${padBefore}${snippet}${padAfter}`;
+    const next = before + text + after;
+    this.apply(next, before.length + text.length, before.length + text.length);
+  }
 }

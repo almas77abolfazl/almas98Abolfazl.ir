@@ -36,8 +36,9 @@ Thumbs.db
 coverage
 .jest-cache
 
-# Docker volumes
-postgres_data
+# Uploaded media (served by backend at /api/uploads)
+backend/uploads/
+uploads/
 
 # Logs
 logs

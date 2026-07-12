@@ -1,6 +1,8 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Patch, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AdminService } from './admin.service';
+import type { UploadedFile as UploadedFileType } from '../uploads/uploads.service';
 
 @Controller('admin')
 @UseGuards(AuthGuard)
@@ -278,6 +280,27 @@ export class AdminController {
   @Post('media')
   createMedia(@Body() body: { filename: string; originalName: string; mimeType: string; sizeBytes: number; url: string; alt?: string }) {
     return this.adminService.createMedia(body);
+  }
+
+  // Media upload (multipart, images only)
+  @Post('media/upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: 5 * 1024 * 1024 },
+      fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+          cb(null, true);
+        } else {
+          cb(new BadRequestException('Only image files are allowed'), false);
+        }
+      },
+    }),
+  )
+  uploadMedia(@UploadedFile() file: UploadedFileType) {
+    if (!file) {
+      throw new BadRequestException('No file provided');
+    }
+    return this.adminService.uploadMedia(file);
   }
 
   @Put('media/:id')

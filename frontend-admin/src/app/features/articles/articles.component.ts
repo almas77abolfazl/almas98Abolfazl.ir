@@ -6,6 +6,7 @@ import { AdminI18nService } from '../../core/services/admin-i18n.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ConfirmService } from '../../core/services/confirm.service';
 import { MarkdownEditorComponent } from '../../core/components/markdown-editor.component';
+import { ImageUploadComponent } from '../../core/components/image-upload.component';
 
 interface Article {
   id?: string;
@@ -26,7 +27,7 @@ type SortCol = 'title' | 'language' | 'readingTime' | 'likeCount' | 'published' 
 
 @Component({
   selector: 'app-articles',
-  imports: [CommonModule, FormsModule, MarkdownEditorComponent],
+  imports: [CommonModule, FormsModule, MarkdownEditorComponent, ImageUploadComponent],
   templateUrl: './articles.component.html',
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })

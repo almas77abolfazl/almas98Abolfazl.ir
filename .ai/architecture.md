@@ -85,6 +85,12 @@ src/
 - Raw `$queryRaw` results from PostgreSQL return `BigInt` for `COUNT(*)` — must call `Number()` before returning
 - No DTOs/validators currently (inline body types). Future improvement: add `class-validator` DTOs.
 
+### File uploads & Media
+- `UploadsService` (`src/uploads/uploads.service.ts`) writes image files to `backend/uploads/` with a UUID filename and returns a public URL `/api/uploads/<file>`.
+- `POST /api/admin/media/upload` (in `AdminController`, admin-guarded) accepts `multipart/form-data`, saves the file, and creates a `Media` record.
+- Files are served by the NestJS app itself: `app.useStaticAssets(uploadsDir, { prefix: '/api/uploads' })` in `main.ts`. In production the host Nginx proxies `/api` → backend, so `/api/uploads/*` is reachable from both frontends under the same origin.
+- Article `content` is **Markdown**. The public `article-detail` renders it via `marked` and Angular's built-in `[innerHTML]` sanitization (XSS-safe). The admin `MarkdownEditorComponent` provides a live preview and an "Insert image" toolbar button that uploads a file and embeds `![alt](url)` at the cursor.
+
 ---
 
 ## Frontend-Site Architecture (Angular 20)

@@ -42,8 +42,11 @@
         <!-- URLs -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="admin-field-label">{{ i18n.t('about_avatarUrl') }}</label>
-            <input [(ngModel)]="model.avatarUrl" name="avatarUrl" class="admin-input" />
+            <app-image-upload
+              [url]="model.avatarUrl"
+              (urlChange)="model.avatarUrl = $event; markDirty()"
+              [label]="i18n.t('about_avatarUrl')"
+              shape="avatar"></app-image-upload>
           </div>
           <div>
             <label class="admin-field-label">{{ i18n.t('about_resumeUrl') }}</label>

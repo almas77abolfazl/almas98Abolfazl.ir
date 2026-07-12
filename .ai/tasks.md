@@ -281,26 +281,23 @@
   - Toolbar: bold, italic, H2/H3, inline code, code block, link, bullet/numbered list, quote
   - Wired into the articles form (`articles.component.html`) replacing the plain content `<textarea>`; `dir`/`isFa` follow the article language
   - Frontend-site `article-detail` now renders stored Markdown as HTML via `marked` (`[innerHTML]`, auto-sanitized by Angular); added `.article-content` prose styles in `frontend-site/src/styles.css` (headings, lists, code/codeblock, blockquote, links, images, RTL)
+  - Inline images: Markdown editor toolbar has an "Insert image" button — uploads via `/api/admin/media/upload` and inserts `![alt](url)` at the cursor; rendered inline by the public site (no extra backend work)
 
-- [ ] 8.6 **Media upload**
-  - File upload UI (drag-and-drop zone)
-  - Backend: handle file uploads and store to disk or cloud (S3/Cloudflare R2)
-  - Currently: media is added by URL — real upload is not implemented
+- [x] 8.6 **Media upload** ✅
+  - Reusable `ImageUploadComponent` (drag-and-drop zone + click, preview, progress spinner, remove) in `frontend-admin/src/app/core/components/image-upload.component.ts` + `.html`
+  - Backend: `POST /api/admin/media/upload` (admin-guarded, `FileInterceptor`, images only, 5MB limit) saves to `backend/uploads/` and creates a `Media` record; files served at `/api/uploads` via `app.useStaticAssets(uploadsDir, { prefix: '/api/uploads' })` in `main.ts`
+  - Implemented as a **single generic image-upload endpoint** reused by avatar/cover/thumbnail rather than separate per-entity endpoints (simpler, consistent)
+  - `.gitignore` ignores `backend/uploads/`; `docker-compose.yml` mounts `./uploads:/app/uploads` so uploads persist
+  - Frontend: blog/article already consumes `coverUrl`, videos consume `thumbnailUrl`, home already renders `aboutMe.avatarUrl`
 
-- [ ] 8.8 **Admin user avatar upload**
-  - Allow the admin to upload a profile picture (avatar) for the portfolio owner
-  - Backend: `POST /api/admin/about-me/avatar` — accepts `multipart/form-data`, saves the file, returns the public URL
-  - Store to disk (e.g. `uploads/avatars/`) served via Nginx static path, or to cloud storage
-  - Admin form: add an avatar preview + file-picker button next to the About Me form
-  - Public site: show the uploaded avatar in the hero/about section
+- [x] 8.8 **Admin user avatar upload** ✅
+  - About Me form now uses `ImageUploadComponent` (`shape="avatar"`) bound to `avatarUrl`
+  - Backend saves via the generic `/api/admin/media/upload` endpoint (no separate `about-me/avatar` endpoint needed)
+  - Public site already renders `aboutMe.avatarUrl` in the hero/about section
 
-- [ ] 8.9 **Article cover image upload**
-  - Allow uploading a cover image per article (for blog cards and article detail header)
-  - Schema: add `coverImage String?` to the `Articles` model; run `prisma db push`
-  - Backend: `POST /api/admin/articles/:id/cover` — accepts `multipart/form-data`, saves file, updates `coverImage` field
-  - Admin form: image preview + file-picker in the article editor (in addition to existing URL-based input)
-  - Frontend: show cover image in blog article cards and at the top of article-detail pages
-  - OG image: use `coverImage` as `og:image` in article SEO meta tags (Phase 6)
+- [x] 8.9 **Article cover image upload** ✅
+  - Article form uses `ImageUploadComponent` bound to `coverUrl` (the `Articles` model already had `coverUrl` — no schema migration required)
+  - Shown at the top of the article-detail header and already used as `og:image` (wired in Phase 6 SEO)
 
 - [ ] 8.7 **Drag-and-drop ordering**
   - Experiences, Educations, Skills list have an `order` field

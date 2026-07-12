@@ -1,0 +1,61 @@
+<div>
+  @if (label) {
+    <label class="admin-field-label">{{ label }}</label>
+  }
+
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+    <!-- Preview -->
+    <div
+      class="flex shrink-0 items-center justify-center overflow-hidden border border-dashed border-slate-300 bg-slate-50 text-slate-400 dark:border-slate-600 dark:bg-slate-800/50 dark:text-slate-500"
+      [class.w-20]="shape === 'avatar'"
+      [class.h-20]="shape === 'avatar'"
+      [class.rounded-full]="shape === 'avatar'"
+      [class.w-40]="shape === 'rect'"
+      [class.h-28]="shape === 'rect'"
+      [class.rounded-xl]="shape === 'rect'">
+      @if (url) {
+        <img [src]="url" [alt]="label" class="h-full w-full object-cover" [class.rounded-full]="shape === 'avatar'" />
+      } @else {
+        <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+        </svg>
+      }
+    </div>
+
+    <!-- Controls -->
+    <div class="flex flex-col gap-2">
+      <div
+        class="flex cursor-pointer items-center justify-center rounded-xl border border-slate-200 px-4 py-3 text-center text-sm text-slate-500 transition-colors hover:border-indigo-400 hover:text-indigo-600 dark:border-slate-700 dark:text-slate-400 dark:hover:border-indigo-400 dark:hover:text-indigo-400"
+        [class.border-indigo-400]="dragging()"
+        [class.bg-indigo-50]="dragging()"
+        (click)="openPicker()"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)">
+        @if (uploading()) {
+          <span class="inline-flex items-center gap-2">
+            <span class="h-4 w-4 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent"></span>
+            {{ i18n.t('uploading') }}
+          </span>
+        } @else {
+          <span>{{ i18n.t('upload_drop') }}</span>
+        }
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button type="button" (click)="openPicker()" [disabled]="uploading()"
+          class="admin-btn admin-btn-ghost px-3 py-1.5 text-sm">
+          {{ url ? i18n.t('replace') : i18n.t('choose_file') }}
+        </button>
+        @if (url) {
+          <button type="button" (click)="remove()" [disabled]="uploading()"
+            class="admin-btn px-3 py-1.5 text-sm text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10">
+            {{ i18n.t('remove') }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <input #fileInput type="file" class="hidden" [accept]="accept" (change)="onFileSelected($event)" />
+</div>

@@ -47,6 +47,12 @@
 - Admin panel components inject `HttpClient` directly (no shared service)
 - Always import `provideHttpClient(withInterceptorsFromDi())` for class-based interceptors
 
+### Markdown content & file uploads
+- Article `content` is **Markdown** — render it with `marked` and bind via `[innerHTML]`. Angular sanitizes `[innerHTML]` automatically, so this is XSS-safe; do NOT inject raw HTML with `bypassSecurityTrustHtml` for public content.
+- Upload images via `POST /api/admin/media/upload` (multipart field `file`, admin-guarded, images only, 5 MB cap). The response `{ url }` is a path under `/api/uploads`.
+- For image fields in admin forms reuse the shared `ImageUploadComponent` (`core/components/image-upload.component.ts`) instead of a plain `<input>` — it handles drag-and-drop, preview, and progress.
+- Never commit uploaded binaries; `backend/uploads/` is git-ignored and persisted via the `./uploads` Docker volume.
+
 ---
 
 ## NestJS (Backend)

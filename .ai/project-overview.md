@@ -98,3 +98,5 @@ almas98Abolfazl.ir/
 - Admin panel forms updated with side-by-side EN/FA input layout
 - VS Code debugging fully configured
 - `prisma db push` + `prisma generate` applied ✅
+- Articles use a **Markdown** editor in the admin panel (`MarkdownEditorComponent` with live preview + toolbar + inline image insert); public site renders Markdown via `marked`
+- Image uploads implemented: generic `POST /api/admin/media/upload` endpoint, files served at `/api/uploads`, reusable `ImageUploadComponent` for article cover, video thumbnail, and about-me avatar
