@@ -17,102 +17,91 @@ interface Experience {
   imports: [CommonModule, FormsModule],
   template: `
     <div>
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Experiences</h1>
+      <h1 class="admin-title mb-6">Experiences</h1>
 
-      <form (ngSubmit)="onSubmit()" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-5 mb-6">
-        <div class="grid grid-cols-2 gap-4">
+      <form (ngSubmit)="onSubmit()" class="admin-card space-y-5 mb-6">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Role (EN)</label>
-            <input [(ngModel)]="model.role" name="role" required
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Role</label>
+            <input [(ngModel)]="model.role" name="role" required class="admin-input" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">سمت شغلی (FA)</label>
-            <input [(ngModel)]="model.roleFa" name="roleFa" dir="rtl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-fa" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> سمت شغلی</label>
+            <input [(ngModel)]="model.roleFa" name="roleFa" dir="rtl" class="admin-input font-fa" />
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Company (EN)</label>
-            <input [(ngModel)]="model.company" name="company" required
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Company</label>
+            <input [(ngModel)]="model.company" name="company" required class="admin-input" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">شرکت (FA)</label>
-            <input [(ngModel)]="model.companyFa" name="companyFa" dir="rtl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-fa" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> شرکت</label>
+            <input [(ngModel)]="model.companyFa" name="companyFa" dir="rtl" class="admin-input font-fa" />
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
-            <input type="date" [(ngModel)]="model.startDate" name="startDate" required
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label">Start Date</label>
+            <input type="date" [(ngModel)]="model.startDate" name="startDate" required class="admin-input" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Date</label>
-            <input type="date" [(ngModel)]="model.endDate" name="endDate"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label">End Date</label>
+            <input type="date" [(ngModel)]="model.endDate" name="endDate" class="admin-input" />
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Description (EN)</label>
-            <textarea [(ngModel)]="model.description" name="description" rows="3"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"></textarea>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Description</label>
+            <textarea [(ngModel)]="model.description" name="description" rows="3" class="admin-input"></textarea>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">توضیحات (FA)</label>
-            <textarea [(ngModel)]="model.descriptionFa" name="descriptionFa" rows="3" dir="rtl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-fa"></textarea>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> توضیحات</label>
+            <textarea [(ngModel)]="model.descriptionFa" name="descriptionFa" rows="3" dir="rtl" class="admin-input font-fa"></textarea>
           </div>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Technologies (comma separated)</label>
-          <input [(ngModel)]="techInput" name="tech"
-            class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+          <label class="admin-field-label">Technologies (comma separated)</label>
+          <input [(ngModel)]="techInput" name="tech" class="admin-input" />
         </div>
 
         <div class="flex gap-3">
-          <button type="submit" class="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            {{ editId ? 'Update' : 'Add' }}
-          </button>
+          <button type="submit" class="admin-btn admin-btn-primary">{{ editId ? 'Update' : 'Add' }}</button>
           @if (editId) {
-            <button type="button" (click)="reset()" class="px-5 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white rounded hover:bg-gray-300">Cancel</button>
+            <button type="button" (click)="reset()" class="admin-btn admin-btn-ghost">Cancel</button>
           }
         </div>
       </form>
 
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+      <div class="admin-card overflow-hidden">
         <table class="min-w-full">
-          <thead class="bg-gray-50 dark:bg-gray-700">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Role</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Company</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Start</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
+          <thead>
+            <tr class="border-b border-slate-200 dark:border-slate-700">
+              <th class="admin-th">Role</th>
+              <th class="admin-th">Company</th>
+              <th class="admin-th">Start</th>
+              <th class="admin-th text-end">Actions</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-700/70">
             @for (item of items; track item.id) {
               <tr>
-                <td class="px-6 py-4 text-gray-900 dark:text-white">
+                <td class="admin-td">
                   {{ item.role }}
-                  @if (item.roleFa) { <span class="block text-xs text-green-600 font-fa" dir="rtl">{{ item.roleFa }}</span> }
+                  @if (item.roleFa) { <span class="block text-xs font-fa text-emerald-600" dir="rtl">{{ item.roleFa }}</span> }
                 </td>
-                <td class="px-6 py-4 text-gray-900 dark:text-white">
+                <td class="admin-td">
                   {{ item.company }}
-                  @if (item.companyFa) { <span class="block text-xs text-green-600 font-fa" dir="rtl">{{ item.companyFa }}</span> }
+                  @if (item.companyFa) { <span class="block text-xs font-fa text-emerald-600" dir="rtl">{{ item.companyFa }}</span> }
                 </td>
-                <td class="px-6 py-4 text-gray-900 dark:text-white">{{ item.startDate | date:'yyyy-MM' }}</td>
-                <td class="px-6 py-4 text-right">
-                  <button (click)="edit(item)" class="text-blue-600 mr-3 hover:underline">Edit</button>
-                  <button (click)="del(item.id!)" class="text-red-600 hover:underline">Delete</button>
+                <td class="admin-td">{{ item.startDate | date:'yyyy-MM' }}</td>
+                <td class="admin-td text-end">
+                  <button (click)="edit(item)" class="text-indigo-600 hover:underline dark:text-indigo-400">Edit</button>
+                  <button (click)="del(item.id!)" class="text-rose-600 hover:underline dark:text-rose-400 ms-3">Delete</button>
                 </td>
               </tr>
             }

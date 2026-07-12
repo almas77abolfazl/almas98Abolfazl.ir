@@ -17,68 +17,60 @@ interface AboutMe {
   imports: [CommonModule, FormsModule],
   template: `
     <div>
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">About Me</h1>
-      <form (ngSubmit)="onSubmit()" #f="ngForm" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
+      <h1 class="admin-title mb-6">About Me</h1>
+      <form (ngSubmit)="onSubmit()" #f="ngForm" class="admin-card space-y-6">
 
         <!-- Full Name -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Full Name (EN)</label>
-            <input [(ngModel)]="model.fullName" name="fullName" required
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Full Name</label>
+            <input [(ngModel)]="model.fullName" name="fullName" required class="admin-input" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">نام کامل (FA)</label>
-            <input [(ngModel)]="model.fullNameFa" name="fullNameFa" dir="rtl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-fa" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> نام کامل</label>
+            <input [(ngModel)]="model.fullNameFa" name="fullNameFa" dir="rtl" class="admin-input font-fa" />
           </div>
         </div>
 
         <!-- Title -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Title (EN)</label>
-            <input [(ngModel)]="model.title" name="title" required
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Title</label>
+            <input [(ngModel)]="model.title" name="title" required class="admin-input" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">عنوان (FA)</label>
-            <input [(ngModel)]="model.titleFa" name="titleFa" dir="rtl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-fa" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> عنوان</label>
+            <input [(ngModel)]="model.titleFa" name="titleFa" dir="rtl" class="admin-input font-fa" />
           </div>
         </div>
 
         <!-- Bio -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Bio (EN)</label>
-            <textarea [(ngModel)]="model.bio" name="bio" rows="5"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"></textarea>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Bio</label>
+            <textarea [(ngModel)]="model.bio" name="bio" rows="5" class="admin-input"></textarea>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">بیوگرافی (FA)</label>
-            <textarea [(ngModel)]="model.bioFa" name="bioFa" rows="5" dir="rtl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-fa"></textarea>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> بیوگرافی</label>
+            <textarea [(ngModel)]="model.bioFa" name="bioFa" rows="5" dir="rtl" class="admin-input font-fa"></textarea>
           </div>
         </div>
 
         <!-- URLs -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Avatar URL</label>
-            <input [(ngModel)]="model.avatarUrl" name="avatarUrl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label">Avatar URL</label>
+            <input [(ngModel)]="model.avatarUrl" name="avatarUrl" class="admin-input" />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Resume URL</label>
-            <input [(ngModel)]="model.resumeUrl" name="resumeUrl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label">Resume URL</label>
+            <input [(ngModel)]="model.resumeUrl" name="resumeUrl" class="admin-input" />
           </div>
         </div>
 
-        <div class="flex gap-3 items-center">
-          <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-medium">Save</button>
-          @if (saved) { <span class="text-green-600 text-sm">Saved successfully!</span> }
+        <div class="flex items-center gap-3">
+          <button type="submit" class="admin-btn admin-btn-primary">Save</button>
+          @if (saved) { <span class="text-emerald-600 text-sm">Saved successfully!</span> }
         </div>
       </form>
     </div>

@@ -15,76 +15,69 @@ interface Skill {
   imports: [CommonModule, FormsModule],
   template: `
     <div>
-      <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Skills</h1>
+      <h1 class="admin-title mb-6">Skills</h1>
 
-      <form (ngSubmit)="onSubmit()" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-5 mb-6">
-        <div class="grid grid-cols-2 gap-4">
+      <form (ngSubmit)="onSubmit()" class="admin-card space-y-5 mb-6">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Name (EN)</label>
-            <input [(ngModel)]="model.name" name="name" required
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Name</label>
+            <input [(ngModel)]="model.name" name="name" required class="admin-input" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">نام (FA)</label>
-            <input [(ngModel)]="model.nameFa" name="nameFa" dir="rtl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-fa" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> نام</label>
+            <input [(ngModel)]="model.nameFa" name="nameFa" dir="rtl" class="admin-input font-fa" />
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="block text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Category (EN)</label>
-            <input [(ngModel)]="model.category" name="category" required
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Category</label>
+            <input [(ngModel)]="model.category" name="category" required class="admin-input" />
           </div>
           <div>
-            <label class="block text-xs font-semibold text-green-600 uppercase tracking-wide mb-1">دسته‌بندی (FA)</label>
-            <input [(ngModel)]="model.categoryFa" name="categoryFa" dir="rtl"
-              class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-fa" />
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> دسته‌بندی</label>
+            <input [(ngModel)]="model.categoryFa" name="categoryFa" dir="rtl" class="admin-input font-fa" />
           </div>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Proficiency (0-100)</label>
-          <input type="number" min="0" max="100" [(ngModel)]="model.proficiency" name="proficiency"
-            class="w-full px-3 py-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+          <label class="admin-field-label">Proficiency (0-100)</label>
+          <input type="number" min="0" max="100" [(ngModel)]="model.proficiency" name="proficiency" class="admin-input" />
         </div>
 
         <div class="flex gap-3">
-          <button type="submit" class="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            {{ editId ? 'Update' : 'Add' }}
-          </button>
+          <button type="submit" class="admin-btn admin-btn-primary">{{ editId ? 'Update' : 'Add' }}</button>
           @if (editId) {
-            <button type="button" (click)="reset()" class="px-5 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white rounded hover:bg-gray-300">Cancel</button>
+            <button type="button" (click)="reset()" class="admin-btn admin-btn-ghost">Cancel</button>
           }
         </div>
       </form>
 
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+      <div class="admin-card overflow-hidden">
         <table class="min-w-full">
-          <thead class="bg-gray-50 dark:bg-gray-700">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Name</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Category</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Proficiency</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Actions</th>
+          <thead>
+            <tr class="border-b border-slate-200 dark:border-slate-700">
+              <th class="admin-th">Name</th>
+              <th class="admin-th">Category</th>
+              <th class="admin-th">Proficiency</th>
+              <th class="admin-th text-end">Actions</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-700/70">
             @for (item of items; track item.id) {
               <tr>
-                <td class="px-6 py-4 text-gray-900 dark:text-white">
+                <td class="admin-td">
                   {{ item.name }}
-                  @if (item.nameFa) { <span class="block text-xs text-green-600 font-fa" dir="rtl">{{ item.nameFa }}</span> }
+                  @if (item.nameFa) { <span class="block text-xs font-fa text-emerald-600" dir="rtl">{{ item.nameFa }}</span> }
                 </td>
-                <td class="px-6 py-4 text-gray-900 dark:text-white">
+                <td class="admin-td">
                   {{ item.category }}
-                  @if (item.categoryFa) { <span class="block text-xs text-green-600 font-fa" dir="rtl">{{ item.categoryFa }}</span> }
+                  @if (item.categoryFa) { <span class="block text-xs font-fa text-emerald-600" dir="rtl">{{ item.categoryFa }}</span> }
                 </td>
-                <td class="px-6 py-4 text-gray-900 dark:text-white">{{ item.proficiency ?? 0 }}%</td>
-                <td class="px-6 py-4 text-right">
-                  <button (click)="edit(item)" class="text-blue-600 mr-3 hover:underline">Edit</button>
-                  <button (click)="del(item.id!)" class="text-red-600 hover:underline">Delete</button>
+                <td class="admin-td">{{ item.proficiency ?? 0 }}%</td>
+                <td class="admin-td text-end">
+                  <button (click)="edit(item)" class="text-indigo-600 hover:underline dark:text-indigo-400">Edit</button>
+                  <button (click)="del(item.id!)" class="text-rose-600 hover:underline dark:text-rose-400 ms-3">Delete</button>
                 </td>
               </tr>
             }

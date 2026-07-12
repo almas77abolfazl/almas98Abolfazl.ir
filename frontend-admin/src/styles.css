@@ -1,36 +1,180 @@
 @import "tailwindcss";
 
+/*
+  Iris Violet — custom, minimal visual identity (shared with the public site).
+  Tailwind v4 compiles `dark:` from the OS media query by default; this app
+  toggles dark mode via a `.dark` class on <html> (see ThemeService), so we
+  MUST declare the class-based variant or dark mode silently breaks.
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --color-primary: #111827;
-  --color-primary-light: #1f2937;
-  --color-secondary: #2563eb;
-  --color-accent: #10b981;
-  --color-background: #ffffff;
-  --color-surface: #f3f4f6;
-  --color-text: #111827;
-  --color-text-muted: #6b7280;
+  /* --- Primary: Iris Violet (overrides `indigo-*`) --- */
+  --color-indigo-50: #f3f1ff;
+  --color-indigo-100: #e9e5ff;
+  --color-indigo-200: #d5ccff;
+  --color-indigo-300: #b7a6ff;
+  --color-indigo-400: #9678fb;
+  --color-indigo-500: #7a5cf5;
+  --color-indigo-600: #6a45e8;
+  --color-indigo-700: #5a33cc;
+  --color-indigo-800: #4b2ba5;
+  --color-indigo-900: #3f2882;
+  --color-indigo-950: #271759;
+
+  /* --- Secondary: Orchid (overrides `violet-*`, gradient partner) --- */
+  --color-violet-50: #fbf2ff;
+  --color-violet-100: #f6e4ff;
+  --color-violet-200: #eec7ff;
+  --color-violet-300: #e3a3ff;
+  --color-violet-400: #d47bf7;
+  --color-violet-500: #c25ff0;
+  --color-violet-600: #a83fd4;
+  --color-violet-700: #8a2fac;
+  --color-violet-800: #6f2a89;
+  --color-violet-900: #5a266f;
+  --color-violet-950: #3b1049;
+
+  /* --- Success / status: Muted Jade (overrides `emerald-*`) --- */
+  --color-emerald-50: #eef8f2;
+  --color-emerald-100: #d5eede;
+  --color-emerald-200: #addcc2;
+  --color-emerald-300: #7cc4a0;
+  --color-emerald-400: #4faa81;
+  --color-emerald-500: #2f9068;
+  --color-emerald-600: #237454;
+  --color-emerald-700: #1e5c44;
+  --color-emerald-800: #1a4a38;
+  --color-emerald-900: #163d2f;
+
+  /* --- Neutrals: Iris-tinted cool gray (overrides `slate-*`) --- */
+  --color-slate-50: #f6f6fb;
+  --color-slate-100: #e6e6ef;
+  --color-slate-200: #d2d2df;
+  --color-slate-300: #c1c1d2;
+  --color-slate-400: #6a6a80;
+  --color-slate-500: #50506a;
+  --color-slate-600: #3d3d50;
+  --color-slate-700: #2e2e3c;
+  --color-slate-800: #222231;
+  --color-slate-900: #16161f;
+  --color-slate-950: #0d0d15;
+
+  --color-primary: #16161f;
+  --color-primary-light: #222231;
+  --color-secondary: #7a5cf5;      /* iris */
+  --color-secondary-dark: #6a45e8;
+  --color-accent: #c25ff0;         /* orchid */
+
+  --color-background: #f6f6fb;
+  --color-surface: #ffffff;
+  --color-text: #16161f;
+  --color-text-muted: #50506a;
+
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-fa: "Vazirmatn", system-ui, -apple-system, sans-serif;
 }
 
 :root {
   color-scheme: light dark;
-  --bg-color: var(--color-background);
-  --text-color: var(--color-text);
 }
 
 .dark {
-  --bg-color: #0f172a;
-  --text-color: var(--color-text);
+  --color-background: #0f0f17;
+  --color-surface: #1a1a26;
+  --color-text: #ececf1;
+  --color-text-muted: #9a9ab0;
+  /* Re-lighten the muted shades darkened for light mode */
+  --color-slate-400: #9a9ab0;
+  --color-slate-500: #7d7d93;
+  --color-slate-600: #4b4b60;
 }
 
 body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  background-color: var(--color-background);
+  color: var(--color-text);
   font-family: var(--font-sans);
+  line-height: 1.6;
   transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
 }
 
 html[dir="rtl"] body {
   font-family: var(--font-fa);
+}
+
+/* ---- Shared components: minimal, modern admin UI ---- */
+@layer components {
+  .admin-card {
+    @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700/70 dark:bg-slate-800;
+  }
+
+  .admin-stat {
+    @apply flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700/70 dark:bg-slate-800;
+  }
+
+  .admin-stat-icon {
+    @apply flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300;
+  }
+
+  .admin-title {
+    @apply text-2xl font-bold tracking-tight text-slate-900 dark:text-white;
+  }
+
+  .admin-nav-link {
+    @apply flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-700/50 dark:hover:text-slate-200;
+  }
+
+  .admin-nav-link-active {
+    @apply bg-indigo-50 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300;
+  }
+
+  .admin-input {
+    @apply w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/30 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500;
+  }
+
+  .admin-field-label {
+    @apply mb-1.5 flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300;
+  }
+
+  .admin-lang {
+    @apply inline-flex h-5 w-7 items-center justify-center rounded-md text-[10px] font-bold uppercase;
+  }
+  .admin-lang-en { @apply bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300; }
+  .admin-lang-fa { @apply bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300; }
+
+  .admin-btn {
+    @apply inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .admin-btn-primary {
+    @apply bg-linear-to-r from-indigo-600 to-violet-500 text-white shadow-sm shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:brightness-105;
+  }
+  .admin-btn-ghost {
+    @apply border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700/40;
+  }
+  .admin-btn-danger {
+    @apply bg-rose-600 text-white hover:bg-rose-700;
+  }
+
+  .admin-th {
+    @apply px-6 py-3 text-start text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400;
+  }
+  .admin-td {
+    @apply px-6 py-4 text-slate-700 dark:text-slate-300;
+  }
+
+  .admin-badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .admin-badge-success { @apply bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300; }
+  .admin-badge-danger { @apply bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300; }
+  .admin-badge-warning { @apply bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300; }
+  .admin-badge-info { @apply bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300; }
+}
+
+/* RTL typography */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] .admin-title {
+  letter-spacing: normal;
 }

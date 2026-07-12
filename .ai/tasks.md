@@ -229,19 +229,34 @@
 
 ---
 
-## Phase 8: Admin Panel UI Overhaul 🔲
+## Phase 8: Admin Panel UI Overhaul 🔶 (8.1, 8.2 done · design system + dark mode done · 8.3+ pending)
 
 > **Goal**: Make the admin panel look and feel like a real modern dashboard (currently functional but minimal/raw).
+>
+> **Design system unified with the public site**: `frontend-admin/src/styles.css` now carries the same **Iris Violet** identity (the `indigo-*`/`violet-*`/`emerald-*`/`slate-*` scale overrides) and the critical `@custom-variant dark (&:where(.dark, .dark *));` so `dark:` utilities respond to the `.dark` class (previously broken — admin dark mode was effectively non-functional). Shared primitives added in `@layer components`: `.admin-card`, `.admin-stat`, `.admin-stat-icon`, `.admin-title`, `.admin-nav-link(-active)`.
 
-- [ ] 8.1 **Layout improvements**
-  - Responsive sidebar with collapse/expand
-  - Mobile hamburger menu
-  - Active route highlighting in nav
-  - User avatar + logout in sidebar footer
+- [x] 8.0 **Design system + dark mode**
+  - Iris Violet palette + `@custom-variant dark` applied to `frontend-admin/src/styles.css`
+  - New `ThemeService` (mirrors public site) + toggle button in the header so dark mode actually switches
+  - Shared admin component classes (`.admin-card`, `.admin-stat`, `.admin-stat-icon`, `.admin-title`, `.admin-nav-link`)
 
-- [ ] 8.2 **Dashboard stats cards**
-  - Replace simple text with visual stat cards (icon + number + label)
-  - Add mini sparkline charts for page views trend
+- [x] 8.1 **Layout improvements**
+  - `ShellComponent` rewritten: responsive sidebar (desktop `lg:flex` fixed; mobile `lg:hidden` drawer with backdrop + slide-in)
+  - Mobile hamburger in top header opens/closes the drawer; drawer closes on link click
+  - Active route highlighting via `routerLinkActive` (`admin-nav-link-active`)
+  - Sidebar footer: avatar + "Admin / almas98" + Logout button (desktop and drawer)
+
+- [x] 8.2 **Dashboard stats cards**
+  - Stat cards rebuilt as `.admin-stat` (icon chip + label + value); messages, pending testimonials (amber), page views
+  - Daily-traffic bar chart recolored to iris→orchid gradient; Top Pages list kept; rhythm via `admin-title` + spacing tokens
+
+- [ ] 8.3 **Table improvements** (pending)
+- [ ] 8.4 **Form improvements** (pending)
+- [ ] 8.5 **Article rich text editor** (pending)
+- [ ] 8.6 **Media upload** (pending)
+- [ ] 8.8 **Admin user avatar upload** (pending)
+- [ ] 8.9 **Article cover image upload** (pending)
+- [ ] 8.7 **Drag-and-drop ordering** (pending)
 
 - [ ] 8.3 **Table improvements**
   - Sortable columns
