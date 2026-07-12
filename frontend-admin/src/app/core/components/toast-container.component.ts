@@ -1,0 +1,43 @@
+import { Component } from '@angular/core';
+import { ToastService } from '../../core/services/toast.service';
+
+@Component({
+  selector: 'app-toast-container',
+  imports: [],
+  template: `
+    <div class="pointer-events-none fixed bottom-4 end-4 z-[70] flex w-full max-w-sm flex-col gap-2">
+      @for (t of toast.toasts(); track t.id) {
+        <div
+          class="pointer-events-auto flex items-start gap-3 rounded-xl border px-4 py-3 shadow-lg backdrop-blur-md animate-[fadeIn_.2s_ease]"
+          [class]="t.type === 'success'
+            ? 'border-emerald-200 bg-emerald-50/95 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/15 dark:text-emerald-200'
+            : t.type === 'error'
+              ? 'border-rose-200 bg-rose-50/95 text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/15 dark:text-rose-200'
+              : 'border-indigo-200 bg-white/95 text-slate-700 dark:border-indigo-500/30 dark:bg-slate-800/95 dark:text-slate-200'">
+          <div class="mt-0.5 shrink-0">
+            @if (t.type === 'success') {
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+            } @else if (t.type === 'error') {
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            } @else {
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            }
+          </div>
+          <p class="flex-1 text-sm font-medium leading-5">{{ t.message }}</p>
+          <button (click)="toast.dismiss(t.id)" class="shrink-0 opacity-60 transition-opacity hover:opacity-100" aria-label="Dismiss">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+      }
+    </div>
+  `,
+  styles: [`
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  `],
+})
+export class ToastContainerComponent {
+  constructor(public toast: ToastService) {}
+}

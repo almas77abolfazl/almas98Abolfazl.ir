@@ -229,7 +229,7 @@
 
 ---
 
-## Phase 8: Admin Panel UI Overhaul 🔶 (8.1, 8.2 done · design system + dark mode done · 8.3+ pending)
+## Phase 8: Admin Panel UI Overhaul 🔶 (8.1, 8.2, 8.3, 8.4, 8.10 done · 8.5+ pending)
 
 > **Goal**: Make the admin panel look and feel like a real modern dashboard (currently functional but minimal/raw).
 >
@@ -256,25 +256,24 @@
   - All admin chrome translatable: nav, titles, buttons (Add/Update/Cancel/Save/Edit/Delete), table headers, status badges, login form, dashboard labels
   - Remaining admin forms restyled to the Iris Violet design system + bilingual EN/FA content fields: `articles`, `videos`, `testimonials`, `contact-messages`, `auth/login` (previously raw `bg-gray-*` Tailwind)
 
-- [ ] 8.3 **Table improvements** (pending)
-- [ ] 8.4 **Form improvements** (pending)
+- [x] 8.3 **Table improvements**
+  - New `ToastService` (`core/services/toast.service.ts`): signal-based stack, auto-dismiss, success/error/info types
+  - New `ConfirmService` + `ConfirmDialogComponent` (`core/components`): reusable confirmation modal (used for all delete actions, replaces inline delete)
+  - Sortable columns on all entity tables (educations, skills, experiences, articles, videos) with asc/desc toggle + arrow indicator
+  - Empty-state rows for tables and empty-state cards for testimonials/contact-messages (`@empty` + `noItems` key)
+  - Row hover effect via `.admin-row` class
+
+- [x] 8.4 **Form improvements**
+  - Toast notifications on save/add/update/delete (replaces the inline "Saved successfully!" message in About Me)
+  - Confirmation modal for delete actions (8.3 above)
+  - Unsaved-changes warning before navigation via `pendingChangesGuard` (`core/guards`) + `canDeactivate()` on form components (tracks `dirty` via form `input`/`change` listeners)
+  - Field validation: native `required` attributes preserved; *pagination/infinite scroll for very large lists is deferred* (current datasets are small)
+
 - [ ] 8.5 **Article rich text editor** (pending)
 - [ ] 8.6 **Media upload** (pending)
 - [ ] 8.8 **Admin user avatar upload** (pending)
 - [ ] 8.9 **Article cover image upload** (pending)
 - [ ] 8.7 **Drag-and-drop ordering** (pending)
-
-- [ ] 8.3 **Table improvements**
-  - Sortable columns
-  - Pagination or infinite scroll for large lists
-  - Empty state illustrations
-  - Row hover effects
-
-- [ ] 8.4 **Form improvements**
-  - Toast notifications instead of `alert()` / inline saved messages
-  - Unsaved changes warning before navigation
-  - Field validation with inline error messages
-  - Confirmation modal for delete actions (replace browser `confirm()`)
 
 - [ ] 8.5 **Article rich text editor**
   - Replace plain `<textarea>` with a Markdown editor (e.g., `ngx-markdown-editor` or custom CodeMirror)

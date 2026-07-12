@@ -1,0 +1,28 @@
+import { Component } from '@angular/core';
+import { ConfirmService } from '../../core/services/confirm.service';
+
+@Component({
+  selector: 'app-confirm-dialog',
+  imports: [],
+  template: `
+    @if (confirm.state(); as opts) {
+      <div class="fixed inset-0 z-[80] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" (click)="confirm.decline()"></div>
+        <div class="admin-card relative w-full max-w-sm !p-5">
+          <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ opts.title }}</h3>
+          <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ opts.message }}</p>
+          <div class="mt-5 flex justify-end gap-3">
+            <button type="button" (click)="confirm.decline()" class="admin-btn admin-btn-ghost">{{ opts.cancelText }}</button>
+            <button type="button" (click)="confirm.accept()"
+              class="admin-btn"
+              [class]="opts.danger ? 'admin-btn-danger' : 'admin-btn-primary'">{{ opts.confirmText }}</button>
+          </div>
+        </div>
+      </div>
+    }
+  `,
+  styles: [],
+})
+export class ConfirmDialogComponent {
+  constructor(public confirm: ConfirmService) {}
+}

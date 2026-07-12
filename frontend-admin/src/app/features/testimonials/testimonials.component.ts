@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
+import { ToastService } from '../../core/services/toast.service';
 
 interface Testimonial {
   id: string;
@@ -43,6 +44,8 @@ interface Testimonial {
               }
             </div>
           </div>
+        } @empty {
+          <div class="admin-card text-center text-slate-400">{{ i18n.t('noItems') }}</div>
         }
       </div>
     </div>
@@ -52,7 +55,7 @@ interface Testimonial {
 export class TestimonialsComponent implements OnInit {
   items: Testimonial[] = [];
 
-  constructor(private http: HttpClient, public i18n: AdminI18nService) {}
+  constructor(private http: HttpClient, public i18n: AdminI18nService, private toast: ToastService) {}
 
   ngOnInit(): void {
     this.load();
@@ -63,6 +66,9 @@ export class TestimonialsComponent implements OnInit {
   }
 
   setStatus(id: string, status: string): void {
-    this.http.patch(`/api/admin/testimonials/${id}/status`, { status }).subscribe(() => this.load());
+    this.http.patch(`/api/admin/testimonials/${id}/status`, { status }).subscribe(() => {
+      this.load();
+      this.toast.success(status === 'APPROVED' ? this.i18n.t('test_approve') : this.i18n.t('test_reject'));
+    });
   }
 }

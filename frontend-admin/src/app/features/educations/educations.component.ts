@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
+import { ToastService } from '../../core/services/toast.service';
+import { ConfirmService } from '../../core/services/confirm.service';
 
 interface Education {
   id?: string;
@@ -13,6 +15,8 @@ interface Education {
   description?: string; descriptionFa?: string;
 }
 
+type SortCol = 'degree' | 'institution' | null;
+
 @Component({
   selector: 'app-educations',
   imports: [CommonModule, FormsModule],
@@ -20,7 +24,7 @@ interface Education {
     <div>
       <h1 class="admin-title mb-6">{{ i18n.t('nav_educations') }}</h1>
 
-      <form (ngSubmit)="onSubmit()" class="admin-card space-y-5 mb-6">
+      <form (ngSubmit)="onSubmit()" (input)="markDirty()" (change)="markDirty()" class="admin-card space-y-5 mb-6">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Degree</label>
@@ -56,11 +60,11 @@ interface Education {
 
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label class="admin-field-label">Start Date</label>
+            <label class="admin-field-label">{{ i18n.t('edu_startDate') }}</label>
             <input type="date" [(ngModel)]="model.startDate" name="startDate" required class="admin-input" />
           </div>
           <div>
-            <label class="admin-field-label">End Date</label>
+            <label class="admin-field-label">{{ i18n.t('edu_endDate') }}</label>
             <input type="date" [(ngModel)]="model.endDate" name="endDate" class="admin-input" />
           </div>
         </div>
@@ -88,14 +92,18 @@ interface Education {
         <table class="min-w-full">
           <thead>
             <tr class="border-b border-slate-200 dark:border-slate-700">
-              <th class="admin-th">{{ i18n.t('edu_degree') }}</th>
-              <th class="admin-th">{{ i18n.t('edu_institution') }}</th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('degree')">
+                {{ i18n.t('edu_degree') }} <span class="text-[10px]">{{ sortArrow('degree') }}</span>
+              </th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('institution')">
+                {{ i18n.t('edu_institution') }} <span class="text-[10px]">{{ sortArrow('institution') }}</span>
+              </th>
               <th class="admin-th text-end">{{ i18n.t('actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700/70">
-            @for (item of items; track item.id) {
-              <tr>
+            @for (item of view(); track item.id) {
+              <tr class="admin-row">
                 <td class="admin-td">
                   {{ item.degree }}
                   @if (item.degreeFa) { <span class="block text-xs font-fa text-emerald-600" dir="rtl">{{ item.degreeFa }}</span> }
@@ -109,6 +117,8 @@ interface Education {
                   <button (click)="del(item.id!)" class="text-rose-600 hover:underline dark:text-rose-400 ms-3">{{ i18n.t('delete') }}</button>
                 </td>
               </tr>
+            } @empty {
+              <tr><td colspan="3" class="admin-td text-center text-slate-400">{{ i18n.t('noItems') }}</td></tr>
             }
           </tbody>
         </table>
@@ -121,8 +131,36 @@ export class EducationsComponent implements OnInit {
   model: Education = { degree: '', institution: '', startDate: '' };
   items: Education[] = [];
   editId?: string;
+  dirty = signal(false);
 
-  constructor(private http: HttpClient, public i18n: AdminI18nService) {}
+  markDirty(): void {
+    this.dirty.set(true);
+  }
+
+  canDeactivate(): boolean {
+    return !this.dirty();
+  }
+
+  sortCol = signal<SortCol>(null);
+  sortDir = signal<'asc' | 'desc'>('asc');
+
+  view = computed(() => {
+    const col = this.sortCol();
+    if (!col) return this.items;
+    const dir = this.sortDir();
+    return [...this.items].sort((a, b) => {
+      const av = (a[col] ?? '').toString().toLowerCase();
+      const bv = (b[col] ?? '').toString().toLowerCase();
+      return dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+    });
+  });
+
+  constructor(
+    private http: HttpClient,
+    public i18n: AdminI18nService,
+    private toast: ToastService,
+    private confirm: ConfirmService,
+  ) {}
 
   ngOnInit(): void { this.load(); }
 
@@ -130,11 +168,30 @@ export class EducationsComponent implements OnInit {
     this.http.get<Education[]>('/api/admin/educations').subscribe((data) => (this.items = data));
   }
 
+  toggleSort(col: SortCol): void {
+    if (this.sortCol() === col) {
+      this.sortDir.update((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      this.sortCol.set(col);
+      this.sortDir.set('asc');
+    }
+  }
+
+  sortArrow(col: SortCol): string {
+    if (this.sortCol() !== col) return '↕';
+    return this.sortDir() === 'asc' ? '↑' : '↓';
+  }
+
   onSubmit(): void {
     const req = this.editId
       ? this.http.put(`/api/admin/educations/${this.editId}`, this.model)
       : this.http.post('/api/admin/educations', this.model);
-    req.subscribe(() => { this.reset(); this.load(); });
+    req.subscribe(() => {
+      this.reset();
+      this.load();
+      this.dirty.set(false);
+      this.toast.success(this.editId ? this.i18n.t('toast_updated') : this.i18n.t('toast_added'));
+    });
   }
 
   edit(item: Education): void {
@@ -142,12 +199,24 @@ export class EducationsComponent implements OnInit {
     this.editId = item.id;
   }
 
-  del(id: string): void {
-    this.http.delete(`/api/admin/educations/${id}`).subscribe(() => this.load());
+  async del(id: string): Promise<void> {
+    const ok = await this.confirm.confirm({
+      title: this.i18n.t('confirm_title'),
+      message: this.i18n.t('confirm_delete'),
+      confirmText: this.i18n.t('confirm_yes'),
+      cancelText: this.i18n.t('confirm_no'),
+      danger: true,
+    });
+    if (!ok) return;
+    this.http.delete(`/api/admin/educations/${id}`).subscribe(() => {
+      this.load();
+      this.toast.success(this.i18n.t('toast_deleted'));
+    });
   }
 
   reset(): void {
     this.model = { degree: '', institution: '', startDate: '' };
     this.editId = undefined;
+    this.dirty.set(false);
   }
 }

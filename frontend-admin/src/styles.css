@@ -163,6 +163,10 @@ html[dir="rtl"] body {
     @apply px-6 py-4 text-slate-700 dark:text-slate-300;
   }
 
+  .admin-row {
+    @apply transition-colors hover:bg-slate-50 dark:hover:bg-slate-700/40;
+  }
+
   .admin-badge {
     @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
   }

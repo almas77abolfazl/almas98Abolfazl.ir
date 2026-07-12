@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
+import { ToastService } from '../../core/services/toast.service';
 
 interface AboutMe {
   id?: string;
@@ -19,7 +20,7 @@ interface AboutMe {
   template: `
     <div>
       <h1 class="admin-title mb-6">{{ i18n.t('nav_about') }}</h1>
-      <form (ngSubmit)="onSubmit()" #f="ngForm" class="admin-card space-y-6">
+      <form (ngSubmit)="onSubmit()" #f="ngForm" (input)="markDirty()" (change)="markDirty()" class="admin-card space-y-6">
 
         <!-- Full Name -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -71,7 +72,6 @@ interface AboutMe {
 
         <div class="flex items-center gap-3">
           <button type="submit" class="admin-btn admin-btn-primary">{{ i18n.t('save') }}</button>
-          @if (saved) { <span class="text-emerald-600 text-sm">{{ i18n.t('about_saved') }}</span> }
         </div>
       </form>
     </div>
@@ -82,9 +82,18 @@ interface AboutMe {
 })
 export class AboutMeComponent implements OnInit {
   model: AboutMe = { fullName: '', title: '' };
-  saved = false;
 
-  constructor(private http: HttpClient, public i18n: AdminI18nService) {}
+  dirty = signal(false);
+
+  markDirty(): void {
+    this.dirty.set(true);
+  }
+
+  canDeactivate(): boolean {
+    return !this.dirty();
+  }
+
+  constructor(private http: HttpClient, public i18n: AdminI18nService, private toast: ToastService) {}
 
   ngOnInit(): void {
     this.http.get<AboutMe>('/api/admin/about-me').subscribe({
@@ -95,8 +104,8 @@ export class AboutMeComponent implements OnInit {
   onSubmit(): void {
     this.http.post('/api/admin/about-me', this.model).subscribe({
       next: () => {
-        this.saved = true;
-        setTimeout(() => this.saved = false, 3000);
+        this.toast.success(this.i18n.t('toast_saved'));
+        this.dirty.set(false);
       },
     });
   }

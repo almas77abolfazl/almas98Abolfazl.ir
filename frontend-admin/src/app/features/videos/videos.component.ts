@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
+import { ToastService } from '../../core/services/toast.service';
+import { ConfirmService } from '../../core/services/confirm.service';
 
 interface Video {
   id?: string;
@@ -14,6 +16,8 @@ interface Video {
   order?: number;
 }
 
+type SortCol = 'title' | 'platform' | 'order' | null;
+
 @Component({
   selector: 'app-videos',
   imports: [CommonModule, FormsModule],
@@ -21,8 +25,7 @@ interface Video {
     <div>
       <h1 class="admin-title mb-6">{{ i18n.t('nav_videos') }}</h1>
 
-      <form (ngSubmit)="onSubmit()" class="admin-card space-y-5 mb-6">
-        <!-- Title -->
+      <form (ngSubmit)="onSubmit()" (input)="markDirty()" (change)="markDirty()" class="admin-card space-y-5 mb-6">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> {{ i18n.t('vid_title') }}</label>
@@ -34,7 +37,6 @@ interface Video {
           </div>
         </div>
 
-        <!-- Platform + Video ID -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label">{{ i18n.t('vid_platform') }}</label>
@@ -54,7 +56,6 @@ interface Video {
           </div>
         </div>
 
-        <!-- Description -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> {{ i18n.t('vid_description') }}</label>
@@ -66,7 +67,6 @@ interface Video {
           </div>
         </div>
 
-        <!-- Thumbnail + Order -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label">{{ i18n.t('vid_thumbnail') }}</label>
@@ -90,20 +90,21 @@ interface Video {
         <table class="min-w-full">
           <thead>
             <tr class="border-b border-slate-200 dark:border-slate-700">
-              <th class="admin-th">{{ i18n.t('vid_preview') }}</th>
-              <th class="admin-th">{{ i18n.t('vid_title') }}</th>
-              <th class="admin-th">{{ i18n.t('vid_platform') }}</th>
-              <th class="admin-th">{{ i18n.t('vid_order') }}</th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('title')">
+                {{ i18n.t('vid_title') }} <span class="text-[10px]">{{ sortArrow('title') }}</span>
+              </th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('platform')">
+                {{ i18n.t('vid_platform') }} <span class="text-[10px]">{{ sortArrow('platform') }}</span>
+              </th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('order')">
+                {{ i18n.t('vid_order') }} <span class="text-[10px]">{{ sortArrow('order') }}</span>
+              </th>
               <th class="admin-th text-end">{{ i18n.t('actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700/70">
-            @for (item of items; track item.id) {
-              <tr>
-                <td class="admin-td">
-                  <img [src]="thumb(item)" [alt]="item.title"
-                    class="h-14 w-24 rounded bg-slate-200 object-cover dark:bg-slate-700" />
-                </td>
+            @for (item of view(); track item.id) {
+              <tr class="admin-row">
                 <td class="admin-td">
                   {{ item.title }}
                   @if (item.titleFa) { <span class="block text-xs font-fa text-emerald-600" dir="rtl">{{ item.titleFa }}</span> }
@@ -115,6 +116,8 @@ interface Video {
                   <button (click)="del(item.id!)" class="text-rose-600 hover:underline dark:text-rose-400 ms-3">{{ i18n.t('delete') }}</button>
                 </td>
               </tr>
+            } @empty {
+              <tr><td colspan="4" class="admin-td text-center text-slate-400">{{ i18n.t('noItems') }}</td></tr>
             }
           </tbody>
         </table>
@@ -127,8 +130,41 @@ export class VideosComponent implements OnInit {
   model: Video = this.emptyModel();
   items: Video[] = [];
   editId?: string;
+  dirty = signal(false);
 
-  constructor(private http: HttpClient, public i18n: AdminI18nService) {}
+  markDirty(): void {
+    this.dirty.set(true);
+  }
+
+  canDeactivate(): boolean {
+    return !this.dirty();
+  }
+
+  sortCol = signal<SortCol>(null);
+  sortDir = signal<'asc' | 'desc'>('asc');
+
+  view = computed(() => {
+    const col = this.sortCol();
+    if (!col) return this.items;
+    const dir = this.sortDir();
+    return [...this.items].sort((a, b) => {
+      let av: string | number = a[col] ?? (col === 'order' ? 0 : '');
+      let bv: string | number = b[col] ?? (col === 'order' ? 0 : '');
+      if (typeof av === 'number' && typeof bv === 'number') {
+        return dir === 'asc' ? av - bv : bv - av;
+      }
+      av = av.toString().toLowerCase();
+      bv = bv.toString().toLowerCase();
+      return dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+    });
+  });
+
+  constructor(
+    private http: HttpClient,
+    public i18n: AdminI18nService,
+    private toast: ToastService,
+    private confirm: ConfirmService,
+  ) {}
 
   ngOnInit(): void { this.load(); }
 
@@ -148,11 +184,30 @@ export class VideosComponent implements OnInit {
     );
   }
 
+  toggleSort(col: SortCol): void {
+    if (this.sortCol() === col) {
+      this.sortDir.update((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      this.sortCol.set(col);
+      this.sortDir.set('asc');
+    }
+  }
+
+  sortArrow(col: SortCol): string {
+    if (this.sortCol() !== col) return '↕';
+    return this.sortDir() === 'asc' ? '↑' : '↓';
+  }
+
   onSubmit(): void {
     const req = this.editId
       ? this.http.put(`/api/admin/videos/${this.editId}`, this.model)
       : this.http.post(`/api/admin/videos`, this.model);
-    req.subscribe(() => { this.reset(); this.load(); });
+    req.subscribe(() => {
+      this.reset();
+      this.load();
+      this.dirty.set(false);
+      this.toast.success(this.editId ? this.i18n.t('toast_updated') : this.i18n.t('toast_added'));
+    });
   }
 
   edit(item: Video): void {
@@ -160,13 +215,25 @@ export class VideosComponent implements OnInit {
     this.editId = item.id;
   }
 
-  del(id: string): void {
-    this.http.delete(`/api/admin/videos/${id}`).subscribe(() => this.load());
+  async del(id: string): Promise<void> {
+    const ok = await this.confirm.confirm({
+      title: this.i18n.t('confirm_title'),
+      message: this.i18n.t('confirm_delete'),
+      confirmText: this.i18n.t('confirm_yes'),
+      cancelText: this.i18n.t('confirm_no'),
+      danger: true,
+    });
+    if (!ok) return;
+    this.http.delete(`/api/admin/videos/${id}`).subscribe(() => {
+      this.load();
+      this.toast.success(this.i18n.t('toast_deleted'));
+    });
   }
 
   reset(): void {
     this.model = this.emptyModel();
     this.editId = undefined;
+    this.dirty.set(false);
   }
 
   private emptyModel(): Video {

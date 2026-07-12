@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
+import { ToastService } from '../../core/services/toast.service';
+import { ConfirmService } from '../../core/services/confirm.service';
 
 interface Article {
   id?: string;
@@ -19,6 +21,8 @@ interface Article {
   publishedAt?: string;
 }
 
+type SortCol = 'title' | 'language' | 'readingTime' | 'likeCount' | 'published' | null;
+
 @Component({
   selector: 'app-articles',
   imports: [CommonModule, FormsModule],
@@ -26,8 +30,7 @@ interface Article {
     <div>
       <h1 class="admin-title mb-6">{{ i18n.t('nav_articles') }}</h1>
 
-      <form (ngSubmit)="onSubmit()" class="admin-card space-y-5 mb-6">
-        <!-- Title + Language -->
+      <form (ngSubmit)="onSubmit()" (input)="markDirty()" (change)="markDirty()" class="admin-card space-y-5 mb-6">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label">
@@ -47,13 +50,11 @@ interface Article {
           </div>
         </div>
 
-        <!-- Slug -->
         <div>
           <label class="admin-field-label">{{ i18n.t('art_slug') }}</label>
           <input [(ngModel)]="model.slug" name="slug" required class="admin-input" />
         </div>
 
-        <!-- Tags -->
         <div>
           <label class="admin-field-label">{{ i18n.t('art_tags') }}</label>
           <input [(ngModel)]="tagsInput" name="tags"
@@ -68,7 +69,6 @@ interface Article {
           }
         </div>
 
-        <!-- Excerpt -->
         <div>
           <label class="admin-field-label">{{ i18n.t('art_excerpt') }}</label>
           <textarea [(ngModel)]="model.excerpt" name="excerpt" rows="2"
@@ -76,7 +76,6 @@ interface Article {
             class="admin-input" [class.font-fa]="model.language === 'fa'"></textarea>
         </div>
 
-        <!-- Content -->
         <div>
           <label class="admin-field-label">{{ i18n.t('art_content') }}</label>
           <textarea [(ngModel)]="model.content" name="content" rows="12" required
@@ -88,7 +87,6 @@ interface Article {
           </p>
         </div>
 
-        <!-- Cover URL + Published -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label">{{ i18n.t('art_coverUrl') }}</label>
@@ -112,17 +110,27 @@ interface Article {
         <table class="min-w-full">
           <thead>
             <tr class="border-b border-slate-200 dark:border-slate-700">
-              <th class="admin-th">{{ i18n.t('art_content') }}</th>
-              <th class="admin-th">{{ i18n.t('art_language') }}</th>
-              <th class="admin-th">{{ i18n.t('art_read') }}</th>
-              <th class="admin-th">{{ i18n.t('art_likes') }}</th>
-              <th class="admin-th">{{ i18n.t('status') }}</th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('title')">
+                {{ i18n.t('art_content') }} <span class="text-[10px]">{{ sortArrow('title') }}</span>
+              </th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('language')">
+                {{ i18n.t('art_language') }} <span class="text-[10px]">{{ sortArrow('language') }}</span>
+              </th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('readingTime')">
+                {{ i18n.t('art_read') }} <span class="text-[10px]">{{ sortArrow('readingTime') }}</span>
+              </th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('likeCount')">
+                {{ i18n.t('art_likes') }} <span class="text-[10px]">{{ sortArrow('likeCount') }}</span>
+              </th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('published')">
+                {{ i18n.t('status') }} <span class="text-[10px]">{{ sortArrow('published') }}</span>
+              </th>
               <th class="admin-th text-end">{{ i18n.t('actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-700/70">
-            @for (item of items; track item.id) {
-              <tr>
+            @for (item of view(); track item.id) {
+              <tr class="admin-row">
                 <td class="admin-td"
                   [dir]="item.language === 'fa' ? 'rtl' : 'ltr'"
                   [class.font-fa]="item.language === 'fa'">
@@ -144,6 +152,8 @@ interface Article {
                   <button (click)="del(item.id!)" class="text-rose-600 hover:underline dark:text-rose-400 ms-3">{{ i18n.t('delete') }}</button>
                 </td>
               </tr>
+            } @empty {
+              <tr><td colspan="6" class="admin-td text-center text-slate-400">{{ i18n.t('noItems') }}</td></tr>
             }
           </tbody>
         </table>
@@ -157,8 +167,41 @@ export class ArticlesComponent implements OnInit {
   tagsInput = '';
   items: Article[] = [];
   editId?: string;
+  dirty = signal(false);
 
-  constructor(private http: HttpClient, public i18n: AdminI18nService) {}
+  markDirty(): void {
+    this.dirty.set(true);
+  }
+
+  canDeactivate(): boolean {
+    return !this.dirty();
+  }
+
+  sortCol = signal<SortCol>(null);
+  sortDir = signal<'asc' | 'desc'>('asc');
+
+  view = computed(() => {
+    const col = this.sortCol();
+    if (!col) return this.items;
+    const dir = this.sortDir();
+    return [...this.items].sort((a, b) => {
+      const av = a[col];
+      const bv = b[col];
+      if (typeof av === 'number' && typeof bv === 'number') {
+        return dir === 'asc' ? av - bv : bv - av;
+      }
+      const as = String(av ?? '').toLowerCase();
+      const bs = String(bv ?? '').toLowerCase();
+      return dir === 'asc' ? as.localeCompare(bs) : bs.localeCompare(as);
+    });
+  });
+
+  constructor(
+    private http: HttpClient,
+    public i18n: AdminI18nService,
+    private toast: ToastService,
+    private confirm: ConfirmService,
+  ) {}
 
   ngOnInit(): void { this.load(); }
 
@@ -178,12 +221,31 @@ export class ArticlesComponent implements OnInit {
     return words > 0 ? Math.ceil(words / 200) : 0;
   }
 
+  toggleSort(col: SortCol): void {
+    if (this.sortCol() === col) {
+      this.sortDir.update((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      this.sortCol.set(col);
+      this.sortDir.set('asc');
+    }
+  }
+
+  sortArrow(col: SortCol): string {
+    if (this.sortCol() !== col) return '↕';
+    return this.sortDir() === 'asc' ? '↑' : '↓';
+  }
+
   onSubmit(): void {
     const payload: Article = { ...this.model, tags: this.parsedTags() };
     const req = this.editId
       ? this.http.put(`/api/admin/articles/${this.editId}`, payload)
       : this.http.post('/api/admin/articles', payload);
-    req.subscribe(() => { this.reset(); this.load(); });
+    req.subscribe(() => {
+      this.reset();
+      this.load();
+      this.dirty.set(false);
+      this.toast.success(this.editId ? this.i18n.t('toast_updated') : this.i18n.t('toast_added'));
+    });
   }
 
   edit(item: Article): void {
@@ -192,14 +254,26 @@ export class ArticlesComponent implements OnInit {
     this.editId = item.id;
   }
 
-  del(id: string): void {
-    this.http.delete(`/api/admin/articles/${id}`).subscribe(() => this.load());
+  async del(id: string): Promise<void> {
+    const ok = await this.confirm.confirm({
+      title: this.i18n.t('confirm_title'),
+      message: this.i18n.t('confirm_delete'),
+      confirmText: this.i18n.t('confirm_yes'),
+      cancelText: this.i18n.t('confirm_no'),
+      danger: true,
+    });
+    if (!ok) return;
+    this.http.delete(`/api/admin/articles/${id}`).subscribe(() => {
+      this.load();
+      this.toast.success(this.i18n.t('toast_deleted'));
+    });
   }
 
   reset(): void {
     this.model = this.emptyModel();
     this.tagsInput = '';
     this.editId = undefined;
+    this.dirty.set(false);
   }
 
   private emptyModel(): Article {

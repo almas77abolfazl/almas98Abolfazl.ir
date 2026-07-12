@@ -4,6 +4,8 @@ import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
+import { ToastContainerComponent } from '../../core/components/toast-container.component';
+import { ConfirmDialogComponent } from '../../core/components/confirm-dialog.component';
 import { AsyncPipe } from '@angular/common';
 
 interface NavItem {
@@ -14,7 +16,7 @@ interface NavItem {
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, ToastContainerComponent, ConfirmDialogComponent],
   template: `
     @if (error$ | async; as error) {
       <div class="fixed top-0 inset-x-0 bg-rose-600 px-6 py-3 text-white shadow-lg z-[60] flex justify-between items-center">
@@ -140,6 +142,9 @@ interface NavItem {
           <router-outlet></router-outlet>
         </main>
       </div>
+
+      <app-toast-container></app-toast-container>
+      <app-confirm-dialog></app-confirm-dialog>
     </div>
   `,
   styles: [],
