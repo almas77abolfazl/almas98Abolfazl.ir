@@ -129,7 +129,7 @@ type SortCol = 'degree' | 'institution' | null;
 })
 export class EducationsComponent implements OnInit {
   model: Education = { degree: '', institution: '', startDate: '' };
-  items: Education[] = [];
+  items = signal<Education[]>([]);
   editId?: string;
   dirty = signal(false);
 
@@ -146,9 +146,9 @@ export class EducationsComponent implements OnInit {
 
   view = computed(() => {
     const col = this.sortCol();
-    if (!col) return this.items;
+    if (!col) return this.items();
     const dir = this.sortDir();
-    return [...this.items].sort((a, b) => {
+    return [...this.items()].sort((a, b) => {
       const av = (a[col] ?? '').toString().toLowerCase();
       const bv = (b[col] ?? '').toString().toLowerCase();
       return dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
@@ -165,7 +165,7 @@ export class EducationsComponent implements OnInit {
   ngOnInit(): void { this.load(); }
 
   load(): void {
-    this.http.get<Education[]>('/api/admin/educations').subscribe((data) => (this.items = data));
+    this.http.get<Education[]>('/api/admin/educations').subscribe((data) => this.items.set(data));
   }
 
   toggleSort(col: SortCol): void {

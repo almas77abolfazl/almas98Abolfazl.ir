@@ -119,7 +119,9 @@ interface NavItem {
               class="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
               [title]="i18n.t('toggleLang')">
               <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m6.5 14a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM21 12a9 9 0 11-18 0 9 9 0 0118 0zM3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.6 9h16.8M3.6 15h16.8" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3a15 15 0 010 18M12 3a15 15 0 000 18" />
               </svg>
             </button>
             <button (click)="theme.toggle()" type="button"

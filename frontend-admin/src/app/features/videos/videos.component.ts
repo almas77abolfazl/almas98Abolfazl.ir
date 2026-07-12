@@ -128,7 +128,7 @@ type SortCol = 'title' | 'platform' | 'order' | null;
 })
 export class VideosComponent implements OnInit {
   model: Video = this.emptyModel();
-  items: Video[] = [];
+  items = signal<Video[]>([]);
   editId?: string;
   dirty = signal(false);
 
@@ -145,9 +145,9 @@ export class VideosComponent implements OnInit {
 
   view = computed(() => {
     const col = this.sortCol();
-    if (!col) return this.items;
+    if (!col) return this.items();
     const dir = this.sortDir();
-    return [...this.items].sort((a, b) => {
+    return [...this.items()].sort((a, b) => {
       let av: string | number = a[col] ?? (col === 'order' ? 0 : '');
       let bv: string | number = b[col] ?? (col === 'order' ? 0 : '');
       if (typeof av === 'number' && typeof bv === 'number') {
@@ -169,7 +169,7 @@ export class VideosComponent implements OnInit {
   ngOnInit(): void { this.load(); }
 
   load(): void {
-    this.http.get<Video[]>('/api/admin/videos').subscribe((data) => (this.items = data));
+    this.http.get<Video[]>('/api/admin/videos').subscribe((data) => this.items.set(data));
   }
 
   thumb(item: Video): string {

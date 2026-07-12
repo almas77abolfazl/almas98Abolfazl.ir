@@ -128,7 +128,7 @@ type SortCol = 'role' | 'company' | 'startDate' | null;
 export class ExperiencesComponent implements OnInit {
   model: Experience = { role: '', company: '', startDate: '' };
   techInput = '';
-  items: Experience[] = [];
+  items = signal<Experience[]>([]);
   editId?: string;
   dirty = signal(false);
 
@@ -145,9 +145,9 @@ export class ExperiencesComponent implements OnInit {
 
   view = computed(() => {
     const col = this.sortCol();
-    if (!col) return this.items;
+    if (!col) return this.items();
     const dir = this.sortDir();
-    return [...this.items].sort((a, b) => {
+    return [...this.items()].sort((a, b) => {
       const av = (a[col] ?? '').toString().toLowerCase();
       const bv = (b[col] ?? '').toString().toLowerCase();
       return dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
@@ -164,7 +164,7 @@ export class ExperiencesComponent implements OnInit {
   ngOnInit(): void { this.load(); }
 
   load(): void {
-    this.http.get<Experience[]>('/api/admin/experiences').subscribe((data) => (this.items = data));
+    this.http.get<Experience[]>('/api/admin/experiences').subscribe((data) => this.items.set(data));
   }
 
   toggleSort(col: SortCol): void {

@@ -165,7 +165,7 @@ type SortCol = 'title' | 'language' | 'readingTime' | 'likeCount' | 'published' 
 export class ArticlesComponent implements OnInit {
   model: Article = this.emptyModel();
   tagsInput = '';
-  items: Article[] = [];
+  items = signal<Article[]>([]);
   editId?: string;
   dirty = signal(false);
 
@@ -182,9 +182,9 @@ export class ArticlesComponent implements OnInit {
 
   view = computed(() => {
     const col = this.sortCol();
-    if (!col) return this.items;
+    if (!col) return this.items();
     const dir = this.sortDir();
-    return [...this.items].sort((a, b) => {
+    return [...this.items()].sort((a, b) => {
       const av = a[col];
       const bv = b[col];
       if (typeof av === 'number' && typeof bv === 'number') {
@@ -206,7 +206,7 @@ export class ArticlesComponent implements OnInit {
   ngOnInit(): void { this.load(); }
 
   load(): void {
-    this.http.get<Article[]>('/api/admin/articles').subscribe((data) => (this.items = data));
+    this.http.get<Article[]>('/api/admin/articles').subscribe((data) => this.items.set(data));
   }
 
   parsedTags(): string[] {

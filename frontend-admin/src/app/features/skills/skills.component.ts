@@ -103,7 +103,7 @@ type SortCol = 'name' | 'category' | 'proficiency' | null;
 })
 export class SkillsComponent implements OnInit {
   model: Skill = { name: '', category: '' };
-  items: Skill[] = [];
+  items = signal<Skill[]>([]);
   editId?: string;
   dirty = signal(false);
 
@@ -120,9 +120,9 @@ export class SkillsComponent implements OnInit {
 
   view = computed(() => {
     const col = this.sortCol();
-    if (!col) return this.items;
+    if (!col) return this.items();
     const dir = this.sortDir();
-    return [...this.items].sort((a, b) => {
+    return [...this.items()].sort((a, b) => {
       let av: string | number = a[col] ?? (col === 'proficiency' ? 0 : '');
       let bv: string | number = b[col] ?? (col === 'proficiency' ? 0 : '');
       if (typeof av === 'number' && typeof bv === 'number') {
@@ -144,7 +144,7 @@ export class SkillsComponent implements OnInit {
   ngOnInit(): void { this.load(); }
 
   load(): void {
-    this.http.get<Skill[]>('/api/admin/skills').subscribe((data) => (this.items = data));
+    this.http.get<Skill[]>('/api/admin/skills').subscribe((data) => this.items.set(data));
   }
 
   toggleSort(col: SortCol): void {
