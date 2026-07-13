@@ -178,8 +178,8 @@ A singleton settings row drives site-wide display options.
 
 Approved testimonials are now surfaced on the homepage, and visitors can submit new ones.
 
-- **Backend**: public `TestimonialsModule` — `GET /api/testimonials` returns only `APPROVED` rows (newest first); `POST /api/testimonials` accepts public submissions stored with `status: PENDING` (admin approves/rejects in the panel). Registered in `AppModule`.
-- **Frontend**: `ApiService.getTestimonials()` + `postTestimonial()`. The homepage shows a responsive grid of approved testimonial cards (content with `contentFa`→`content` fallback, optional star rating, author + role/company with `Fa` fallback, optional `authorImageUrl` avatar with initials fallback) plus a "Leave a testimonial" form (name, role/company, message, optional photo URL, 1–5 star rating) that posts to the public endpoint. Bilingual i18n keys added.
+- **Backend**: public `TestimonialsModule` — `GET /api/testimonials` returns only `APPROVED` rows (newest first); `POST /api/testimonials` accepts public submissions stored with `status: PENDING` (admin approves/rejects in the panel). A public `POST /api/testimonials/upload` endpoint (image-only, 5 MB cap) reuses `UploadsService` to store avatars in `backend/uploads/` and returns `{ url }`. Registered in `AppModule`.
+- **Frontend**: `ApiService.getTestimonials()` + `postTestimonial()` + `uploadTestimonialImage()`. The homepage shows a responsive grid of approved testimonial cards (content with `contentFa`→`content` fallback, optional star rating, author + role/company with `Fa` fallback, optional `authorImageUrl` avatar with initials fallback) plus a "Leave a testimonial" form (name, role/company, message, optional photo upload via drag-and-drop/click, 1–5 star rating) that posts to the public endpoint. Bilingual i18n keys added.
 
 ## Phase 9: Additional Features 🔲
 

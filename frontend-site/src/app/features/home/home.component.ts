@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit {
   newTestimonial = { authorName: '', companyRole: '', content: '', authorImageUrl: '', rating: 0 };
   testimonialSuccess = false;
   testimonialError = '';
+  uploadingImage = false;
 
   constructor(
     public i18n: I18nService,
@@ -119,6 +120,46 @@ export class HomeComponent implements OnInit {
 
   setRating(value: number): void {
     this.newTestimonial.rating = value;
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) {
+      this.uploadImage(file);
+    }
+    input.value = '';
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    const file = event.dataTransfer?.files?.[0];
+    if (file) {
+      this.uploadImage(file);
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+  }
+
+  private uploadImage(file: File): void {
+    this.testimonialError = '';
+    this.uploadingImage = true;
+    this.api.uploadTestimonialImage(file).subscribe({
+      next: (res) => {
+        this.uploadingImage = false;
+        this.newTestimonial.authorImageUrl = res.url;
+      },
+      error: () => {
+        this.uploadingImage = false;
+        this.testimonialError = this.i18n.isFa ? 'بارگذاری عکس ناموفق بود' : 'Image upload failed';
+      },
+    });
+  }
+
+  removeImage(): void {
+    this.newTestimonial.authorImageUrl = '';
   }
 
   testimonialInitial(name: string): string {

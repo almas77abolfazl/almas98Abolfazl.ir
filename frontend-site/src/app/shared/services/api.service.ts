@@ -176,8 +176,15 @@ export class ApiService {
     companyRoleFa?: string;
     content: string;
     contentFa?: string;
+    authorImageUrl?: string;
     rating?: number;
   }): Observable<any> {
     return this.http.post(`${this.baseUrl}/testimonials`, body);
+  }
+
+  uploadTestimonialImage(file: File): Observable<{ url: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ url: string }>(`${this.baseUrl}/testimonials/upload`, formData);
   }
 }

@@ -209,9 +209,45 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ i18n.t('testimonialImage') }}</label>
-          <input [(ngModel)]="newTestimonial.authorImageUrl" name="authorImageUrl"
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-            [placeholder]="i18n.t('testimonialImage')" />
+          <div class="flex items-center gap-4">
+            <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-dashed border-slate-300 bg-slate-50 text-slate-400 dark:border-slate-600 dark:bg-slate-800/50 dark:text-slate-500">
+              @if (newTestimonial.authorImageUrl) {
+                <img [src]="newTestimonial.authorImageUrl" alt="" class="h-full w-full object-cover" />
+              } @else {
+                <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                </svg>
+              }
+            </div>
+            <div class="flex flex-col gap-2">
+              <div class="flex cursor-pointer items-center justify-center rounded-xl border border-slate-200 px-4 py-2.5 text-center text-sm text-slate-500 transition-colors hover:border-indigo-400 hover:text-indigo-600 dark:border-slate-700 dark:text-slate-400"
+                (click)="fileInput.click()"
+                (dragover)="onDragOver($event)"
+                (drop)="onDrop($event)">
+                @if (uploadingImage) {
+                  <span class="inline-flex items-center gap-2">
+                    <span class="h-4 w-4 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent"></span>
+                    {{ i18n.t('testimonialUploading') }}
+                  </span>
+                } @else {
+                  <span>{{ i18n.t('testimonialUploadHint') }}</span>
+                }
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" (click)="fileInput.click()" [disabled]="uploadingImage"
+                  class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  {{ newTestimonial.authorImageUrl ? i18n.t('testimonialReplace') : i18n.t('testimonialChoose') }}
+                </button>
+                @if (newTestimonial.authorImageUrl) {
+                  <button type="button" (click)="removeImage()" [disabled]="uploadingImage"
+                    class="px-3 py-1.5 text-sm rounded-lg text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10 transition-colors">
+                    {{ i18n.t('testimonialRemove') }}
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+          <input #fileInput type="file" class="hidden" accept="image/*" (change)="onFileSelected($event)" />
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ i18n.t('testimonialContent') }}</label>

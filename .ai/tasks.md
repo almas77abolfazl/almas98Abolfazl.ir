@@ -327,8 +327,9 @@
   - Backend: new public `TestimonialsModule` (`testimonials/`) — `GET /api/testimonials` returns only `APPROVED` testimonials (ordered by `createdAt desc`); `POST /api/testimonials` lets visitors submit (stored with `status: PENDING`, admin approves in panel)
   - Frontend-site: `ApiService` `getTestimonials()` + `postTestimonial()` + `Testimonial` interface
   - Homepage: a responsive grid of approved testimonial cards (quote icon, content with `contentFa`→`content` fallback, optional star rating, author name + role/company with `Fa` fallback)
-  - Homepage: a "Leave a testimonial" form (name, role/company, message, optional photo URL, 1–5 star rating) posting to the public endpoint with success/error states
-  - Optional `authorImageUrl` on the `Testimonial` model — visitors may supply a photo link; cards show the avatar (circular) or fall back to the author's initial
+  - Backend: public `POST /api/testimonials/upload` (image-only, 5 MB cap, unauthenticated) reuses `UploadsService` to save into `backend/uploads/` and returns `{ url }`; the form then posts `authorImageUrl`
+  - Homepage: a "Leave a testimonial" form (name, role/company, message, optional photo upload via drag-and-drop/click, 1–5 star rating) posting to the public endpoint with success/error states
+  - Optional `authorImageUrl` on the `Testimonial` model — visitors may upload a photo; cards show the avatar (circular) with an initials fallback
   - i18n keys added (EN/FA): `testimonialsTitle`, `testimonialsSubtitle`, `noTestimonials`, `testimonialLeave`, `testimonialLeaveDesc`, `testimonialName`, `testimonialCompany`, `testimonialContent`, `testimonialRating`, `testimonialImage`, `testimonialSubmit`, `testimonialSuccess`
 
 - [ ] 9.3 **RSS feed**
