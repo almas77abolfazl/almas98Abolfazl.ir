@@ -338,9 +338,13 @@
   - **Admin mobile drawer fix**: the `ShellComponent` drawer used `translate-x-full` to hide, which left it stuck mid-screen in LTR (and wrong direction in RTL). Replaced with an `admin-mobile-drawer` class whose hide transform is direction-aware via global CSS (`translateX(-100%)` in LTR, `translateX(100%)` in RTL)
   - i18n keys added (EN/FA): `testimonialsTitle`, `testimonialsSubtitle`, `noTestimonials`, `testimonialLeave`, `testimonialLeaveDesc`, `testimonialName`, `testimonialCompany`, `testimonialEmail`, `testimonialContent`, `testimonialImage`, `testimonialUploadHint`, `testimonialUploading`, `testimonialChoose`, `testimonialReplace`, `testimonialRemove`, `testimonialUploadFailed`, `testimonialSubmit`, `testimonialSuccess`
 
-- [ ] 9.3 **RSS feed**
-  - `GET /api/feed.xml` — NestJS generates RSS 2.0 XML for published articles
-  - Include `<link rel="alternate" type="application/rss+xml">` in `<head>`
+- [x] 9.3 **RSS feed** ✅
+  - New `RssModule` (`rss/`) — public `GET /api/feed.xml` returns RSS 2.0 XML for published articles (newest first by `publishedAt`→`createdAt`, capped at 50)
+  - Optional `?lang=fa`/`?lang=en` filter (mirrors the articles language filter); `<language>` channel tag reflects it
+  - Per-item: `title`, `link`, `guid` (permalink), `pubDate` (RFC-822), `description` (excerpt), `category` per tag, and full Markdown body in `content:encoded` (CDATA-wrapped, `]]>`-safe)
+  - `Content-Type: application/rss+xml`; base URL from `SITE_URL` env (channel title/description overridable via `SITE_NAME`/`SITE_DESCRIPTION`)
+  - Nginx maps public `/feed.xml` → backend `/api/feed.xml` (same pattern as sitemap)
+  - `<link rel="alternate" type="application/rss+xml" href="/feed.xml">` added to `index.html` `<head>` for feed autodiscovery
 
 - [ ] 9.4 **PWA support**
   - `@angular/pwa` schematics

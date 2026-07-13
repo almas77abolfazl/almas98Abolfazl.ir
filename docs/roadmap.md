@@ -187,8 +187,16 @@ Approved testimonials are now surfaced on the homepage, and visitors can submit 
 
 **Goal:** Optional enhancements and new sections.
 
-- Projects section, public testimonials (9.2 ✅), RSS feed, PWA support
+- Projects section, public testimonials (9.2 ✅), RSS feed (9.3 ✅), PWA support
 - Search, OG image generation, newsletter, copy-code buttons, custom 404, reading progress
+
+### RSS Feed (9.3)
+
+Published articles are exposed as an RSS 2.0 feed for readers and feed aggregators.
+
+- **Backend**: `RssModule` — public `GET /api/feed.xml` builds RSS 2.0 XML from published articles (newest first, capped at 50). Supports an optional `?lang=fa`/`?lang=en` filter. Each item carries `title`, `link`, `guid` (permalink), `pubDate` (RFC-822), `description` (excerpt), a `category` per tag, and the full Markdown body in `content:encoded` (CDATA-wrapped). Base URL from `SITE_URL`; channel title/description overridable via `SITE_NAME`/`SITE_DESCRIPTION`.
+- **Nginx**: maps public `/feed.xml` → backend `/api/feed.xml` (same pattern as the sitemap).
+- **Discovery**: `<link rel="alternate" type="application/rss+xml" href="/feed.xml">` added to `index.html` so browsers/readers autodiscover the feed.
 
 ## Timeline
 
@@ -203,7 +211,7 @@ Approved testimonials are now surfaced on the homepage, and visitors can submit 
 | 6 | SEO Optimization | 🔶 6.1–6.6 done (6.7 SSR deferred) |
 | 7 | Dark/Light Theme Polish | 🔶 7.1–7.4 done (7.5 toggle animation pending) |
 | 8 | Admin Panel UI Overhaul | 🔶 8.0–8.7, 8.8, 8.9, 8.10, 8.11 done (8.7 reorder + 8.11 site settings complete) |
-| 9 | Additional Features | 🔲 9.2 done (public testimonials + submit); rest not started |
+| 9 | Additional Features | 🔲 9.2 (public testimonials) + 9.3 (RSS feed) done; rest not started |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.
 
