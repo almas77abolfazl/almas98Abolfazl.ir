@@ -345,6 +345,17 @@
   - `Content-Type: application/rss+xml`; base URL from `SITE_URL` env (channel title/description overridable via `SITE_NAME`/`SITE_DESCRIPTION`)
   - Nginx maps public `/feed.xml` → backend `/api/feed.xml` (same pattern as sitemap)
   - `<link rel="alternate" type="application/rss+xml" href="/feed.xml">` added to `index.html` `<head>` for feed autodiscovery
+  - Visible RSS link + icon added to the site footer (bilingual `rssFeed` i18n key), opening `/feed.xml`
+  - Dev proxy fix: `frontend-site/proxy.conf.json` now forwards `/feed.xml` and `/sitemap.xml` to the backend so they work on the Angular dev server (port 4200), not just behind Nginx
+  - Cleaned a broken published article (empty title/slug) from the DB so it no longer appears in the feed
+
+  - **9.3 follow-ups (future, optional):**
+    - [ ] Per-language feed discovery: add `<link rel="alternate" ... href="/feed.xml?lang=fa">` / `?lang=en` in `<head>`, and expose both feeds (EN/FA) in the footer instead of one generic link
+    - [ ] Add `<enclosure>`/media namespace for the article `coverUrl` so readers show a thumbnail
+    - [ ] Add author info (`<dc:creator>` via the Dublin Core namespace)
+    - [ ] Rewrite relative image/link URLs inside `content:encoded` (e.g. `/api/uploads/...`) to absolute URLs so feed readers can load images
+    - [ ] Feed caching / conditional GET (`ETag` or `Last-Modified` + `If-Modified-Since`) to avoid re-rendering on every crawler hit
+    - [ ] Consider a summary-only variant (drop `content:encoded`) if full-content syndication/scraping becomes a concern
 
 - [ ] 9.4 **PWA support**
   - `@angular/pwa` schematics

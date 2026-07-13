@@ -60,6 +60,7 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     testimonialUploadFailed: 'Image upload failed',
     testimonialSubmit: 'Submit testimonial',
     testimonialSuccess: 'Thank you! Your testimonial will be reviewed and published soon.',
+    rssFeed: 'RSS feed',
   },
   fa: {
     home: 'خانه',
@@ -118,6 +119,7 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     testimonialUploadFailed: 'بارگذاری عکس ناموفق بود',
     testimonialSubmit: 'ارسال نظر',
     testimonialSuccess: 'متشکرم! نظر شما پس از بررسی منتشر خواهد شد.',
+    rssFeed: 'خوراک RSS',
   }
 };
 
