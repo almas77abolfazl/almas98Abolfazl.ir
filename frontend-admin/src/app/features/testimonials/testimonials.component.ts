@@ -10,6 +10,7 @@ interface Testimonial {
   authorNameFa?: string;
   companyRole?: string;
   companyRoleFa?: string;
+  email?: string;
   content: string;
   contentFa?: string;
   authorImageUrl?: string;

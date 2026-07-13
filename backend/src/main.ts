@@ -8,6 +8,8 @@ import { join } from 'node:path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setGlobalPrefix('api');
+  // Trust the reverse proxy (Nginx) so req.ip reflects the real client IP for rate limiting.
+  app.set('trust proxy', true);
 
   const uploadsDir = join(process.cwd(), 'uploads');
   mkdirSync(uploadsDir, { recursive: true });

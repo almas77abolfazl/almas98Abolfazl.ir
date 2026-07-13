@@ -142,6 +142,7 @@ model Testimonial {
   authorNameFa  String?
   companyRole   String?
   companyRoleFa String?
+  email         String?
   content       String    @db.Text
   contentFa     String?   @db.Text
   authorImageUrl String?

@@ -354,6 +354,7 @@ export class AdminController {
       authorNameFa?: string;
       companyRole?: string;
       companyRoleFa?: string;
+      email?: string;
       content: string;
       contentFa?: string;
       authorImageUrl?: string;
@@ -375,6 +376,7 @@ export class AdminController {
       authorNameFa?: string;
       companyRole?: string;
       companyRoleFa?: string;
+      email?: string;
       content?: string;
       contentFa?: string;
       authorImageUrl?: string;

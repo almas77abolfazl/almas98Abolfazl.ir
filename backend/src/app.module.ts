@@ -14,11 +14,12 @@ import { ContactMessagesModule } from './contact-messages/contact-messages.modul
 import { AnalyticsModule } from './analytics/analytics.module';
 import { SiteSettingsModule } from './site-settings/site-settings.module';
 import { TestimonialsModule } from './testimonials/testimonials.module';
+import { RateLimitModule } from './common/rate-limit.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
-  imports: [PrismaModule, AboutMeModule, ExperiencesModule, EducationsModule, SkillsModule, ArticlesModule, MediaModule, VideosModule, SitemapModule, AuthModule, AdminModule, ContactMessagesModule, AnalyticsModule, SiteSettingsModule, TestimonialsModule],
+  imports: [PrismaModule, AboutMeModule, ExperiencesModule, EducationsModule, SkillsModule, ArticlesModule, MediaModule, VideosModule, SitemapModule, AuthModule, AdminModule, ContactMessagesModule, AnalyticsModule, SiteSettingsModule, TestimonialsModule, RateLimitModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -234,7 +234,7 @@ export class AdminService {
     return this.prisma.testimonial.findMany({ orderBy: { createdAt: 'desc' } });
   }
 
-  async createTestimonial(data: { authorName: string; authorNameFa?: string; companyRole?: string; companyRoleFa?: string; content: string; contentFa?: string; authorImageUrl?: string; status?: TestimonialStatus }) {
+  async createTestimonial(data: { authorName: string; authorNameFa?: string; companyRole?: string; companyRoleFa?: string; email?: string; content: string; contentFa?: string; authorImageUrl?: string; status?: TestimonialStatus }) {
     return this.prisma.testimonial.create({ data });
   }
 
@@ -245,6 +245,7 @@ export class AdminService {
       authorNameFa?: string;
       companyRole?: string;
       companyRoleFa?: string;
+      email?: string;
       content?: string;
       contentFa?: string;
       authorImageUrl?: string;

@@ -49,6 +49,9 @@
                     {{ i18n.isFa ? (item.companyRoleFa || item.companyRole) : item.companyRole }}
                   </p>
                 }
+                @if (item.email) {
+                  <p class="text-xs text-slate-400 dark:text-slate-500">{{ item.email }}</p>
+                }
               </div>
               <span
                 class="admin-badge flex-shrink-0"

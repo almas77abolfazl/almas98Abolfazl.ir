@@ -106,6 +106,7 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     testimonialLeaveDesc: 'تجربه خود را به اشتراک بگذارید — پس از بررسی منتشر خواهد شد',
     testimonialName: 'نام شما',
     testimonialCompany: 'سمت / شرکت',
+    testimonialEmail: 'ایمیل',
     testimonialContent: 'پیام شما',
     testimonialRating: 'امتیاز',
     testimonialImage: 'عکس (اختیاری)',

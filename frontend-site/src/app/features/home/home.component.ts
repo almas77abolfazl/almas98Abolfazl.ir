@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
   contact = { name: '', email: '', subject: '', message: '' };
   success = false;
   error = '';
-  newTestimonial = { authorName: '', companyRole: '', content: '', authorImageUrl: '' };
+  newTestimonial = { authorName: '', companyRole: '', email: '', content: '', authorImageUrl: '' };
   testimonialSuccess = false;
   testimonialError = '';
   uploadingImage = false;
@@ -79,9 +79,24 @@ export class HomeComponent implements OnInit {
     return this.skills.slice(0, 6);
   }
 
+  private isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
   onSubmit(): void {
     this.error = '';
     this.success = false;
+    const name = this.contact.name.trim();
+    const email = this.contact.email.trim();
+    const message = this.contact.message.trim();
+    if (!name || !message) {
+      this.error = this.i18n.isFa ? 'نام و پیام الزامی است' : 'Name and message are required';
+      return;
+    }
+    if (!this.isValidEmail(email)) {
+      this.error = this.i18n.isFa ? 'یک ایمیل معتبر وارد کنید' : 'Please enter a valid email';
+      return;
+    }
     this.api.postContactMessage(this.contact).subscribe({
       next: () => {
         this.success = true;
@@ -99,11 +114,21 @@ export class HomeComponent implements OnInit {
     const name = this.newTestimonial.authorName.trim();
     const role = this.newTestimonial.companyRole.trim();
     const content = this.newTestimonial.content.trim();
+    const email = this.newTestimonial.email.trim();
+    if (!name || !content) {
+      this.testimonialError = this.i18n.isFa ? 'نام و پیام الزامی است' : 'Name and message are required';
+      return;
+    }
+    if (!this.isValidEmail(email)) {
+      this.testimonialError = this.i18n.isFa ? 'یک ایمیل معتبر وارد کنید' : 'Please enter a valid email';
+      return;
+    }
     const payload: any = {
       authorName: name,
       authorNameFa: name,
       companyRole: role || undefined,
       companyRoleFa: role || undefined,
+      email: email,
       content: content,
       contentFa: content,
     };
@@ -113,7 +138,7 @@ export class HomeComponent implements OnInit {
     this.api.postTestimonial(payload).subscribe({
       next: () => {
         this.testimonialSuccess = true;
-        this.newTestimonial = { authorName: '', companyRole: '', content: '', authorImageUrl: '' };
+        this.newTestimonial = { authorName: '', companyRole: '', email: '', content: '', authorImageUrl: '' };
       },
       error: () => {
         this.testimonialError = this.i18n.isFa ? 'خطا در ارسال نظر' : 'Failed to submit testimonial';
