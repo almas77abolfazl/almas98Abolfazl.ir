@@ -183,12 +183,19 @@ Approved testimonials are now surfaced on the homepage, and visitors can submit 
 - **Admin**: the testimonials page shows each entry with the uploaded avatar (or initials), bilingual name/role/content (respects the admin language toggle), the submitter's email (stored, never shown publicly), a created-date, a status badge, and Approve/Reject actions; filter tabs (All / Pending / Approved / Rejected with counts) let the owner review uploaded photos before approving.
 - **Email + anti-spam**: both testimonials and contact messages now require a valid email (server-validated, `400` on bad input). A `RateLimitService` (5 submissions / 10 min per IP) returns `429` on the public `POST` endpoints; `main.ts` trusts the proxy so rate limits use the real client IP. The admin mobile drawer hide transform is now direction-aware (correct in both LTR and RTL).
 
-## Phase 9: Additional Features 🔲
+## Phase 9: Additional Features 🔶
 
 **Goal:** Optional enhancements and new sections.
 
-- Projects section, public testimonials (9.2 ✅), RSS feed (9.3 ✅), PWA support
-- Search, OG image generation, newsletter, copy-code buttons, custom 404, reading progress
+**Status:** 9.2 (public testimonials), 9.3 (RSS feed), 9.9 (custom 404), and 9.10 (reading progress bar — already shipped in Phase 4.6) are done. The following were **dropped by decision** as low-value for a personal portfolio:
+
+- **9.4 PWA** — visitors don't install/offline-use a portfolio.
+- **9.5 Search** — only a handful of articles; revisit only if the blog grows large.
+- **9.6 OG image generation** — heavy (puppeteer/canvas) for a small VPS; a default OG image + manual article covers suffices.
+- **9.7 Newsletter** — email-sending infra is heavy; RSS (9.3) already covers "follow for new posts".
+- **9.8 Copy-code buttons** — nice-to-have, not needed.
+
+Remaining portfolio work moved to **Phase 10** below (Projects section + résumé download).
 
 ### RSS Feed (9.3)
 
@@ -196,7 +203,19 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 
 - **Backend**: `RssModule` — public `GET /api/feed.xml` builds RSS 2.0 XML from published articles (newest first, capped at 50). Supports an optional `?lang=fa`/`?lang=en` filter. Each item carries `title`, `link`, `guid` (permalink), `pubDate` (RFC-822), `description` (excerpt), a `category` per tag, and the full Markdown body in `content:encoded` (CDATA-wrapped). Base URL from `SITE_URL`; channel title/description overridable via `SITE_NAME`/`SITE_DESCRIPTION`.
 - **Nginx**: maps public `/feed.xml` → backend `/api/feed.xml` (same pattern as the sitemap).
-- **Discovery**: `<link rel="alternate" type="application/rss+xml" href="/feed.xml">` added to `index.html` so browsers/readers autodiscover the feed.
+- **Discovery**: `<link rel="alternate" type="application/rss+xml" href="/feed.xml">` added to `index.html` so browsers/readers autodiscover the feed. A visible RSS link + icon also lives in the site footer.
+
+## Phase 10: Portfolio Polish 🔲
+
+**Goal:** Round out the portfolio with the features that matter most for showcasing work.
+
+- **10.1 Projects / Portfolio section** — `Projects` model (bilingual, `techStack[]`, `liveUrl`/`repoUrl`/`coverUrl`, `order`); public `GET /api/projects` + admin CRUD + reorder; card grid with tech badges and links.
+- **10.2 Résumé / CV download (PDF)** — a "Download résumé" button (header and/or About page), optionally bilingual EN/FA files.
+
+## Deferred / Under review
+
+- **6.7 SSR / Prerender** — **deferred by decision.** Client-side `SeoService` works for Google (renders JS), and the homepage — the primary shared link — already has correct static OG tags in `index.html`. The only gap is per-route social previews for *deep* links, which are rare for a personal portfolio. Prerendering the static routes wouldn't fix article previews anyway (only full SSR would), and full SSR requires a persistent Node process (breaks pure-static Nginx) — disproportionate here. Revisit with **full SSR** (or a targeted backend OG endpoint) only if/when individual article links are actively shared on social media.
+- **7.5 Theme toggle animation** — minor polish, pending.
 
 ## Timeline
 
@@ -208,10 +227,11 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 | 3.5 | Bilingual + UI Polish | ✅ Done |
 | 4 | Article System Overhaul | ✅ Done |
 | 5 | Video Embeds | ✅ Done |
-| 6 | SEO Optimization | 🔶 6.1–6.6 done (6.7 SSR deferred) |
-| 7 | Dark/Light Theme Polish | 🔶 7.1–7.4 done (7.5 toggle animation pending) |
-| 8 | Admin Panel UI Overhaul | 🔶 8.0–8.7, 8.8, 8.9, 8.10, 8.11 done (8.7 reorder + 8.11 site settings complete) |
-| 9 | Additional Features | 🔲 9.2 (public testimonials) + 9.3 (RSS feed) done; rest not started |
+| 6 | SEO Optimization | 🔶 6.1–6.6 done (6.7 SSR/prerender deferred by decision) |
+| 7 | Dark/Light Theme Polish | 🔶 7.1–7.4, 7.6 done (7.5 toggle animation pending) |
+| 8 | Admin Panel UI Overhaul | ✅ 8.0–8.11 done |
+| 9 | Additional Features | 🔶 9.2, 9.3, 9.9, 9.10 done; 9.4–9.8 dropped |
+| 10 | Portfolio Polish | 🔲 Projects section + résumé download |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.
 

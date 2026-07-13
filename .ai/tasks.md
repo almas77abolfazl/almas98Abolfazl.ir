@@ -175,9 +175,9 @@
   - `lang`/`dir` attributes managed at runtime by `I18nService`
 
 - [ ] 6.7 **Angular SSR (optional, major upgrade)** — _deferred by decision_
-  - Consider `@angular/ssr` for server-side rendering to make pages indexable without JS
-  - Trade-off: requires Node.js to serve (can't be pure static Nginx)
-  - Alternative: prerendering with `ng build --prerender` for the static routes
+  - Investigated (2026-07): homepage (primary shared link) already has correct static OG in `index.html`; Google indexes JS fine. Only gap = deep-link social previews (rare for a portfolio). Prerender-static wouldn't fix article previews (only full SSR would); full SSR needs a persistent Node process (breaks pure-static Nginx). Not worth it now.
+  - Blockers to address if revisited: `ThemeService` (`window.matchMedia` in a field initializer) and `I18nService` (`localStorage`) need `isPlatformBrowser` guards; `SeoService` already uses the `DOCUMENT` token (SSR-safe).
+  - Revisit with **full SSR** (or a targeted backend OG endpoint) only if individual article links get actively shared on social media.
 
 ---
 
@@ -357,37 +357,34 @@
     - [ ] Feed caching / conditional GET (`ETag` or `Last-Modified` + `If-Modified-Since`) to avoid re-rendering on every crawler hit
     - [ ] Consider a summary-only variant (drop `content:encoded`) if full-content syndication/scraping becomes a concern
 
-- [ ] 9.4 **PWA support**
-  - `@angular/pwa` schematics
-  - Service worker for offline support
-  - `manifest.json` for "Add to Home Screen"
-  - Cache API responses for offline browsing
+- [~] 9.4 **PWA support** — _dropped (low ROI for a personal portfolio; visitors don't install/offline-use a portfolio)_
 
-- [ ] 9.5 **Search**
-  - `GET /api/search?q=...` — search across articles (title + excerpt + content), skills, experiences
-  - Simple `ILIKE` PostgreSQL query
-  - Search bar in header (hidden by default, expands on click)
-  - Results dropdown with links
+- [~] 9.5 **Search** — _dropped for now (only 2–3 articles; revisit only if the blog grows large)_
 
-- [ ] 9.6 **Open Graph image generation**
-  - Auto-generate OG images per article using a canvas/template approach
-  - Can use `@vercel/og` or `puppeteer` to render an HTML template as an image
-  - `GET /api/og/:slug.png` → returns a 1200×630 PNG
+- [~] 9.6 **Open Graph image generation** — _dropped (heavy: puppeteer/canvas on a small VPS; a good default OG image + manual article covers is enough)_
 
-- [ ] 9.7 **Newsletter subscription**
-  - Simple `Subscriber` model: `{ email, confirmedAt?, createdAt }`
-  - Subscribe form (email input) in footer or dedicated section
-  - Confirmation email via SendGrid / Nodemailer
-  - Admin: view subscriber list
+- [~] 9.7 **Newsletter subscription** — _dropped (email-sending infra + subscriber management is heavy; the RSS feed (9.3) already covers "follow for new posts")_
 
-- [ ] 9.8 **Copy code blocks**
-  - When Markdown articles are rendered, add a "Copy" button to `<pre><code>` blocks
-  - Angular directive: `[copyCode]` that injects a clipboard button
+- [~] 9.8 **Copy code blocks** — _dropped by decision (nice-to-have, not needed)_
 
-- [ ] 9.9 **404 page**
+- [x] 9.9 **404 page**
   - Custom styled 404 page for the public site
   - Add wildcard route in `app.routes.ts` that shows it
 
-- [ ] 9.10 **Reading progress bar**
-  - On article detail pages: a thin bar at top of viewport showing scroll progress
-  - Pure CSS + Angular `HostListener('scroll')` or `IntersectionObserver`
+- [x] 9.10 **Reading progress bar** ✅ _(already implemented in 4.6)_
+  - Article detail pages show a thin top progress bar driven by `@HostListener('window:scroll')` + a `progress` signal (`article-detail.component.ts`/`.html`)
+
+---
+
+## Phase 10: Portfolio Polish 🔲
+
+- [ ] 10.1 **Projects / Portfolio section** (was 9.1)
+  - Add `Projects` model: `{ title, titleFa, description, descriptionFa, techStack String[], liveUrl?, repoUrl?, coverUrl?, order }`
+  - Separate from Experiences — these are personal side projects / open source
+  - Backend: public `GET /api/projects` + admin CRUD + `PATCH /api/admin/projects/reorder`
+  - Admin: management page (bilingual form, image upload for `coverUrl`, drag-and-drop ordering)
+  - Frontend: display as cards with tech badges and live/repo links
+
+- [ ] 10.2 **Resume / CV download (PDF)**
+  - A "Download résumé" button (header and/or About page)
+  - Bilingual EN/FA résumé files if desired
