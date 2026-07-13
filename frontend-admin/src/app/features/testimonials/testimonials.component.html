@@ -1,33 +1,87 @@
+<div>
+  <h1 class="admin-title mb-6">{{ i18n.t('nav_testimonials') }}</h1>
 
-    <div>
-      <h1 class="admin-title mb-6">{{ i18n.t('nav_testimonials') }}</h1>
-      <div class="space-y-4">
-        @for (item of items; track item.id) {
-          <div class="admin-card">
-            <div class="mb-2 flex items-start justify-between gap-4">
-              <div>
-                <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ item.authorName }}</h3>
-                <p class="text-sm text-slate-500 dark:text-slate-400">{{ item.companyRole }}</p>
+  <!-- Filter tabs -->
+  <div class="flex flex-wrap gap-2 mb-6">
+    @for (f of filters; track f) {
+      <button
+        (click)="setFilter(f)"
+        class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border"
+        [class.bg-indigo-600]="filter === f"
+        [class.text-white]="filter === f"
+        [class.border-indigo-600]="filter === f"
+        [class.text-slate-600]="filter !== f"
+        [class.dark:text-slate-300]="filter !== f"
+        [class.border-slate-200]="filter !== f"
+        [class.dark:border-slate-700]="filter !== f">
+        {{ f === 'ALL' ? i18n.t('filter_all') : f === 'PENDING' ? i18n.t('test_pending') : f === 'APPROVED' ? i18n.t('test_approved') : i18n.t('test_rejected') }}
+        @if (f !== 'ALL') {
+          <span class="ms-1.5 text-xs opacity-70">{{ count(f) }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  <div class="space-y-4">
+    @for (item of view; track item.id) {
+      <div class="admin-card">
+        <div class="flex items-start gap-4">
+          <!-- Avatar -->
+          @if (item.authorImageUrl) {
+            <img
+              [src]="item.authorImageUrl"
+              [alt]="i18n.isFa ? (item.authorNameFa || item.authorName) : item.authorName"
+              class="w-14 h-14 rounded-full object-cover ring-2 ring-indigo-100 dark:ring-indigo-900/50 flex-shrink-0" />
+          } @else {
+            <div class="w-14 h-14 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 flex items-center justify-center text-lg font-semibold flex-shrink-0">
+              {{ initial(i18n.isFa ? (item.authorNameFa || item.authorName) : item.authorName) }}
+            </div>
+          }
+
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-4">
+              <div class="min-w-0">
+                <h3 class="text-lg font-semibold text-slate-900 dark:text-white truncate">
+                  {{ i18n.isFa ? (item.authorNameFa || item.authorName) : item.authorName }}
+                </h3>
+                @if (i18n.isFa ? (item.companyRoleFa || item.companyRole) : item.companyRole) {
+                  <p class="text-sm text-slate-500 dark:text-slate-400">
+                    {{ i18n.isFa ? (item.companyRoleFa || item.companyRole) : item.companyRole }}
+                  </p>
+                }
               </div>
-              <span class="admin-badge"
+              <span
+                class="admin-badge flex-shrink-0"
                 [class.admin-badge-success]="item.status === 'APPROVED'"
                 [class.admin-badge-danger]="item.status === 'REJECTED'"
                 [class.admin-badge-warning]="item.status === 'PENDING'">
                 {{ item.status === 'APPROVED' ? i18n.t('test_approved') : item.status === 'REJECTED' ? i18n.t('test_rejected') : i18n.t('test_pending') }}
               </span>
             </div>
-            <p class="mb-4 text-slate-700 dark:text-slate-300">{{ item.content }}</p>
-            <div class="flex gap-2">
+
+            <p class="mt-2 whitespace-pre-line text-slate-700 dark:text-slate-300">
+              {{ i18n.isFa ? (item.contentFa || item.content) : item.content }}
+            </p>
+
+            <p class="mt-2 text-xs text-slate-400">{{ item.createdAt | date: 'medium' }}</p>
+
+            <div class="mt-3 flex gap-2">
               @if (item.status !== 'APPROVED') {
-                <button (click)="setStatus(item.id, 'APPROVED')" class="admin-btn admin-btn-primary">{{ i18n.t('test_approve') }}</button>
+                <button (click)="setStatus(item.id, 'APPROVED')" class="admin-btn admin-btn-primary">
+                  {{ i18n.t('test_approve') }}
+                </button>
               }
               @if (item.status !== 'REJECTED') {
-                <button (click)="setStatus(item.id, 'REJECTED')" class="admin-btn admin-btn-danger">{{ i18n.t('test_reject') }}</button>
+                <button (click)="setStatus(item.id, 'REJECTED')" class="admin-btn admin-btn-danger">
+                  {{ i18n.t('test_reject') }}
+                </button>
               }
             </div>
           </div>
-        } @empty {
-          <div class="admin-card text-center text-slate-400">{{ i18n.t('noItems') }}</div>
-        }
+        </div>
       </div>
-    </div>
+    } @empty {
+      <div class="admin-card text-center text-slate-400">{{ i18n.t('noItems') }}</div>
+    }
+  </div>
+</div>

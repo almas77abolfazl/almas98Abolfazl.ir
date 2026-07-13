@@ -24,7 +24,6 @@ export class TestimonialsService {
     content: string;
     contentFa?: string;
     authorImageUrl?: string;
-    rating?: number;
   }) {
     return this.prisma.testimonial.create({
       data: { ...data, status: 'PENDING' },

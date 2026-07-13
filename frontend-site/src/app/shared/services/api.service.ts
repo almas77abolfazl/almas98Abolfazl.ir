@@ -109,7 +109,6 @@ export interface Testimonial {
   content: string;
   contentFa?: string;
   authorImageUrl?: string;
-  rating?: number;
   status: string;
   createdAt: string;
 }

@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
   contact = { name: '', email: '', subject: '', message: '' };
   success = false;
   error = '';
-  newTestimonial = { authorName: '', companyRole: '', content: '', authorImageUrl: '', rating: 0 };
+  newTestimonial = { authorName: '', companyRole: '', content: '', authorImageUrl: '' };
   testimonialSuccess = false;
   testimonialError = '';
   uploadingImage = false;
@@ -96,30 +96,29 @@ export class HomeComponent implements OnInit {
   submitTestimonial(): void {
     this.testimonialError = '';
     this.testimonialSuccess = false;
+    const name = this.newTestimonial.authorName.trim();
+    const role = this.newTestimonial.companyRole.trim();
+    const content = this.newTestimonial.content.trim();
     const payload: any = {
-      authorName: this.newTestimonial.authorName,
-      companyRole: this.newTestimonial.companyRole || undefined,
-      content: this.newTestimonial.content,
+      authorName: name,
+      authorNameFa: name,
+      companyRole: role || undefined,
+      companyRoleFa: role || undefined,
+      content: content,
+      contentFa: content,
     };
-    if (this.newTestimonial.rating > 0) {
-      payload.rating = this.newTestimonial.rating;
-    }
     if (this.newTestimonial.authorImageUrl.trim()) {
       payload.authorImageUrl = this.newTestimonial.authorImageUrl.trim();
     }
     this.api.postTestimonial(payload).subscribe({
       next: () => {
         this.testimonialSuccess = true;
-        this.newTestimonial = { authorName: '', companyRole: '', content: '', authorImageUrl: '', rating: 0 };
+        this.newTestimonial = { authorName: '', companyRole: '', content: '', authorImageUrl: '' };
       },
       error: () => {
         this.testimonialError = this.i18n.isFa ? 'خطا در ارسال نظر' : 'Failed to submit testimonial';
       }
     });
-  }
-
-  setRating(value: number): void {
-    this.newTestimonial.rating = value;
   }
 
   onFileSelected(event: Event): void {

@@ -7,11 +7,17 @@ import { ToastService } from '../../core/services/toast.service';
 interface Testimonial {
   id: string;
   authorName: string;
+  authorNameFa?: string;
   companyRole?: string;
+  companyRoleFa?: string;
   content: string;
-  rating?: number;
+  contentFa?: string;
+  authorImageUrl?: string;
   status: string;
+  createdAt: string;
 }
+
+type Filter = 'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED';
 
 @Component({
   selector: 'app-testimonials',
@@ -21,6 +27,8 @@ interface Testimonial {
 })
 export class TestimonialsComponent implements OnInit {
   items: Testimonial[] = [];
+  filters: Filter[] = ['ALL', 'PENDING', 'APPROVED', 'REJECTED'];
+  filter: Filter = 'ALL';
 
   constructor(private http: HttpClient, public i18n: AdminI18nService, private toast: ToastService) {}
 
@@ -28,8 +36,21 @@ export class TestimonialsComponent implements OnInit {
     this.load();
   }
 
+  get view(): Testimonial[] {
+    if (this.filter === 'ALL') return this.items;
+    return this.items.filter((t) => t.status === this.filter);
+  }
+
   load(): void {
     this.http.get<Testimonial[]>('/api/admin/testimonials').subscribe((data) => (this.items = data));
+  }
+
+  setFilter(f: Filter): void {
+    this.filter = f;
+  }
+
+  count(f: Filter): number {
+    return this.items.filter((t) => t.status === f).length;
   }
 
   setStatus(id: string, status: string): void {
@@ -37,5 +58,9 @@ export class TestimonialsComponent implements OnInit {
       this.load();
       this.toast.success(status === 'APPROVED' ? this.i18n.t('test_approve') : this.i18n.t('test_reject'));
     });
+  }
+
+  initial(name: string): string {
+    return (name || '?').trim().charAt(0).toUpperCase();
   }
 }

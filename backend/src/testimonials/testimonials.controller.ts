@@ -25,7 +25,6 @@ export class TestimonialsController {
       content: string;
       contentFa?: string;
       authorImageUrl?: string;
-      rating?: number;
     },
   ) {
     return this.testimonialsService.create(body);

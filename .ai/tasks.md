@@ -325,12 +325,15 @@
 - [x] 9.2 **Testimonials on public site** ✅
   - Previously: testimonials managed in admin but NOT shown publicly, and no public submit endpoint
   - Backend: new public `TestimonialsModule` (`testimonials/`) — `GET /api/testimonials` returns only `APPROVED` testimonials (ordered by `createdAt desc`); `POST /api/testimonials` lets visitors submit (stored with `status: PENDING`, admin approves in panel)
-  - Frontend-site: `ApiService` `getTestimonials()` + `postTestimonial()` + `Testimonial` interface
-  - Homepage: a responsive grid of approved testimonial cards (quote icon, content with `contentFa`→`content` fallback, optional star rating, author name + role/company with `Fa` fallback)
+  - Frontend-site: `ApiService` `getTestimonials()` + `postTestimonial()` + `uploadTestimonialImage()` + `Testimonial` interface
+  - Homepage: a responsive grid of approved testimonial cards (quote icon, content with `contentFa`→`content` fallback, author name + role/company with `Fa` fallback, circular avatar or initials fallback)
+  - Public submission is **bilingual**: the entered name/role/content is mirrored into both the EN (`authorName`/`companyRole`/`content`) and FA (`*Fa`) fields so a testimonial is visible in either site language
   - Backend: public `POST /api/testimonials/upload` (image-only, 5 MB cap, unauthenticated) reuses `UploadsService` to save into `backend/uploads/` and returns `{ url }`; the form then posts `authorImageUrl`
-  - Homepage: a "Leave a testimonial" form (name, role/company, message, optional photo upload via drag-and-drop/click, 1–5 star rating) posting to the public endpoint with success/error states
+  - Homepage: a "Leave a testimonial" form (name, role/company, message, optional photo upload via drag-and-drop/click) posting to the public endpoint with success/error states
   - Optional `authorImageUrl` on the `Testimonial` model — visitors may upload a photo; cards show the avatar (circular) with an initials fallback
-  - i18n keys added (EN/FA): `testimonialsTitle`, `testimonialsSubtitle`, `noTestimonials`, `testimonialLeave`, `testimonialLeaveDesc`, `testimonialName`, `testimonialCompany`, `testimonialContent`, `testimonialRating`, `testimonialImage`, `testimonialSubmit`, `testimonialSuccess`
+  - Star rating removed entirely (schema `rating` column dropped, all UI/API references gone)
+  - Admin panel: testimonials page redesigned to show each entry with the uploaded avatar (or initials), bilingual name/role/content (respects the admin language toggle), a created-date, a status badge, and Approve/Reject actions; filter tabs (All / Pending / Approved / Rejected with counts) let the owner review uploaded photos before approving. Added `filter_all` i18n key
+  - i18n keys added (EN/FA): `testimonialsTitle`, `testimonialsSubtitle`, `noTestimonials`, `testimonialLeave`, `testimonialLeaveDesc`, `testimonialName`, `testimonialCompany`, `testimonialContent`, `testimonialImage`, `testimonialUploadHint`, `testimonialUploading`, `testimonialChoose`, `testimonialReplace`, `testimonialRemove`, `testimonialUploadFailed`, `testimonialSubmit`, `testimonialSuccess`
 
 - [ ] 9.3 **RSS feed**
   - `GET /api/feed.xml` — NestJS generates RSS 2.0 XML for published articles

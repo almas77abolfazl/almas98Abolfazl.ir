@@ -74,6 +74,7 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     test_approved: 'Approved',
     test_rejected: 'Rejected',
     test_pending: 'Pending',
+    filter_all: 'All',
     // Messages
     msg_read: 'Read',
     msg_unread: 'Unread',
@@ -192,6 +193,7 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
     test_approved: 'تایید‌شده',
     test_rejected: 'رد‌شده',
     test_pending: 'در انتظار',
+    filter_all: 'همه',
     msg_read: 'خوانده‌شده',
     msg_unread: 'خوانده‌نشده',
     msg_markRead: 'علامت‌گذاری به عنوان خوانده‌شده',
