@@ -49,8 +49,13 @@
               shape="avatar"></app-image-upload>
           </div>
           <div>
-            <label class="admin-field-label">{{ i18n.t('about_resumeUrl') }}</label>
-            <input [(ngModel)]="model.resumeUrl" name="resumeUrl" class="admin-input" />
+            <app-file-upload
+              [url]="model.resumeUrl"
+              [originalName]="model.resumeName"
+              (urlChange)="model.resumeUrl = $event; markDirty()"
+              (nameChange)="model.resumeName = $event; markDirty()"
+              [label]="i18n.t('about_resumeUrl')"
+              [hint]="i18n.t('about_resumeHint')"></app-file-upload>
           </div>
         </div>
 

@@ -131,7 +131,7 @@ Deliverables:
 
 **Goal:** Make the theme system polished and glitch-free.
 
-**Status:** 7.1–7.4 done (7.5 toggle animation pending). Introduced a custom **"Iris Violet"** identity — iris-violet primary + orchid gradient partner + muted-jade success + iris-tinted neutrals — applied by overriding Tailwind v4 color scales in `styles.css` `@theme` (no UI restructure). Light mode now uses a soft off-white base so cards no longer vanish into white; dark mode uses deep iris-charcoal instead of default slate-blue. Added FOBT-prevention inline script, live OS-preference following, and `theme-color` sync.
+**Status:** 7.1–7.4, 7.6 done (7.5 toggle animation dropped by decision — minor polish). Introduced a custom **"Iris Violet"** identity — iris-violet primary + orchid gradient partner + muted-jade success + iris-tinted neutrals — applied by overriding Tailwind v4 color scales in `styles.css` `@theme` (no UI restructure). Light mode now uses a soft off-white base so cards no longer vanish into white; dark mode uses deep iris-charcoal instead of default slate-blue. Added FOBT-prevention inline script, live OS-preference following, and `theme-color` sync.
 
 - System preference detection + live change listening ✅
 - Prevent flash of wrong theme (inline script) ✅
@@ -205,17 +205,18 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 - **Nginx**: maps public `/feed.xml` → backend `/api/feed.xml` (same pattern as the sitemap).
 - **Discovery**: `<link rel="alternate" type="application/rss+xml" href="/feed.xml">` added to `index.html` so browsers/readers autodiscover the feed. A visible RSS link + icon also lives in the site footer.
 
-## Phase 10: Portfolio Polish 🔲
+## Phase 10: Portfolio Polish 🔶 (10.1 & 10.2 done; 10.3 pending)
 
 **Goal:** Round out the portfolio with the features that matter most for showcasing work.
 
-- **10.1 Projects / Portfolio section** — `Projects` model (bilingual, `techStack[]`, `liveUrl`/`repoUrl`/`coverUrl`, `order`); public `GET /api/projects` + admin CRUD + reorder; card grid with tech badges and links.
-- **10.2 Résumé / CV download (PDF)** — a "Download résumé" button (header and/or About page), optionally bilingual EN/FA files.
+- **10.1 Projects / Portfolio section** ✅ — `Projects` model (bilingual, `techStack[]`, `liveUrl`/`repoUrl`/`coverUrl`, `order`); public `GET /api/projects` + admin CRUD + reorder; card grid with tech badges and links.
+- **10.2 Résumé / CV download (PDF)** ✅ — "Download résumé" button on the About page plus a prominent **Resume** button in the header (shown when `resumeUrl` is set). Resume is uploaded via the admin About page (`FileUploadComponent`) — same endpoint as the avatar, now accepting PDF/DOC.
+- **10.3 Grouped skills with managed categories** 🔲 — the public site already groups skills by a `category` string; add a `SkillCategory` model (bilingual titles + order), migrate `Skill.category`→`categoryId`, and add admin CRUD so categories are managed (not typed per skill). See `tasks.md` for details.
 
 ## Deferred / Under review
 
 - **6.7 SSR / Prerender** — **deferred by decision.** Client-side `SeoService` works for Google (renders JS), and the homepage — the primary shared link — already has correct static OG tags in `index.html`. The only gap is per-route social previews for *deep* links, which are rare for a personal portfolio. Prerendering the static routes wouldn't fix article previews anyway (only full SSR would), and full SSR requires a persistent Node process (breaks pure-static Nginx) — disproportionate here. Revisit with **full SSR** (or a targeted backend OG endpoint) only if/when individual article links are actively shared on social media.
-- **7.5 Theme toggle animation** — minor polish, pending.
+- **7.5 Theme toggle animation** — dropped by decision (minor polish).
 
 ## Timeline
 
@@ -228,10 +229,10 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 | 4 | Article System Overhaul | ✅ Done |
 | 5 | Video Embeds | ✅ Done |
 | 6 | SEO Optimization | 🔶 6.1–6.6 done (6.7 SSR/prerender deferred by decision) |
-| 7 | Dark/Light Theme Polish | 🔶 7.1–7.4, 7.6 done (7.5 toggle animation pending) |
+| 7 | Dark/Light Theme Polish | 🔶 7.1–7.4, 7.6 done (7.5 dropped by decision) |
 | 8 | Admin Panel UI Overhaul | ✅ 8.0–8.11 done |
 | 9 | Additional Features | 🔶 9.2, 9.3, 9.9, 9.10 done; 9.4–9.8 dropped |
-| 10 | Portfolio Polish | 🔲 Projects section + résumé download |
+| 10 | Portfolio Polish | 🔶 10.1, 10.2 done; 10.3 grouped skills pending |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.
 

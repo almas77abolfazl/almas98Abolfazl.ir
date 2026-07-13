@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ImageUploadComponent } from '../../core/components/image-upload.component';
+import { FileUploadComponent } from '../../core/components/file-upload.component';
 
 interface AboutMe {
   id?: string;
@@ -13,11 +14,12 @@ interface AboutMe {
   bio?: string; bioFa?: string;
   avatarUrl?: string;
   resumeUrl?: string;
+  resumeName?: string;
 }
 
 @Component({
   selector: 'app-about-me',
-  imports: [CommonModule, FormsModule, ImageUploadComponent],
+  imports: [CommonModule, FormsModule, ImageUploadComponent, FileUploadComponent],
   templateUrl: './about-me.component.html',
   styles: [`
     .font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }

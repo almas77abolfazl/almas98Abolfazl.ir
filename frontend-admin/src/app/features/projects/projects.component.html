@@ -1,0 +1,113 @@
+
+    <div>
+      <h1 class="admin-title mb-6">{{ i18n.t('nav_projects') }}</h1>
+
+      <form (ngSubmit)="onSubmit()" (input)="markDirty()" (change)="markDirty()" class="admin-card space-y-5 mb-6">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> {{ i18n.t('proj_title') }}</label>
+            <input [(ngModel)]="model.title" name="title" required class="admin-input" />
+          </div>
+          <div>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> {{ i18n.t('proj_title') }}</label>
+            <input [(ngModel)]="model.titleFa" name="titleFa" dir="rtl" class="admin-input font-fa" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> {{ i18n.t('proj_description') }}</label>
+            <textarea [(ngModel)]="model.description" name="description" rows="3" class="admin-input"></textarea>
+          </div>
+          <div>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> {{ i18n.t('proj_description') }}</label>
+            <textarea [(ngModel)]="model.descriptionFa" name="descriptionFa" rows="3" dir="rtl" class="admin-input font-fa"></textarea>
+          </div>
+        </div>
+
+        <div>
+          <label class="admin-field-label">{{ i18n.t('proj_techStack') }}</label>
+          <input [(ngModel)]="techInput" name="tech" class="admin-input" [placeholder]="i18n.t('proj_techStackHelp')" />
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label class="admin-field-label">{{ i18n.t('proj_liveUrl') }}</label>
+            <input [(ngModel)]="model.liveUrl" name="liveUrl" type="url" placeholder="https://…" class="admin-input" />
+          </div>
+          <div>
+            <label class="admin-field-label">{{ i18n.t('proj_repoUrl') }}</label>
+            <input [(ngModel)]="model.repoUrl" name="repoUrl" type="url" placeholder="https://github.com/…" class="admin-input" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <app-image-upload
+              [url]="model.coverUrl"
+              (urlChange)="model.coverUrl = $event; markDirty()"
+              [label]="i18n.t('proj_cover')"></app-image-upload>
+          </div>
+          <div>
+            <label class="admin-field-label">{{ i18n.t('proj_order') }}</label>
+            <input type="number" [(ngModel)]="model.order" name="order" class="admin-input" />
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button type="submit" class="admin-btn admin-btn-primary">{{ editId ? i18n.t('update') : i18n.t('add') }}</button>
+          @if (editId) {
+            <button type="button" (click)="reset()" class="admin-btn admin-btn-ghost">{{ i18n.t('cancel') }}</button>
+          }
+        </div>
+      </form>
+
+      <div class="admin-card overflow-hidden">
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b border-slate-200 dark:border-slate-700">
+              <th class="admin-th w-8"></th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('title')">
+                {{ i18n.t('proj_title') }} <span class="text-[10px]">{{ sortArrow('title') }}</span>
+              </th>
+              <th class="admin-th">{{ i18n.t('proj_techStack') }}</th>
+              <th class="admin-th cursor-pointer select-none" (click)="toggleSort('order')">
+                {{ i18n.t('proj_order') }} <span class="text-[10px]">{{ sortArrow('order') }}</span>
+              </th>
+              <th class="admin-th text-end">{{ i18n.t('actions') }}</th>
+            </tr>
+          </thead>
+          <tbody cdkDropList [cdkDropListData]="view()" (cdkDropListDropped)="reorder($event)" class="divide-y divide-slate-100 dark:divide-slate-700/70">
+            @for (item of view(); track item.id) {
+              <tr class="admin-row" cdkDrag>
+                <td class="admin-td w-8">
+                  <span cdkDragHandle class="inline-flex cursor-grab text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" title="Drag to reorder">
+                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M7 4a1 1 0 110 2 1 1 0 010-2zM7 9a1 1 0 110 2 1 1 0 010-2zM7 14a1 1 0 110 2 1 1 0 010-2zM13 4a1 1 0 110 2 1 1 0 010-2zM13 9a1 1 0 110 2 1 1 0 010-2zM13 14a1 1 0 110 2 1 1 0 010-2z" />
+                    </svg>
+                  </span>
+                </td>
+                <td class="admin-td">
+                  {{ item.title }}
+                  @if (item.titleFa) { <span class="block text-xs font-fa text-emerald-600" dir="rtl">{{ item.titleFa }}</span> }
+                </td>
+                <td class="admin-td">
+                  <div class="flex flex-wrap gap-1">
+                    @for (t of item.techStack; track t) {
+                      <span class="rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] text-slate-600 dark:bg-slate-700 dark:text-slate-300">{{ t }}</span>
+                    }
+                  </div>
+                </td>
+                <td class="admin-td text-sm">{{ item.order ?? 0 }}</td>
+                <td class="admin-td text-end">
+                  <button (click)="edit(item)" class="text-indigo-600 hover:underline dark:text-indigo-400">{{ i18n.t('edit') }}</button>
+                  <button (click)="del(item.id!)" class="text-rose-600 hover:underline dark:text-rose-400 ms-3">{{ i18n.t('delete') }}</button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5" class="admin-td text-center text-slate-400">{{ i18n.t('noItems') }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>

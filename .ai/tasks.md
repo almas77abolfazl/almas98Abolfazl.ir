@@ -181,7 +181,7 @@
 
 ---
 
-## Phase 7: Dark/Light Theme Polish 🔶 (7.1–7.4, 7.6 done · 7.5 pending)
+## Phase 7: Dark/Light Theme Polish 🔶 (7.1–7.4, 7.6 done · 7.5 dropped)
 
 > **Goal**: Make the theme system feel polished, native, and glitch-free.
 >
@@ -211,8 +211,7 @@
   - Semantic tokens (`--color-secondary`, `--color-accent`, `--color-background`, `--color-surface`, `--color-text`, `--color-text-muted`) defined in `@theme` and overridden in `.dark`
   - `body` transitions background/color; `gradient-text`, `divider`, `timeline`, `skill-tag` all driven by tokens
 
-- [ ] 7.5 **Theme toggle animation**
-  - Animate the sun/moon icon transition in header (rotate + scale)
+- [~] 7.5 **Theme toggle animation** — _dropped by decision (minor polish, not worth the time for a personal site)_
 
 - [x] 7.6 **Typography & spacing system (8-point scale)**
   - Central shared primitives in `styles.css` `@layer components` (via `@apply`) applied across every page — no arbitrary margins/paddings:
@@ -270,18 +269,6 @@
   - Field validation: native `required` attributes preserved; *pagination/infinite scroll for very large lists is deferred* (current datasets are small)
 
 - [x] 8.5 **Article rich text editor** ✅ (custom `app-markdown-editor` with live preview + toolbar)
-- [ ] 8.6 **Media upload** (pending)
-- [ ] 8.8 **Admin user avatar upload** (pending)
-- [ ] 8.9 **Article cover image upload** (pending)
-- [ ] 8.7 **Drag-and-drop ordering** (pending)
-
-- [x] 8.5 **Article rich text editor** ✅
-  - Custom `MarkdownEditorComponent` (`core/components/markdown-editor.component.ts`) implementing `ControlValueAccessor`
-  - Uses `marked` (`package.json` dep) — live preview panel (`[innerHTML]` via `DomSanitizer`)
-  - Toolbar: bold, italic, H2/H3, inline code, code block, link, bullet/numbered list, quote
-  - Wired into the articles form (`articles.component.html`) replacing the plain content `<textarea>`; `dir`/`isFa` follow the article language
-  - Frontend-site `article-detail` now renders stored Markdown as HTML via `marked` (`[innerHTML]`, auto-sanitized by Angular); added `.article-content` prose styles in `frontend-site/src/styles.css` (headings, lists, code/codeblock, blockquote, links, images, RTL)
-  - Inline images: Markdown editor toolbar has an "Insert image" button — uploads via `/api/admin/media/upload` and inserts `![alt](url)` at the cursor; rendered inline by the public site (no extra backend work)
 
 - [x] 8.6 **Media upload** ✅
   - Reusable `ImageUploadComponent` (drag-and-drop zone + click, preview, progress spinner, remove) in `frontend-admin/src/app/core/components/image-upload.component.ts` + `.html`
@@ -367,9 +354,11 @@
 
 - [~] 9.8 **Copy code blocks** — _dropped by decision (nice-to-have, not needed)_
 
-- [x] 9.9 **404 page**
-  - Custom styled 404 page for the public site
-  - Add wildcard route in `app.routes.ts` that shows it
+- [x] 9.9 **404 page** ✅
+  - `NotFoundComponent` (bilingual EN/FA) with styled 404, back-to-home + articles links
+  - Wildcard route now renders it (`{ path: '**', component: NotFoundComponent }`) instead of redirecting to home
+  - i18n keys: `notFoundTitle`, `notFoundMessage`, `backToHome`
+  - `SeoService.update()` gained a `noindex` flag (adds `robots: noindex, follow`, reset to `index, follow` on every other page so it doesn't leak); 404 sets it
 
 - [x] 9.10 **Reading progress bar** ✅ _(already implemented in 4.6)_
   - Article detail pages show a thin top progress bar driven by `@HostListener('window:scroll')` + a `progress` signal (`article-detail.component.ts`/`.html`)
@@ -378,13 +367,30 @@
 
 ## Phase 10: Portfolio Polish 🔲
 
-- [ ] 10.1 **Projects / Portfolio section** (was 9.1)
-  - Add `Projects` model: `{ title, titleFa, description, descriptionFa, techStack String[], liveUrl?, repoUrl?, coverUrl?, order }`
-  - Separate from Experiences — these are personal side projects / open source
-  - Backend: public `GET /api/projects` + admin CRUD + `PATCH /api/admin/projects/reorder`
-  - Admin: management page (bilingual form, image upload for `coverUrl`, drag-and-drop ordering)
-  - Frontend: display as cards with tech badges and live/repo links
+- [x] 10.1 **Projects / Portfolio section** ✅
+  - `Projects` Prisma model: `{ id, title, titleFa?, description?, descriptionFa?, techStack String[], liveUrl?, repoUrl?, coverUrl?, order, timestamps }` (`prisma db push` applied)
+  - Backend: public `GET /api/projects` (`ProjectsModule`, ordered by `order asc`); admin CRUD in `AdminController`/`AdminService` (`GET/POST/PUT/DELETE /api/admin/projects`) + `PATCH /api/admin/projects/reorder` (bulk `$transaction`, added `'projects'` to `bulkReorder` union)
+  - Admin: `/admin/projects` page (bilingual EN/FA form, comma-separated tech stack, live/repo URLs, `ImageUploadComponent` cover, drag-and-drop reorder, sortable table) + sidebar nav item + i18n keys (`nav_projects`, `proj_*`)
+  - Frontend-site: `/projects` route + header nav (desktop + mobile), `ApiService.getProjects()` + `Project` interface, responsive card grid (cover image, bilingual title/description, tech badges, live-demo + source-code links), SEO via `SeoService`, i18n keys (`projects`, `projectsTitle/Subtitle`, `noProjects`, `projectLive/Code`, `seoProjectsDesc`)
+  - Sitemap: added `/projects` to `STATIC_PATHS`
+  - Verified end-to-end: login → create → public GET (ordered) → reorder → delete, all green
 
-- [ ] 10.2 **Resume / CV download (PDF)**
-  - A "Download résumé" button (header and/or About page)
-  - Bilingual EN/FA résumé files if desired
+- [x] 10.2 **Resume / CV download (PDF)** ✅
+  - The About page already rendered a "Download Resume" button when `aboutMe.resumeUrl` is set
+  - Added a prominent **Resume** button in the header (desktop controls + mobile nav), shown only when `resumeUrl` exists — header now fetches `about-me` for this
+  - i18n key `downloadResume` (EN "Resume" / FA "رزومه")
+  - **Resume file upload (replaces the old text URL field):** admin About page now has a `FileUploadComponent` (like the avatar upload) that uploads PDF/DOC/DOCX via `POST /api/admin/media/upload`; `about-me` singleton persists `resumeUrl` + `resumeName` (new `resumeName` column; `prisma db push` applied; backend DTO/upsert updated). `media/upload` file filter now accepts images **or** `*.pdf|doc|docx` (limit raised to 10 MB) and returns `{ url, originalName }`. Verified: PDF upload returns original name, `.txt` rejected (400), `resumeName` round-trips through public `GET /about-me`.
+  - Content step done: upload the actual PDF via the admin About page (`resumeUrl`)
+
+## Phase 10: Portfolio Polish 🔲 (cont.)
+
+- [ ] 10.3 **Grouped skills with managed categories**
+  - Currently skills carry a free-text `category`/`categoryFa` string and the **public site already groups** them by that field (see `skills.component.html` `groupedSkills`). The gap is admin UX: you type the category per skill, which is error-prone and inconsistent.
+  - Add a `SkillCategory` model: `{ id, title, titleFa?, order }` (bilingual titles, e.g. "Frontend", "Backend", "DevOps").
+  - Migrate `Skill.category`/`categoryFa` from free-text to a relation (`categoryId` FK → `SkillCategory`).
+  - Backend: public `GET /api/skill-categories` (+ nested skills or keep `GET /api/skills` grouped); admin CRUD for categories + `PATCH .../reorder`; admin skills form picks a category from a dropdown instead of typing.
+  - Admin: a "Categories" management UI (or inline section in the Skills page) to add/edit/reorder category titles; skills grouped under each.
+  - Frontend-site: render category titles from the new model (keeps current `categoryFa`/`category` fallback for any legacy skills), keep drag-drop/ordering.
+  - Note: this is a schema migration + admin + site change — medium effort; can be done after the current batch ships.
+
+

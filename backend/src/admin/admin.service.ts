@@ -13,7 +13,7 @@ export class AdminService {
   ) {}
 
   // AboutMe (singleton)
-  async upsertAboutMe(data: { fullName: string; fullNameFa?: string; title: string; titleFa?: string; bio?: string; bioFa?: string; avatarUrl?: string; resumeUrl?: string }) {
+  async upsertAboutMe(data: { fullName: string; fullNameFa?: string; title: string; titleFa?: string; bio?: string; bioFa?: string; avatarUrl?: string; resumeUrl?: string; resumeName?: string }) {
     const existing = await this.prisma.aboutMe.findFirst();
     if (existing) {
       return this.prisma.aboutMe.update({ where: { id: existing.id }, data });
@@ -186,6 +186,46 @@ export class AdminService {
     return this.prisma.videos.delete({ where: { id } });
   }
 
+  // Projects
+  async findAllProjects() {
+    return this.prisma.projects.findMany({ orderBy: { order: 'asc' } });
+  }
+
+  async createProject(data: {
+    title: string;
+    titleFa?: string;
+    description?: string;
+    descriptionFa?: string;
+    techStack?: string[];
+    liveUrl?: string;
+    repoUrl?: string;
+    coverUrl?: string;
+    order?: number;
+  }) {
+    return this.prisma.projects.create({ data });
+  }
+
+  async updateProject(
+    id: string,
+    data: {
+      title?: string;
+      titleFa?: string;
+      description?: string;
+      descriptionFa?: string;
+      techStack?: string[];
+      liveUrl?: string;
+      repoUrl?: string;
+      coverUrl?: string;
+      order?: number;
+    },
+  ) {
+    return this.prisma.projects.update({ where: { id }, data });
+  }
+
+  async deleteProject(id: string) {
+    return this.prisma.projects.delete({ where: { id } });
+  }
+
   // Media
   async createMedia(data: { filename: string; originalName: string; mimeType: string; sizeBytes: number; url: string; alt?: string }) {
     return this.prisma.media.create({ data });
@@ -285,8 +325,12 @@ export class AdminService {
     return this.bulkReorder('skills', items);
   }
 
+  async reorderProjects(items: { id: string; order: number }[]) {
+    return this.bulkReorder('projects', items);
+  }
+
   private async bulkReorder(
-    model: 'experiences' | 'educations' | 'skills',
+    model: 'experiences' | 'educations' | 'skills' | 'projects',
     items: { id: string; order: number }[],
   ) {
     await this.prisma.$transaction(

@@ -16,6 +16,7 @@ model AboutMe {
   bioFa       String?  @db.Text
   avatarUrl   String?
   resumeUrl   String?
+  resumeName  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -117,6 +118,21 @@ model Media {
   alt         String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Projects {
+  id             String   @id @default(uuid())
+  title          String
+  titleFa        String?
+  description    String?  @db.Text
+  descriptionFa  String?  @db.Text
+  techStack      String[]
+  liveUrl        String?
+  repoUrl        String?
+  coverUrl       String?
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model SiteSettings {

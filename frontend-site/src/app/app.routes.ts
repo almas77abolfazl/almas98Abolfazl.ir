@@ -6,6 +6,8 @@ import { SkillsComponent } from './features/skills/skills.component';
 import { BlogComponent } from './features/blog/blog.component';
 import { ArticleDetailComponent } from './features/article-detail/article-detail.component';
 import { VideosComponent } from './features/videos/videos.component';
+import { ProjectsComponent } from './features/projects/projects.component';
+import { NotFoundComponent } from './features/not-found/not-found.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -15,5 +17,6 @@ export const routes: Routes = [
   { path: 'blog', component: BlogComponent },
   { path: 'blog/:slug', component: ArticleDetailComponent },
   { path: 'videos', component: VideosComponent },
-  { path: '**', redirectTo: '' }
+  { path: 'projects', component: ProjectsComponent },
+  { path: '**', component: NotFoundComponent }
 ];

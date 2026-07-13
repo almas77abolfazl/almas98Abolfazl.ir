@@ -93,6 +93,19 @@ export interface Video {
   updatedAt: string;
 }
 
+export interface Project {
+  id: string;
+  title: string; titleFa?: string;
+  description?: string; descriptionFa?: string;
+  techStack: string[];
+  liveUrl?: string;
+  repoUrl?: string;
+  coverUrl?: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface SiteSettings {
   id: string;
   skillsCardView: boolean;
@@ -159,6 +172,10 @@ export class ApiService {
 
   getVideos(): Observable<Video[]> {
     return this.http.get<Video[]>(`${this.baseUrl}/videos`);
+  }
+
+  getProjects(): Observable<Project[]> {
+    return this.http.get<Project[]>(`${this.baseUrl}/projects`);
   }
 
   getSettings(): Observable<SiteSettings> {

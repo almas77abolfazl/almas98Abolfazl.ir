@@ -14,6 +14,8 @@ export interface SeoData {
   path?: string;
   /** Open Graph type. Defaults to 'website'. */
   type?: 'website' | 'article' | 'profile';
+  /** When true, adds a `robots: noindex` tag (e.g. for the 404 page). Defaults to false. */
+  noindex?: boolean;
 }
 
 const JSON_LD_ID = 'seo-json-ld';
@@ -48,6 +50,9 @@ export class SeoService {
     const fullTitle = `${data.title} | ${SITE_NAME}`;
 
     this.setTag('description', description);
+
+    // Reset robots on every page so a previous noindex (e.g. 404) doesn't leak.
+    this.setTag('robots', data.noindex ? 'noindex, follow' : 'index, follow');
 
     // Open Graph
     this.setProperty('og:title', fullTitle);

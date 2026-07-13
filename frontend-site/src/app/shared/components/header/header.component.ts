@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService } from '../../services/i18n.service';
 import { ThemeService } from '../../services/theme.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-header',
@@ -10,13 +11,22 @@ import { ThemeService } from '../../services/theme.service';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   menuOpen = signal(false);
+  resumeUrl = signal<string | undefined>(undefined);
 
   constructor(
     public i18n: I18nService,
-    public theme: ThemeService
+    public theme: ThemeService,
+    private api: ApiService,
   ) {}
+
+  ngOnInit(): void {
+    this.api.getAboutMe().subscribe({
+      next: (data) => this.resumeUrl.set(data.resumeUrl || undefined),
+      error: () => {},
+    });
+  }
 
   get isFa(): boolean {
     return this.i18n.currentLang() === 'fa';

@@ -27,6 +27,7 @@ export class AdminController {
       bioFa?: string;
       avatarUrl?: string;
       resumeUrl?: string;
+      resumeName?: string;
     },
   ) {
     return this.adminService.upsertAboutMe(body);
@@ -276,22 +277,58 @@ export class AdminController {
     return this.adminService.deleteVideo(id);
   }
 
+  // Projects
+  @Get('projects')
+  findAllProjects() {
+    return this.adminService.findAllProjects();
+  }
+
+  @Post('projects')
+  createProject(@Body() body: { title: string; titleFa?: string; description?: string; descriptionFa?: string; techStack?: string[]; liveUrl?: string; repoUrl?: string; coverUrl?: string; order?: number }) {
+    return this.adminService.createProject(body);
+  }
+
+  @Put('projects/:id')
+  updateProject(
+    @Param('id') id: string,
+    @Body()
+    body: {
+      title?: string;
+      titleFa?: string;
+      description?: string;
+      descriptionFa?: string;
+      techStack?: string[];
+      liveUrl?: string;
+      repoUrl?: string;
+      coverUrl?: string;
+      order?: number;
+    },
+  ) {
+    return this.adminService.updateProject(id, body);
+  }
+
+  @Delete('projects/:id')
+  deleteProject(@Param('id') id: string) {
+    return this.adminService.deleteProject(id);
+  }
+
   // Media
   @Post('media')
   createMedia(@Body() body: { filename: string; originalName: string; mimeType: string; sizeBytes: number; url: string; alt?: string }) {
     return this.adminService.createMedia(body);
   }
 
-  // Media upload (multipart, images only)
+  // Media upload (multipart, images or PDF/doc resume files)
   @Post('media/upload')
   @UseInterceptors(
     FileInterceptor('file', {
-      limits: { fileSize: 5 * 1024 * 1024 },
+      limits: { fileSize: 10 * 1024 * 1024 },
       fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith('image/')) {
+        const allowed = /\.(pdf|doc|docx)$/i;
+        if (file.mimetype.startsWith('image/') || allowed.test(file.originalname)) {
           cb(null, true);
         } else {
-          cb(new BadRequestException('Only image files are allowed'), false);
+          cb(new BadRequestException('Only image or PDF/DOC resume files are allowed'), false);
         }
       },
     }),
@@ -300,7 +337,7 @@ export class AdminController {
     if (!file) {
       throw new BadRequestException('No file provided');
     }
-    return this.adminService.uploadMedia(file);
+    return this.adminService.uploadMedia(file).then((m) => ({ url: m.url, originalName: m.originalName }));
   }
 
   @Put('media/:id')
@@ -424,5 +461,10 @@ export class AdminController {
   @Patch('skills/reorder')
   reorderSkills(@Body() body: { items: { id: string; order: number }[] }) {
     return this.adminService.reorderSkills(body.items);
+  }
+
+  @Patch('projects/reorder')
+  reorderProjects(@Body() body: { items: { id: string; order: number }[] }) {
+    return this.adminService.reorderProjects(body.items);
   }
 }
