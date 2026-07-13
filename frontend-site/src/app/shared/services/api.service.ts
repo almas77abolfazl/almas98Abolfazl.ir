@@ -100,6 +100,20 @@ export interface SiteSettings {
   updatedAt: string;
 }
 
+export interface Testimonial {
+  id: string;
+  authorName: string;
+  authorNameFa?: string;
+  companyRole?: string;
+  companyRoleFa?: string;
+  content: string;
+  contentFa?: string;
+  authorImageUrl?: string;
+  rating?: number;
+  status: string;
+  createdAt: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private baseUrl = '/api';
@@ -149,5 +163,21 @@ export class ApiService {
 
   getSettings(): Observable<SiteSettings> {
     return this.http.get<SiteSettings>(`${this.baseUrl}/settings`);
+  }
+
+  getTestimonials(): Observable<Testimonial[]> {
+    return this.http.get<Testimonial[]>(`${this.baseUrl}/testimonials`);
+  }
+
+  postTestimonial(body: {
+    authorName: string;
+    authorNameFa?: string;
+    companyRole?: string;
+    companyRoleFa?: string;
+    content: string;
+    contentFa?: string;
+    rating?: number;
+  }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/testimonials`, body);
   }
 }

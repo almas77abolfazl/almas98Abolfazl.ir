@@ -174,11 +174,18 @@ A singleton settings row drives site-wide display options.
 - **Admin UI**: a toggle card on the Skills page controls `skillsCardView` (bilingual `skills_display` / `skills_display_help`), persisted via `PUT /api/admin/settings`.
 - **Public site**: `ApiService.getSettings()` provides `skillsCardView`; the Skills page renders either proficiency bars (default) or compact pill cards.
 
+### Testimonials on Public Site (9.2)
+
+Approved testimonials are now surfaced on the homepage, and visitors can submit new ones.
+
+- **Backend**: public `TestimonialsModule` — `GET /api/testimonials` returns only `APPROVED` rows (newest first); `POST /api/testimonials` accepts public submissions stored with `status: PENDING` (admin approves/rejects in the panel). Registered in `AppModule`.
+- **Frontend**: `ApiService.getTestimonials()` + `postTestimonial()`. The homepage shows a responsive grid of approved testimonial cards (content with `contentFa`→`content` fallback, optional star rating, author + role/company with `Fa` fallback, optional `authorImageUrl` avatar with initials fallback) plus a "Leave a testimonial" form (name, role/company, message, optional photo URL, 1–5 star rating) that posts to the public endpoint. Bilingual i18n keys added.
+
 ## Phase 9: Additional Features 🔲
 
 **Goal:** Optional enhancements and new sections.
 
-- Projects section, public testimonials, RSS feed, PWA support
+- Projects section, public testimonials (9.2 ✅), RSS feed, PWA support
 - Search, OG image generation, newsletter, copy-code buttons, custom 404, reading progress
 
 ## Timeline
@@ -194,7 +201,7 @@ A singleton settings row drives site-wide display options.
 | 6 | SEO Optimization | 🔶 6.1–6.6 done (6.7 SSR deferred) |
 | 7 | Dark/Light Theme Polish | 🔶 7.1–7.4 done (7.5 toggle animation pending) |
 | 8 | Admin Panel UI Overhaul | 🔶 8.0–8.7, 8.8, 8.9, 8.10, 8.11 done (8.7 reorder + 8.11 site settings complete) |
-| 9 | Additional Features | 🔲 Not started |
+| 9 | Additional Features | 🔲 9.2 done (public testimonials + submit); rest not started |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.
 

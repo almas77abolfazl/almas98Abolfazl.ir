@@ -322,11 +322,14 @@
   - Separate from Experiences — these are personal side projects / open source
   - Display as cards with tech badges and links
 
-- [ ] 9.2 **Testimonials on public site**
-  - Currently testimonials are managed in admin but NOT shown on the public site
-  - Add a Testimonials section to the homepage showing APPROVED testimonials
-  - Slider/carousel or grid layout
-  - Allow visitors to submit a testimonial via a form (currently no public submit endpoint)
+- [x] 9.2 **Testimonials on public site** ✅
+  - Previously: testimonials managed in admin but NOT shown publicly, and no public submit endpoint
+  - Backend: new public `TestimonialsModule` (`testimonials/`) — `GET /api/testimonials` returns only `APPROVED` testimonials (ordered by `createdAt desc`); `POST /api/testimonials` lets visitors submit (stored with `status: PENDING`, admin approves in panel)
+  - Frontend-site: `ApiService` `getTestimonials()` + `postTestimonial()` + `Testimonial` interface
+  - Homepage: a responsive grid of approved testimonial cards (quote icon, content with `contentFa`→`content` fallback, optional star rating, author name + role/company with `Fa` fallback)
+  - Homepage: a "Leave a testimonial" form (name, role/company, message, optional photo URL, 1–5 star rating) posting to the public endpoint with success/error states
+  - Optional `authorImageUrl` on the `Testimonial` model — visitors may supply a photo link; cards show the avatar (circular) or fall back to the author's initial
+  - i18n keys added (EN/FA): `testimonialsTitle`, `testimonialsSubtitle`, `noTestimonials`, `testimonialLeave`, `testimonialLeaveDesc`, `testimonialName`, `testimonialCompany`, `testimonialContent`, `testimonialRating`, `testimonialImage`, `testimonialSubmit`, `testimonialSuccess`
 
 - [ ] 9.3 **RSS feed**
   - `GET /api/feed.xml` — NestJS generates RSS 2.0 XML for published articles

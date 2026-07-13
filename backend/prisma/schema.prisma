@@ -144,9 +144,10 @@ model Testimonial {
   companyRoleFa String?
   content       String    @db.Text
   contentFa     String?   @db.Text
+  authorImageUrl String?
   rating        Int?
   status        TestimonialStatus @default(PENDING)
-  createdAt     DateTime  @default(now())
+  createdAt     DateTime @default(now())
 }
 
 enum TestimonialStatus {

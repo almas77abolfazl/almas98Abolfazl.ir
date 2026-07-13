@@ -357,6 +357,7 @@ export class AdminController {
       content: string;
       contentFa?: string;
       rating?: number;
+      authorImageUrl?: string;
       status?: string;
     },
   ) {
@@ -378,6 +379,7 @@ export class AdminController {
       content?: string;
       contentFa?: string;
       rating?: number;
+      authorImageUrl?: string;
       status?: string;
     },
   ) {

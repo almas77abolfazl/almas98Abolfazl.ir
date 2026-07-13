@@ -5,7 +5,7 @@ import { RouterLink } from '@angular/router';
 import { ApiService } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
-import { AboutMe, Experience, Skill } from '../../shared/services/api.service';
+import { AboutMe, Experience, Skill, Testimonial } from '../../shared/services/api.service';
 import { SITE_URL, AUTHOR_NAME, SOCIAL_LINKS } from '../../shared/site-config';
 
 @Component({
@@ -19,10 +19,14 @@ export class HomeComponent implements OnInit {
   aboutMe?: AboutMe;
   experiences: Experience[] = [];
   skills: Skill[] = [];
+  testimonials: Testimonial[] = [];
   isLoading = true;
   contact = { name: '', email: '', subject: '', message: '' };
   success = false;
   error = '';
+  newTestimonial = { authorName: '', companyRole: '', content: '', authorImageUrl: '', rating: 0 };
+  testimonialSuccess = false;
+  testimonialError = '';
 
   constructor(
     public i18n: I18nService,
@@ -44,6 +48,7 @@ export class HomeComponent implements OnInit {
     });
     this.api.getExperiences().subscribe(data => this.experiences = data);
     this.api.getSkills().subscribe(data => this.skills = data);
+    this.api.getTestimonials().subscribe(data => this.testimonials = data);
   }
 
   private applyPersonJsonLd(aboutMe?: AboutMe): void {
@@ -85,5 +90,38 @@ export class HomeComponent implements OnInit {
         this.error = this.i18n.isFa ? 'خطا در ارسال پیام' : 'Failed to send message';
       }
     });
+  }
+
+  submitTestimonial(): void {
+    this.testimonialError = '';
+    this.testimonialSuccess = false;
+    const payload: any = {
+      authorName: this.newTestimonial.authorName,
+      companyRole: this.newTestimonial.companyRole || undefined,
+      content: this.newTestimonial.content,
+    };
+    if (this.newTestimonial.rating > 0) {
+      payload.rating = this.newTestimonial.rating;
+    }
+    if (this.newTestimonial.authorImageUrl.trim()) {
+      payload.authorImageUrl = this.newTestimonial.authorImageUrl.trim();
+    }
+    this.api.postTestimonial(payload).subscribe({
+      next: () => {
+        this.testimonialSuccess = true;
+        this.newTestimonial = { authorName: '', companyRole: '', content: '', authorImageUrl: '', rating: 0 };
+      },
+      error: () => {
+        this.testimonialError = this.i18n.isFa ? 'خطا در ارسال نظر' : 'Failed to submit testimonial';
+      }
+    });
+  }
+
+  setRating(value: number): void {
+    this.newTestimonial.rating = value;
+  }
+
+  testimonialInitial(name: string): string {
+    return (name || '?').trim().charAt(0).toUpperCase();
   }
 }
