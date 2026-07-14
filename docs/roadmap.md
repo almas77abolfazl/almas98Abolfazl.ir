@@ -212,7 +212,14 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 - **10.1 Projects / Portfolio section** ✅ — `Projects` model (bilingual, `techStack[]`, `liveUrl`/`repoUrl`/`coverUrl`, `order`); public `GET /api/projects` + admin CRUD + reorder; card grid with tech badges and links.
 - **10.2 Résumé / CV download (PDF)** ✅ — "Download résumé" button on the About page plus a prominent **Resume** button in the header (shown when `resumeUrl` is set). Resume is uploaded via the admin About page (`FileUploadComponent`) — same endpoint as the avatar, now accepting PDF/DOC.
 - **10.3 Grouped skills with managed categories** ✅ — new `SkillCategory` model (bilingual titles + order) + relation on `Skill`; public `GET /api/skill-categories` (with nested skills); admin CRUD page; skills form uses a category dropdown instead of free-text. Legacy `category` field kept as a fallback.
-## Deferred / Under review
+
+## Phase 11: Site Customization 🔲
+
+- **11.1 Theme color customization** — keep the current black/white + Iris-Violet/Orchid palette as the default; make the accent colors runtime-configurable from admin Settings. Migrate themeable utilities to CSS variables (`--brand-primary` / `--brand-secondary`) seeded from the current values; add `themeMode` (`default`/`custom`) + `themePrimary`/`themeSecondary` to `SiteSettings`; Settings page gets Default + a few presets + a 2-color custom picker (no full color system). Admin panel keeps its own fixed palette.
+- **11.2 Section visibility toggles** — add boolean flags to `SiteSettings` (`showAbout`, `showSkills`, `showProjects`, `showVideos`, `showTestimonials`, `showArticles`, `showExperiences`, `showEducations`, `showContact`); the public site's nav/footer/home hide a section when its flag is off. Managed from a "Sections" area in admin Settings.
+- **11.3 Admin login page redesign** — the `/login` route is already outside the panel shell (routing is fine); this is a **visual** task: a branded, full-screen centered login card (logo, gradient accent, EN/FA labels, link back to the site) reusing the `--brand-*` variables. Auth flow unchanged.
+
+
 
 - **6.7 SSR / Prerender** — **deferred by decision.** Client-side `SeoService` works for Google (renders JS), and the homepage — the primary shared link — already has correct static OG tags in `index.html`. The only gap is per-route social previews for *deep* links, which are rare for a personal portfolio. Prerendering the static routes wouldn't fix article previews anyway (only full SSR would), and full SSR requires a persistent Node process (breaks pure-static Nginx) — disproportionate here. Revisit with **full SSR** (or a targeted backend OG endpoint) only if/when individual article links are actively shared on social media.
 - **7.5 Theme toggle animation** — dropped by decision (minor polish).
@@ -231,7 +238,7 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 | 7 | Dark/Light Theme Polish | 🔶 7.1–7.4, 7.6 done (7.5 dropped by decision) |
 | 8 | Admin Panel UI Overhaul | ✅ 8.0–8.11 done |
 | 9 | Additional Features | 🔶 9.2, 9.3, 9.9, 9.10 done; 9.4–9.8 dropped |
-| 10 | Portfolio Polish | ✅ Done (Projects, résumé download, grouped skills) |
+| 11 | Site Customization | 🔲 11.1 theme colors, 11.2 section visibility, 11.3 login redesign |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.
 

@@ -391,3 +391,51 @@
   - Frontend-site: `SkillCategory` interface + `ApiService.getSkillCategories()`; `/skills` now renders groups from `GET /api/skill-categories` (per-category bilingual title, nested skills). Falls back to the legacy `category` grouping (and shows an "Other Skills" group for uncategorized) if the endpoint returns nothing.
   - Verified end-to-end: create 2 categories → create skill with `categoryId` → public `/skill-categories` groups correctly → `/skills` includes `categoryRef.title` → cleanup.
 
+## Phase 11: Site Customization 🔲
+
+### 11.1 **Theme color customization**
+- **Goal:** keep the current black/white + Iris-Violet/Orchid identity as the **default**, but let the owner pick the site's accent colors from the admin Settings, with a few presets + a custom mode (2–3 color picks, not a full color picker).
+
+- **Current state:** the public site's colors are driven by a Tailwind v4 `@theme` block in `frontend-site/src/styles.css` that remaps `indigo-* → Iris Violet` and `violet-* → Orchid`, and templates use utilities like `bg-indigo-600`, `from-indigo-500 to-violet-400`, `text-indigo-600`, etc. These are **static at build time**, so they can't be swapped at runtime without a change.
+
+- **Approach (runtime CSS variables):**
+  - Introduce CSS custom properties `--brand-primary` / `--brand-primary-rgb` and `--brand-secondary` on `:root` (in `styles.css`), defaulting to the current Iris Violet / Orchid hex values — so the existing look is preserved out of the box.
+  - Replace the themeable utility usages in the **public site** with inline `style` bindings that read these variables (e.g. `[style.background]="'var(--brand-primary)"'` or a generated `<style>` block with helper classes like `.brand-bg`, `.brand-text`, `.brand-gradient`). Keep admin panel on its own fixed palette (user is happy with it).
+  - At app bootstrap (e.g. in `AppComponent` / a small `ThemeColorService`), fetch `GET /api/settings`, and if a custom palette is chosen, set those CSS variables on `document.documentElement` (and persist in `localStorage` to avoid a flash).
+
+- **Backend / Settings model:**
+  - Extend `SiteSettings` (Prisma) with: `themeMode String @default("default")` (`"default" | "custom"`), `themePrimary String?`, `themeSecondary String?`.
+  - Admin settings DTO already accepts `skillsCardView`; add the three new fields.
+  - Public `GET /api/settings` already returns `skillsCardView`; it will now also return `themeMode/themePrimary/themeSecondary`.
+
+- **Admin UI (Settings page):**
+  - A "Theme" section with: a **Default** radio (current palette) + 2–3 **preset** swatches (e.g. Iris Violet (default), Emerald/Teal, Rose/Amber — each = primary+secondary pair) + a **Custom** option exposing 2 color inputs (primary + secondary) with live preview.
+  - Persist via the existing `PUT /api/admin/settings`.
+
+- **Scope note:** only the *primary accent* and *secondary/gradient* are customizable (not every shade). This keeps templates simple and avoids a full design-token system.
+
+### 11.2 **Section visibility toggles**
+- **Goal:** let the owner hide entire site sections (skills, projects, videos, testimonials, blog, about, experiences, education, contact…) so the site adapts to the content they actually have — e.g. someone who doesn't make videos can hide that section everywhere.
+
+- **Backend / Settings model:** extend `SiteSettings` with boolean flags (all default `true`): `showAbout`, `showExperiences`, `showEducations`, `showSkills`, `showProjects`, `showArticles` (blog), `showVideos`, `showTestimonials`, `showContact`. (Contact form may stay on regardless; still toggleable.)
+
+- **Public site behavior:**
+  - Header/footer nav links for a section are rendered only when its flag is `true`.
+  - Home page compact section cards / hero CTAs gated the same way.
+  - Routes for hidden sections should still resolve if visited directly (don't 404 the URL), but the nav/entry points hide them. (Optional: redirect hidden routes — keep simple: hide entry points only.)
+  - `GET /api/settings` returns all flags; `AppComponent`/services read them to drive `*ngIf` across nav, footer, and home.
+
+- **Admin UI (Settings page):** a "Sections" list of toggles (with bilingual labels) mirroring the flags above, saved via `PUT /api/admin/settings`.
+
+- **Note:** the admin panel itself is unaffected — these only control the public site.
+
+### 11.3 **Admin login page redesign (standalone, outside the panel)**
+- **Clarification:** the login route (`/login`) is **already outside** the admin panel shell (it has its own component, no sidebar) — so this is a **visual/polish** task, not a routing change.
+- **Goal:** make the login screen feel intentional and on-brand rather than a bare utility form.
+  - Full-screen centered card with the site's gradient/brand accent, the "A / almas98" logo mark, bilingual (EN/FA) labels, a link back to the public site, and the existing username/password + error/loading states.
+  - Reuse the site's `--brand-*` variables so it matches a chosen theme.
+  - Keep the existing `fetch('/api/auth/login')` + `localStorage` token flow; only the template/styles change.
+  - Accessibility: focus the first field, Enter submits, show a clear error.
+
+
+
