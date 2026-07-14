@@ -40,8 +40,21 @@ export interface Education {
 export interface Skill {
   id: string;
   name: string; nameFa?: string;
-  category: string; categoryFa?: string;
-  proficiency?: number;
+  category: string;
+  categoryFa?: string;
+  categoryId?: string;
+  categoryTitle?: string;
+  categoryTitleFa?: string;
+  proficiency: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SkillCategory {
+  id: string;
+  title: string; titleFa?: string;
+  order: number;
+  skills: Skill[];
   createdAt: string;
   updatedAt: string;
 }
@@ -147,6 +160,10 @@ export class ApiService {
 
   getSkills(): Observable<Skill[]> {
     return this.http.get<Skill[]>(`${this.baseUrl}/skills`);
+  }
+
+  getSkillCategories(): Observable<SkillCategory[]> {
+    return this.http.get<SkillCategory[]>(`${this.baseUrl}/skill-categories`);
   }
 
   getArticles(lang?: string): Observable<Article[]> {

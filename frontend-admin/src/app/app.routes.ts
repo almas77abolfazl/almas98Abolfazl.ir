@@ -14,6 +14,7 @@ export const routes: Routes = [
       { path: 'experiences', loadComponent: () => import('./features/experiences/experiences.component').then(m => m.ExperiencesComponent), canDeactivate: [pendingChangesGuard] },
       { path: 'educations', loadComponent: () => import('./features/educations/educations.component').then(m => m.EducationsComponent), canDeactivate: [pendingChangesGuard] },
       { path: 'skills', loadComponent: () => import('./features/skills/skills.component').then(m => m.SkillsComponent), canDeactivate: [pendingChangesGuard] },
+      { path: 'skill-categories', loadComponent: () => import('./features/skill-categories/skill-categories.component').then(m => m.SkillCategoriesComponent), canDeactivate: [pendingChangesGuard] },
       { path: 'articles', loadComponent: () => import('./features/articles/articles.component').then(m => m.ArticlesComponent), canDeactivate: [pendingChangesGuard] },
       { path: 'videos', loadComponent: () => import('./features/videos/videos.component').then(m => m.VideosComponent), canDeactivate: [pendingChangesGuard] },
       { path: 'projects', loadComponent: () => import('./features/projects/projects.component').then(m => m.ProjectsComponent), canDeactivate: [pendingChangesGuard] },

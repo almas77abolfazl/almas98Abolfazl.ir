@@ -7,22 +7,22 @@
     <div class="title-underline"></div>
   </header>
 
-  @if (isLoading) {
+  @if (isLoading()) {
     <div class="flex items-center justify-center py-20">
       <div class="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
     </div>
   } @else {
     <div class="grid md:grid-cols-2 gap-6">
-      @for (group of groupedSkills | keyvalue; track group.key) {
+      @for (group of groups(); track group.key) {
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 card-hover animate-fade-up">
           <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-5 flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-            {{ i18n.isFa ? (group.value[0]?.categoryFa || group.key) : group.key }}
+            {{ i18n.isFa ? (group.titleFa || group.title) : group.title }}
           </h3>
 
           @if (cardView()) {
             <div class="flex flex-wrap gap-2">
-              @for (skill of group.value; track skill.id) {
+              @for (skill of group.skills; track skill.id) {
                 <span class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
                   {{ i18n.isFa ? (skill.nameFa || skill.name) : skill.name }}
                 </span>
@@ -30,7 +30,7 @@
             </div>
           } @else {
             <div class="space-y-4">
-              @for (skill of group.value; track skill.id) {
+              @for (skill of group.skills; track skill.id) {
                 <div>
                   <div class="flex justify-between items-center mb-1.5">
                     <span class="text-sm font-medium text-slate-700 dark:text-slate-200">

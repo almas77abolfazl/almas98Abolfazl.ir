@@ -1,0 +1,60 @@
+
+    <div>
+      <h1 class="admin-title mb-6">{{ i18n.t('nav_skill_categories') }}</h1>
+
+      <form (ngSubmit)="onSubmit()" (input)="markDirty()" (change)="markDirty()" class="admin-card space-y-5 mb-6">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> {{ i18n.t('cat_title') }}</label>
+            <input [(ngModel)]="model.title" name="title" required class="admin-input" />
+          </div>
+          <div>
+            <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> {{ i18n.t('cat_title') }}</label>
+            <input [(ngModel)]="model.titleFa" name="titleFa" dir="rtl" class="admin-input font-fa" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label class="admin-field-label">{{ i18n.t('cat_order') }}</label>
+            <input type="number" [(ngModel)]="model.order" name="order" class="admin-input" />
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button type="submit" class="admin-btn admin-btn-primary">{{ editId ? i18n.t('update') : i18n.t('add') }}</button>
+          @if (editId) {
+            <button type="button" (click)="reset()" class="admin-btn admin-btn-ghost">{{ i18n.t('cancel') }}</button>
+          }
+        </div>
+      </form>
+
+      <div class="admin-card overflow-hidden">
+        <table class="min-w-full">
+          <thead>
+            <tr class="border-b border-slate-200 dark:border-slate-700">
+              <th class="admin-th">{{ i18n.t('cat_title') }}</th>
+              <th class="admin-th text-center">{{ i18n.t('cat_skillsCount') }}</th>
+              <th class="admin-th text-end">{{ i18n.t('actions') }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-700/70">
+            @for (item of items(); track item.id) {
+              <tr class="admin-row">
+                <td class="admin-td">
+                  {{ item.title }}
+                  @if (item.titleFa) { <span class="block text-xs font-fa text-emerald-600" dir="rtl">{{ item.titleFa }}</span> }
+                </td>
+                <td class="admin-td text-center">{{ item._count?.skills ?? 0 }}</td>
+                <td class="admin-td text-end">
+                  <button (click)="edit(item)" class="text-indigo-600 hover:underline dark:text-indigo-400">{{ i18n.t('edit') }}</button>
+                  <button (click)="del(item.id!)" class="text-rose-600 hover:underline dark:text-rose-400 ms-3">{{ i18n.t('delete') }}</button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="3" class="admin-td text-center text-slate-400">{{ i18n.t('cat_noCategories') }}</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>

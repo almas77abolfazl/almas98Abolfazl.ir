@@ -29,11 +29,19 @@
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Category</label>
-            <input [(ngModel)]="model.category" name="category" required class="admin-input" />
+            <select [(ngModel)]="model.categoryId" name="categoryId" (change)="onCategoryChange()" class="admin-input">
+              <option [ngValue]="null">{{ i18n.t('cat_none') }}</option>
+              @for (cat of categories(); track cat.id) {
+                <option [ngValue]="cat.id">{{ i18n.isFa ? (cat.titleFa || cat.title) : cat.title }}</option>
+              }
+            </select>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+              <a routerLink="/skill-categories" class="text-indigo-600 hover:underline dark:text-indigo-400">{{ i18n.t('cat_manage') }}</a>
+            </p>
           </div>
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> دسته‌بندی</label>
-            <input [(ngModel)]="model.categoryFa" name="categoryFa" dir="rtl" class="admin-input font-fa" />
+            <input [(ngModel)]="model.categoryFa" name="categoryFa" dir="rtl" class="admin-input font-fa" [placeholder]="i18n.t('cat_faPlaceholder')" />
           </div>
         </div>
 

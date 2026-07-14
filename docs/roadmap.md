@@ -205,14 +205,13 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 - **Nginx**: maps public `/feed.xml` → backend `/api/feed.xml` (same pattern as the sitemap).
 - **Discovery**: `<link rel="alternate" type="application/rss+xml" href="/feed.xml">` added to `index.html` so browsers/readers autodiscover the feed. A visible RSS link + icon also lives in the site footer.
 
-## Phase 10: Portfolio Polish 🔶 (10.1 & 10.2 done; 10.3 pending)
+## Phase 10: Portfolio Polish ✅
 
 **Goal:** Round out the portfolio with the features that matter most for showcasing work.
 
 - **10.1 Projects / Portfolio section** ✅ — `Projects` model (bilingual, `techStack[]`, `liveUrl`/`repoUrl`/`coverUrl`, `order`); public `GET /api/projects` + admin CRUD + reorder; card grid with tech badges and links.
 - **10.2 Résumé / CV download (PDF)** ✅ — "Download résumé" button on the About page plus a prominent **Resume** button in the header (shown when `resumeUrl` is set). Resume is uploaded via the admin About page (`FileUploadComponent`) — same endpoint as the avatar, now accepting PDF/DOC.
-- **10.3 Grouped skills with managed categories** 🔲 — the public site already groups skills by a `category` string; add a `SkillCategory` model (bilingual titles + order), migrate `Skill.category`→`categoryId`, and add admin CRUD so categories are managed (not typed per skill). See `tasks.md` for details.
-
+- **10.3 Grouped skills with managed categories** ✅ — new `SkillCategory` model (bilingual titles + order) + relation on `Skill`; public `GET /api/skill-categories` (with nested skills); admin CRUD page; skills form uses a category dropdown instead of free-text. Legacy `category` field kept as a fallback.
 ## Deferred / Under review
 
 - **6.7 SSR / Prerender** — **deferred by decision.** Client-side `SeoService` works for Google (renders JS), and the homepage — the primary shared link — already has correct static OG tags in `index.html`. The only gap is per-route social previews for *deep* links, which are rare for a personal portfolio. Prerendering the static routes wouldn't fix article previews anyway (only full SSR would), and full SSR requires a persistent Node process (breaks pure-static Nginx) — disproportionate here. Revisit with **full SSR** (or a targeted backend OG endpoint) only if/when individual article links are actively shared on social media.
@@ -232,7 +231,7 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 | 7 | Dark/Light Theme Polish | 🔶 7.1–7.4, 7.6 done (7.5 dropped by decision) |
 | 8 | Admin Panel UI Overhaul | ✅ 8.0–8.11 done |
 | 9 | Additional Features | 🔶 9.2, 9.3, 9.9, 9.10 done; 9.4–9.8 dropped |
-| 10 | Portfolio Polish | 🔶 10.1, 10.2 done; 10.3 grouped skills pending |
+| 10 | Portfolio Polish | ✅ Done (Projects, résumé download, grouped skills) |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.
 

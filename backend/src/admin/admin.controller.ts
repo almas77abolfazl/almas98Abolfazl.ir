@@ -162,8 +162,9 @@ export class AdminController {
     body: {
       name: string;
       nameFa?: string;
-      category: string;
+      category?: string;
       categoryFa?: string;
+      categoryId?: string;
       proficiency?: number;
     },
   ) {
@@ -466,5 +467,34 @@ export class AdminController {
   @Patch('projects/reorder')
   reorderProjects(@Body() body: { items: { id: string; order: number }[] }) {
     return this.adminService.reorderProjects(body.items);
+  }
+
+  // Skill categories
+  @Get('skill-categories')
+  findAllSkillCategories() {
+    return this.adminService.findAllSkillCategories();
+  }
+
+  @Post('skill-categories')
+  createSkillCategory(@Body() body: { title: string; titleFa?: string; order?: number }) {
+    return this.adminService.createSkillCategory(body);
+  }
+
+  @Put('skill-categories/:id')
+  updateSkillCategory(
+    @Param('id') id: string,
+    @Body() body: { title?: string; titleFa?: string; order?: number },
+  ) {
+    return this.adminService.updateSkillCategory(id, body);
+  }
+
+  @Delete('skill-categories/:id')
+  deleteSkillCategory(@Param('id') id: string) {
+    return this.adminService.deleteSkillCategory(id);
+  }
+
+  @Patch('skill-categories/reorder')
+  reorderSkillCategories(@Body() body: { items: { id: string; order: number }[] }) {
+    return this.adminService.reorderSkillCategories(body.items);
   }
 }

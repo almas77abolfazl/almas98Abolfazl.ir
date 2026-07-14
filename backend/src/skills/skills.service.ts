@@ -7,7 +7,8 @@ export class SkillsService {
 
   async findAll() {
     return this.prisma.skills.findMany({
-      orderBy: { category: 'asc' },
+      orderBy: [{ category: 'asc' }, { order: 'asc' }],
+      include: { categoryRef: true },
     });
   }
 }

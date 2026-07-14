@@ -55,15 +55,27 @@ model Educations {
 }
 
 model Skills {
-  id          String   @id @default(uuid())
+  id          String         @id @default(uuid())
   name        String
   nameFa      String?
-  category    String
+  category    String?
   categoryFa  String?
-  proficiency Int?     @default(0)
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  categoryId  String?
+  categoryRef SkillCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  proficiency Int?           @default(0)
+  order       Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model SkillCategory {
+  id        String   @id @default(uuid())
+  title     String
+  titleFa   String?
+  order     Int      @default(0)
+  skills    Skills[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Articles {

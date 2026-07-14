@@ -91,8 +91,27 @@ export class AdminService {
   }
 
   // Skills
-  async createSkill(data: { name: string; nameFa?: string; category: string; categoryFa?: string; proficiency?: number }) {
-    return this.prisma.skills.create({ data });
+  async createSkill(data: { name: string; nameFa?: string; category?: string; categoryFa?: string; categoryId?: string; proficiency?: number }) {
+    const { categoryId, category, categoryFa, name, nameFa, proficiency } = data;
+    let finalCategory = category ?? '';
+    let finalCategoryFa = categoryFa;
+    if (!finalCategory && categoryId) {
+      const cat = await this.prisma.skillCategory.findUnique({ where: { id: categoryId } });
+      if (cat) {
+        finalCategory = cat.title;
+        if (!finalCategoryFa && cat.titleFa) finalCategoryFa = cat.titleFa;
+      }
+    }
+    return this.prisma.skills.create({
+      data: {
+        name,
+        nameFa,
+        category: finalCategory,
+        categoryFa: finalCategoryFa,
+        proficiency,
+        categoryRef: categoryId ? { connect: { id: categoryId } } : undefined,
+      },
+    });
   }
 
   async findAllSkills() {
@@ -106,10 +125,31 @@ export class AdminService {
       nameFa?: string;
       category?: string;
       categoryFa?: string;
+      categoryId?: string;
       proficiency?: number;
     },
   ) {
-    return this.prisma.skills.update({ where: { id }, data });
+    const { categoryId, category, categoryFa, ...rest } = data;
+    const updateData: Record<string, unknown> = { ...rest };
+    if (categoryId) {
+      updateData.categoryRef = { connect: { id: categoryId } };
+      if (!category) {
+        const cat = await this.prisma.skillCategory.findUnique({ where: { id: categoryId } });
+        if (cat) {
+          updateData.category = cat.title;
+          if (!categoryFa && cat.titleFa) updateData.categoryFa = cat.titleFa;
+        } else {
+          updateData.category = '';
+        }
+      } else {
+        updateData.category = category;
+        updateData.categoryFa = categoryFa;
+      }
+    } else {
+      if (category !== undefined) updateData.category = category;
+      if (categoryFa !== undefined) updateData.categoryFa = categoryFa;
+    }
+    return this.prisma.skills.update({ where: { id }, data: updateData as any });
   }
 
   async deleteSkill(id: string) {
@@ -329,8 +369,33 @@ export class AdminService {
     return this.bulkReorder('projects', items);
   }
 
+  // Skill categories
+  async findAllSkillCategories() {
+    return this.prisma.skillCategory.findMany({ orderBy: { order: 'asc' } });
+  }
+
+  async createSkillCategory(data: { title: string; titleFa?: string; order?: number }) {
+    return this.prisma.skillCategory.create({ data });
+  }
+
+  async updateSkillCategory(
+    id: string,
+    data: { title?: string; titleFa?: string; order?: number },
+  ) {
+    return this.prisma.skillCategory.update({ where: { id }, data });
+  }
+
+  async deleteSkillCategory(id: string) {
+    return this.prisma.skillCategory.delete({ where: { id } });
+  }
+
+  async reorderSkillCategories(items: { id: string; order: number }[]) {
+    await this.bulkReorder('skillCategory', items);
+    return { updated: items.length };
+  }
+
   private async bulkReorder(
-    model: 'experiences' | 'educations' | 'skills' | 'projects',
+    model: 'experiences' | 'educations' | 'skills' | 'projects' | 'skillCategory',
     items: { id: string; order: number }[],
   ) {
     await this.prisma.$transaction(

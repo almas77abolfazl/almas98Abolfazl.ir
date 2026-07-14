@@ -1,6 +1,7 @@
 import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
@@ -11,20 +12,27 @@ interface Skill {
   id?: string;
   name: string; nameFa?: string;
   category: string; categoryFa?: string;
+  categoryId?: string;
   proficiency?: number;
+}
+
+interface SkillCategoryOption {
+  id: string;
+  title: string; titleFa?: string;
 }
 
 type SortCol = 'name' | 'category' | 'proficiency' | null;
 
 @Component({
   selector: 'app-skills',
-  imports: [CommonModule, FormsModule, DragDropModule],
+  imports: [CommonModule, FormsModule, DragDropModule, RouterLink],
   templateUrl: './skills.component.html',
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })
 export class SkillsComponent implements OnInit {
   model: Skill = { name: '', category: '' };
   items = signal<Skill[]>([]);
+  categories = signal<SkillCategoryOption[]>([]);
   editId?: string;
   dirty = signal(false);
   settings = signal<{ skillsCardView: boolean }>({ skillsCardView: false });
@@ -68,7 +76,12 @@ export class SkillsComponent implements OnInit {
       next: (s) => this.settings.set(s),
       error: () => {},
     });
+    this.loadCategories();
     this.load();
+  }
+
+  loadCategories(): void {
+    this.http.get<SkillCategoryOption[]>('/api/admin/skill-categories').subscribe((data) => this.categories.set(data));
   }
 
   load(): void {
@@ -129,6 +142,14 @@ export class SkillsComponent implements OnInit {
   edit(item: Skill): void {
     this.model = { ...item };
     this.editId = item.id;
+  }
+
+  onCategoryChange(): void {
+    const cat = this.categories().find((c) => c.id === this.model.categoryId);
+    if (cat) {
+      this.model.category = cat.title;
+      if (!this.model.categoryFa) this.model.categoryFa = cat.titleFa;
+    }
   }
 
   async del(id: string): Promise<void> {

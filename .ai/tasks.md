@@ -384,13 +384,10 @@
 
 ## Phase 10: Portfolio Polish 🔲 (cont.)
 
-- [ ] 10.3 **Grouped skills with managed categories**
-  - Currently skills carry a free-text `category`/`categoryFa` string and the **public site already groups** them by that field (see `skills.component.html` `groupedSkills`). The gap is admin UX: you type the category per skill, which is error-prone and inconsistent.
-  - Add a `SkillCategory` model: `{ id, title, titleFa?, order }` (bilingual titles, e.g. "Frontend", "Backend", "DevOps").
-  - Migrate `Skill.category`/`categoryFa` from free-text to a relation (`categoryId` FK → `SkillCategory`).
-  - Backend: public `GET /api/skill-categories` (+ nested skills or keep `GET /api/skills` grouped); admin CRUD for categories + `PATCH .../reorder`; admin skills form picks a category from a dropdown instead of typing.
-  - Admin: a "Categories" management UI (or inline section in the Skills page) to add/edit/reorder category titles; skills grouped under each.
-  - Frontend-site: render category titles from the new model (keeps current `categoryFa`/`category` fallback for any legacy skills), keep drag-drop/ordering.
-  - Note: this is a schema migration + admin + site change — medium effort; can be done after the current batch ships.
-
+- [x] 10.3 **Grouped skills with managed categories** ✅
+  - `SkillCategory` model: `{ id, title, titleFa?, order, createdAt, updatedAt }` + relation `Skills.categoryRef` (FK `categoryId`, `onDelete: SetNull`); legacy `category`/`categoryFa` kept as nullable fallback so existing data is preserved. (`prisma db push` applied)
+  - Backend: `SkillCategoriesModule` — public `GET /api/skill-categories` (categories ordered, each with nested `skills`); admin CRUD in `AdminController`/`AdminService` (`GET/POST/PUT/DELETE /api/admin/skill-categories`) + `PATCH /api/admin/skill-categories/reorder` (added `'skillCategory'` to `bulkReorder` union). `GET /api/skills` now `include`s `categoryRef` (returns category title). Creating/updating a skill with `categoryId` auto-fills `category`/`categoryFa` from the category title.
+  - Admin: new `/admin/skill-categories` page (bilingual title form, order, sortable list with skill count, delete with confirm) + sidebar nav + i18n keys (`nav_skill_categories`, `cat_*`). Skills form now has a **category dropdown** (populated from `/api/admin/skill-categories`) instead of a free-text field; a "Manage categories" link jumps to the new page.
+  - Frontend-site: `SkillCategory` interface + `ApiService.getSkillCategories()`; `/skills` now renders groups from `GET /api/skill-categories` (per-category bilingual title, nested skills). Falls back to the legacy `category` grouping (and shows an "Other Skills" group for uncategorized) if the endpoint returns nothing.
+  - Verified end-to-end: create 2 categories → create skill with `categoryId` → public `/skill-categories` groups correctly → `/skills` includes `categoryRef.title` → cleanup.
 

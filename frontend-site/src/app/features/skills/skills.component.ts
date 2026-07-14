@@ -1,9 +1,15 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ApiService } from '../../shared/services/api.service';
+import { ApiService, Skill, SkillCategory } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
-import { Skill } from '../../shared/services/api.service';
+
+interface SkillGroup {
+  key: string;
+  title: string;
+  titleFa?: string;
+  skills: Skill[];
+}
 
 @Component({
   selector: 'app-skills',
@@ -13,9 +19,8 @@ import { Skill } from '../../shared/services/api.service';
   styleUrl: './skills.component.scss'
 })
 export class SkillsComponent implements OnInit {
-  skills: Skill[] = [];
-  groupedSkills: Record<string, Skill[]> = {};
-  isLoading = true;
+  groups = signal<SkillGroup[]>([]);
+  isLoading = signal(true);
   cardView = signal(false);
 
   constructor(
@@ -37,15 +42,67 @@ export class SkillsComponent implements OnInit {
     });
 
     this.api.getSkills().subscribe({
-      next: data => {
-        this.skills = data;
-        this.groupedSkills = data.reduce((acc, skill) => {
-          if (!acc[skill.category]) acc[skill.category] = [];
-          acc[skill.category].push(skill);
-          return acc;
-        }, {} as Record<string, Skill[]>);
+      next: (skills) => this.buildGroups(skills),
+      error: () => this.isLoading.set(false),
+    });
+  }
+
+  private buildGroups(skills: Skill[]): void {
+    const skillMap = new Map(skills.map((s) => [s.id, s]));
+    this.api.getSkillCategories().subscribe({
+      next: (cats) => {
+        let groups: SkillGroup[];
+        if (cats.length) {
+          groups = cats.map((c) => ({
+            key: c.id,
+            title: c.title,
+            titleFa: c.titleFa,
+            skills: c.skills.map((s) => skillMap.get(s.id) ?? s),
+          }));
+          // Legacy skills without a category (or whose category no longer exists)
+          const groupedIds = new Set(cats.flatMap((c) => c.skills.map((s) => s.id)));
+          const orphans = skills.filter((s) => !groupedIds.has(s.id));
+          if (orphans.length) {
+            groups.push({
+              key: '__uncategorized',
+              title: this.i18n.t('categoryTitle'),
+              titleFa: this.i18n.t('categoryTitle'),
+              skills: orphans,
+            });
+          }
+        } else {
+          // Fallback: group by the legacy `category` string field
+          const acc: Record<string, Skill[]> = {};
+          for (const s of skills) {
+            const key = s.category || this.i18n.t('categoryTitle');
+            (acc[key] ??= []).push(s);
+          }
+          groups = Object.entries(acc).map(([key, value]) => ({
+            key,
+            title: key,
+            titleFa: skills.find((s) => s.category === key)?.categoryFa ?? key,
+            skills: value,
+          }));
+        }
+        this.groups.set(groups);
+        this.isLoading.set(false);
       },
-      complete: () => this.isLoading = false
+      error: () => {
+        // Fallback to legacy grouping on category endpoint failure
+        const acc: Record<string, Skill[]> = {};
+        for (const s of skills) {
+          const key = s.category || this.i18n.t('categoryTitle');
+          (acc[key] ??= []).push(s);
+        }
+        const groups = Object.entries(acc).map(([key, value]) => ({
+          key,
+          title: key,
+          titleFa: skills.find((s) => s.category === key)?.categoryFa ?? key,
+          skills: value,
+        }));
+        this.groups.set(groups);
+        this.isLoading.set(false);
+      },
     });
   }
 
@@ -53,3 +110,4 @@ export class SkillsComponent implements OnInit {
     return proficiency ?? 0;
   }
 }
+
