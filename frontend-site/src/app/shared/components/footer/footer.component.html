@@ -1,8 +1,8 @@
 <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
   <div class="page-shell py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-2">
-      <div class="w-6 h-6 rounded-md brand-gradient bg-linear-to-br flex items-center justify-center text-white text-xs font-bold">A</div>
-      <span class="text-sm text-slate-500 dark:text-slate-400">almas98Abolfazl.ir</span>
+      <div class="w-6 h-6 rounded-md brand-gradient bg-linear-to-br flex items-center justify-center text-white text-xs font-bold">{{ config.brandInitial() }}</div>
+      <span class="text-sm text-slate-500 dark:text-slate-400">{{ config.siteName() }}</span>
     </div>
     <div class="flex items-center gap-4">
       @if (socials.length) {

@@ -55,7 +55,7 @@
               </a>
             }
             @if (aboutMe?.resumeUrl) {
-              <a [href]="resumeHref" target="_blank" rel="noopener"
+              <a [href]="resumeHref" download rel="noopener"
                 class="px-6 py-3 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-medium brand-border-hover transition-all">
                 {{ i18n.isFa ? 'رزومه' : 'Resume' }}
               </a>

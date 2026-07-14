@@ -161,6 +161,8 @@ model SiteSettings {
   themeMode      String   @default("default") // 'default' | 'custom'
   themePrimary   String?  // hex, e.g. #7a5cf5
   themeSecondary String?  // hex, e.g. #9678fb
+  siteName       String?  // Public site name shown in SEO/footer (fork-friendly)
+  siteUrl        String?  // Canonical site URL, e.g. https://example.com (overrides SITE_URL env)
   showAbout        Boolean @default(true)
   showExperiences  Boolean @default(true)
   showEducations   Boolean @default(true)

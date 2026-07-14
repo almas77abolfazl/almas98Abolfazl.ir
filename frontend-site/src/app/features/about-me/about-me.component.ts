@@ -5,7 +5,7 @@ import { ApiService, AboutMe, Experience, Education, Skill, SkillCategory } from
 import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
 import { SiteSettingsService } from '../../shared/services/site-settings.service';
-import { SITE_URL } from '../../shared/site-config';
+import { SiteConfigService } from '../../shared/services/site-config.service';
 import { ActivatedRoute } from '@angular/router';
 
 interface SkillGroup {
@@ -58,6 +58,7 @@ export class AboutMeComponent implements OnInit {
     private seo: SeoService,
     public siteSettings: SiteSettingsService,
     private route: ActivatedRoute,
+    private config: SiteConfigService,
   ) {}
 
   ngOnInit(): void {
@@ -165,8 +166,7 @@ export class AboutMeComponent implements OnInit {
   get resumeHref(): string | undefined {
     const url = this.aboutMe?.resumeUrl;
     if (!url) return undefined;
-    if (/^https?:\/\//i.test(url)) return url;
-    return url.startsWith('/') ? `${SITE_URL}${url}` : `${SITE_URL}/${url}`;
+    return this.config.assetUrl(url);
   }
 
   formatDate(dateStr: string): string {

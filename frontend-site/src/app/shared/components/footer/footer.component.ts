@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { I18nService } from '../../services/i18n.service';
 import { ApiService, AboutMe } from '../../services/api.service';
+import { SiteConfigService } from '../../services/site-config.service';
 
 @Component({
   selector: 'app-footer',
@@ -11,7 +12,7 @@ import { ApiService, AboutMe } from '../../services/api.service';
 export class FooterComponent implements OnInit {
   aboutMe?: AboutMe;
 
-  constructor(public i18n: I18nService, private api: ApiService) {}
+  constructor(public i18n: I18nService, private api: ApiService, public config: SiteConfigService) {}
 
   ngOnInit(): void {
     this.api.getAboutMe().subscribe(data => this.aboutMe = data);

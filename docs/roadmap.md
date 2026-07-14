@@ -213,11 +213,11 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 - **10.2 Résumé / CV download (PDF)** ✅ — "Download résumé" button on the About page plus a prominent **Resume** button in the header (shown when `resumeUrl` is set). Resume is uploaded via the admin About page (`FileUploadComponent`) — same endpoint as the avatar, now accepting PDF/DOC.
 - **10.3 Grouped skills with managed categories** ✅ — new `SkillCategory` model (bilingual titles + order) + relation on `Skill`; public `GET /api/skill-categories` (with nested skills); admin CRUD page; skills form uses a category dropdown instead of free-text. Legacy `category` field kept as a fallback.
 
-## Phase 11: Site Customization 🔲
+## Phase 11: Site Customization ✅
 
 - **11.1 Theme color customization** ✅ — `SiteSettings` gained `themeMode` (`default`/`custom`), `themePrimary`, `themeSecondary`. The public site's themeable utilities already read `--brand-*` CSS variables; a new `ThemeColorService` applies them at bootstrap from `GET /api/settings` (persisted to `localStorage`, re-applied before first paint via an `index.html` inline script). The dedicated Admin **Settings** page (`/admin/settings`) has a **Theme** card: Default + 3 curated presets (Iris Violet / Crimson Rose / Azure / Amber Glow) + a 2-color custom picker with live preview, saved via `PUT /api/admin/settings`. Primary buttons use the brand gradient. The site name/logo uses the brand gradient too. Admin panel keeps its own fixed palette.
 - **11.2 Section visibility toggles** — add boolean flags to `SiteSettings` (`showAbout`, `showSkills`, `showProjects`, `showVideos`, `showTestimonials`, `showArticles`, `showExperiences`, `showEducations`, `showContact`); the public site's nav/footer/home hide a section when its flag is off. Managed from a "Sections" area in admin Settings.
-- **11.3 Admin login page redesign** — the `/login` route is already outside the panel shell (routing is fine); this is a **visual** task: a branded, full-screen centered login card (logo, gradient accent, EN/FA labels, link back to the site) reusing the `--brand-*` variables. Auth flow unchanged.
+- **11.3 Admin login page redesign** ✅ — a branded, full-screen centered login card (logo mark, gradient accent, EN/FA labels, back-to-site link, language toggle) reusing the brand palette. Auth flow unchanged.
 
 ## Phase 12: Content Flow & UX Polish 🔲
 
@@ -234,7 +234,9 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 - **6.7 SSR / Prerender** — **deferred by decision.** Client-side `SeoService` works for Google (renders JS), and the homepage — the primary shared link — already has correct static OG tags in `index.html`. The only gap is per-route social previews for *deep* links, which are rare for a personal portfolio. Prerendering the static routes wouldn't fix article previews anyway (only full SSR would), and full SSR requires a persistent Node process (breaks pure-static Nginx) — disproportionate here. Revisit with **full SSR** (or a targeted backend OG endpoint) only if/when individual article links are actively shared on social media.
 - **7.5 Theme toggle animation** — dropped by decision (minor polish).
 
-## Phase 13: About Me Hub, Contact & Social Footer 🔲
+## Phase 13: About Me Hub, Contact & Social Footer ✅
+
+> **Status:** 13.1–13.8 implemented and committed (tabbed About Me hub, contact tab, social footer, resume link fix). The homepage hero shows a bio teaser; standalone `/experiences` + `/skills` routes redirect to `/about-me`.
 
 - **13.1 AboutMe profile + social fields** — add nullable `email`, `phone`, `location`, and social URLs (`linkedinUrl`, `githubUrl`, `youtubeUrl`, `twitterUrl`, `instagramUrl`) to `AboutMe`; `prisma db push` applied. Public `GET /about-me` already returns the full row so new fields flow through.
 - **13.2 Admin About Me form** — add contact + social inputs (persisted via `POST /api/admin/about-me`).
@@ -244,6 +246,17 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 - **13.6 Footer social links** — `FooterComponent` renders owner-editable social/profile icons (LinkedIn / GitHub / YouTube / Twitter / Instagram) alongside the existing RSS link.
 - **13.7 Person JSON-LD `sameAs`** — populate the home `Person` structured data from the AboutMe social URLs.
 - **13.8 Resume link bug** — add `download` to resume links, make the `/api/uploads/...` URL robust (prefix `SITE_URL` if relative), verify nginx serves uploads, drop the seed placeholder.
+
+## Phase 14: Dynamic Site Identity & Admin Token Handling 🔲
+
+> **Goal:** remove every hard-coded owner name and domain so the project is fork-friendly, and harden the admin session.
+
+- **14.1 Dynamic owner name** ✅ — the owner name is no longer hard-coded in templates, SEO meta, JSON-LD or the RSS feed. All reads come from `AboutMe.fullName` / `fullNameFa` (editable in the admin About Me form) via the frontend-site `SiteConfigService` and the backend RSS service.
+- **14.2 Dynamic site name + domain** ✅ — `SiteSettings` gained `siteName` and `siteUrl` (editable in the admin **Settings** page). `SITE_URL` / `SITE_NAME` env vars remain as fallbacks. The frontend-site `SiteConfigService` resolves the canonical URL for SEO/OG/canonical/sitemap; backend `sitemap` + `rss` services prefer the DB value, then the env, then a default. The footer shows the configured site name and a derived brand glyph.
+- **14.3 SEO description placeholder** ✅ — `i18n` SEO description strings use a `{name}` token resolved at runtime against the owner name, so they stay bilingual and fork-friendly.
+- **14.4 Admin token handling** ✅ — `AuthService.isLoggedIn()` now validates the JWT `exp` (best-effort client check) and the `ErrorInterceptor` logs the admin out and redirects to `/login` on any `401` from a guarded endpoint. Expired/invalid tokens therefore never silently persist.
+- **14.5 Dashboard Top Pages — friendly names** ✅ — the Top Pages list now shows localized page names instead of raw route paths (a `pageLabel()` helper maps `/`, `/about-me`, `/blog`, `/blog/:slug`, `/videos`, `/projects`, … using the admin i18n keys; article URLs render as `Article · <slug>`). New i18n keys `page_blog` / `page_article` / `page_notFound`.
+- **14.6 Dashboard horizontal scroll fix** ✅ — the dashboard's phantom horizontal scrollbar (caused by the daily-traffic chart's `whitespace-nowrap` hover tooltips overflowing the chart card while the shell `<main>` is `overflow-auto`) is fixed by clipping horizontal overflow on the chart container (`overflow-x-clip`).
 
 ## Timeline
 
@@ -259,9 +272,10 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 | 7 | Dark/Light Theme Polish | 🔶 7.1–7.4, 7.6 done (7.5 dropped by decision) |
 | 8 | Admin Panel UI Overhaul | ✅ 8.0–8.11 done |
 | 9 | Additional Features | 🔶 9.2, 9.3, 9.9, 9.10 done; 9.4–9.8 dropped |
-| 11 | Site Customization | 🔶 11.1 theme colors ✅; 11.2 section visibility ✅; 11.3 login redesign pending |
+| 11 | Site Customization | ✅ 11.1 theme colors ✅; 11.2 section visibility ✅; 11.3 login redesign ✅ |
 | 12 | Content Flow & UX Polish | 🔶 12.1–12.5 done (home/about-me flow, skills/hero/testimonials/admin polish) |
-| 13 | About Me Hub, Contact & Social Footer | 🔲 13.1–13.8 pending (tabbed about-me, contact tab, social footer, resume bug) |
+| 13 | About Me Hub, Contact & Social Footer | ✅ 13.1–13.8 done (tabbed about-me, contact tab, social footer, resume bug) |
+| 14 | Dynamic Site Identity & Admin Token Handling | 🔲 14.1–14.4 done (dynamic name/domain, SEO placeholder, admin 401 logout) |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.
 

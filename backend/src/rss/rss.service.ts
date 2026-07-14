@@ -5,22 +5,41 @@ import { PrismaService } from '../prisma/prisma.service';
 export class RssService {
   constructor(private readonly prisma: PrismaService) {}
 
-  private get baseUrl(): string {
+  private get fallbackBaseUrl(): string {
     return (process.env.SITE_URL || 'https://almas98abolfazl.ir').replace(/\/+$/, '');
   }
 
-  private get siteName(): string {
-    return process.env.SITE_NAME || 'almas98Abolfazl.ir';
+  private get fallbackSiteName(): string {
+    return process.env.SITE_NAME || 'almas98abolfazl.ir';
   }
 
-  private get siteDescription(): string {
-    return (
-      process.env.SITE_DESCRIPTION ||
-      'Articles and writing by Abolfazl Nasiri Almas — full-stack developer.'
-    );
+  /**
+   * Resolves the canonical base URL, site name, and feed description from the
+   * SiteSettings singleton (falling back to env vars). The description uses the
+   * owner name from AboutMe so it is never hard-coded.
+   */
+  private async resolveSite(language?: string): Promise<{ baseUrl: string; siteName: string; description: string }> {
+    let baseUrl = this.fallbackBaseUrl;
+    let siteName = this.fallbackSiteName;
+
+    const settings = await this.prisma.siteSettings.findFirst();
+    if (settings?.siteUrl) baseUrl = settings.siteUrl.replace(/\/+$/, '');
+    if (settings?.siteName) siteName = settings.siteName;
+
+    let description = `Articles and writing by ${siteName} — full-stack developer.`;
+    const about = await this.prisma.aboutMe.findFirst();
+    if (about) {
+      const ownerName =
+        language === 'fa' && about.fullNameFa ? about.fullNameFa : about.fullName;
+      description = `Articles and writing by ${ownerName} — full-stack developer.`;
+    }
+
+    return { baseUrl, siteName, description };
   }
 
   async generate(language?: string): Promise<string> {
+    const { baseUrl, siteName, description } = await this.resolveSite(language);
+
     const articles = await this.prisma.articles.findMany({
       where: {
         published: true,
@@ -30,12 +49,12 @@ export class RssService {
       take: 50,
     });
 
-    const self = `${this.baseUrl}/feed.xml`;
+    const self = `${baseUrl}/feed.xml`;
     const lastBuildDate = (articles[0]?.publishedAt ?? articles[0]?.createdAt ?? new Date()).toUTCString();
 
     const items = articles
       .map((article) => {
-        const link = `${this.baseUrl}/blog/${article.slug}`;
+        const link = `${baseUrl}/blog/${article.slug}`;
         const pubDate = (article.publishedAt ?? article.createdAt).toUTCString();
         const categories = (article.tags ?? [])
           .map((tag) => `\n      <category>${this.escapeXml(tag)}</category>`)
@@ -61,9 +80,9 @@ export class RssService {
       `<?xml version="1.0" encoding="UTF-8"?>\n` +
       `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">\n` +
       `  <channel>\n` +
-      `    <title>${this.escapeXml(this.siteName)}</title>\n` +
-      `    <link>${this.escapeXml(this.baseUrl)}/blog</link>\n` +
-      `    <description>${this.escapeXml(this.siteDescription)}</description>\n` +
+      `    <title>${this.escapeXml(siteName)}</title>\n` +
+      `    <link>${this.escapeXml(baseUrl)}/blog</link>\n` +
+      `    <description>${this.escapeXml(description)}</description>\n` +
       `    <language>${language ?? 'en'}</language>\n` +
       `    <lastBuildDate>${lastBuildDate}</lastBuildDate>\n` +
       `    <atom:link href="${this.escapeXml(self)}" rel="self" type="application/rss+xml" />\n` +

@@ -4,6 +4,7 @@ import { HeaderComponent } from './shared/components/header/header.component';
 import { FooterComponent } from './shared/components/footer/footer.component';
 import { AnalyticsService } from './shared/services/analytics.service';
 import { ThemeColorService } from './shared/services/theme-color.service';
+import { SiteConfigService } from './shared/services/site-config.service';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -20,6 +21,7 @@ export class App {
     private router: Router,
     private analytics: AnalyticsService,
     private themeColor: ThemeColorService,
+    private siteConfig: SiteConfigService,
   ) {
     this.themeColor.loadAndApply();
     this.router.events.pipe(filter(e => e instanceof NavigationEnd)).subscribe((e: NavigationEnd) => {

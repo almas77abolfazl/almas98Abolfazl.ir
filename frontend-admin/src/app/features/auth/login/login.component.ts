@@ -18,6 +18,26 @@ export class LoginComponent {
 
   constructor(private router: Router, public i18n: AdminI18nService) {}
 
+  toggleLang(): void {
+    this.i18n.toggleLang();
+  }
+
+  /**
+   * Link back to the public site. In development the admin panel and the public
+   * site are separate dev servers (admin on :4201, site on :4200); in production
+   * they share a domain so the site root is `/`.
+   */
+  get siteUrl(): string {
+    const { protocol, hostname, port } = window.location;
+    if (port === '4201') {
+      return `${protocol}//${hostname}:4200`;
+    }
+    if (port) {
+      return `${protocol}//${hostname}:${Number(port) - 1}`;
+    }
+    return '/';
+  }
+
   onSubmit() {
     this.loading = true;
     this.error = '';

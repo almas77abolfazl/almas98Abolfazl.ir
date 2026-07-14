@@ -4,7 +4,7 @@ import { I18nService } from '../../services/i18n.service';
 import { ThemeService } from '../../services/theme.service';
 import { ApiService } from '../../services/api.service';
 import { SiteSettingsService } from '../../services/site-settings.service';
-import { SITE_URL } from '../../site-config';
+import { SiteConfigService } from '../../services/site-config.service';
 
 @Component({
   selector: 'app-header',
@@ -22,6 +22,7 @@ export class HeaderComponent implements OnInit {
     public theme: ThemeService,
     private api: ApiService,
     public siteSettings: SiteSettingsService,
+    public config: SiteConfigService,
   ) {}
 
   ngOnInit(): void {
@@ -34,8 +35,7 @@ export class HeaderComponent implements OnInit {
   get resumeHref(): string | undefined {
     const url = this.resumeUrl();
     if (!url) return undefined;
-    if (/^https?:\/\//i.test(url)) return url;
-    return url.startsWith('/') ? `${SITE_URL}${url}` : `${SITE_URL}/${url}`;
+    return this.config.assetUrl(url);
   }
 
   toggleMenu(): void {

@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
 import { I18nService } from './i18n.service';
-import { SITE_NAME, SITE_URL, DEFAULT_OG_IMAGE } from '../site-config';
+import { SiteConfigService } from './site-config.service';
 
 export interface SeoData {
   /** Page title (without the site-name suffix). */
@@ -28,11 +28,12 @@ export class SeoService {
     private readonly title: Title,
     private readonly meta: Meta,
     private readonly i18n: I18nService,
+    private readonly config: SiteConfigService,
   ) {}
 
   /** Sets the document title as `Page | Site Name`. */
   setTitle(pageTitle: string): void {
-    this.title.setTitle(`${pageTitle} | ${SITE_NAME}`);
+    this.title.setTitle(`${pageTitle} | ${this.config.siteName()}`);
   }
 
   /** Applies the full set of SEO meta tags (title, description, Open Graph, Twitter, canonical). */
@@ -40,16 +41,17 @@ export class SeoService {
     // Remove any structured data from a previous page; pages that need it re-add via setJsonLd().
     this.clearJsonLd();
 
-    const url = this.absoluteUrl(data.path);
-    const image = this.resolveImage(data.image);
-    const description = data.description?.trim() || '';
+    const url = this.config.absoluteUrl(data.path);
+    const image = this.config.resolveImage(data.image);
+    const description = (data.description?.trim() || '').replace(/\{name\}/g, this.config.displayName());
     const type = data.type ?? 'website';
     const locale = this.i18n.currentLang() === 'fa' ? 'fa_IR' : 'en_US';
 
     this.setTitle(data.title);
-    const fullTitle = `${data.title} | ${SITE_NAME}`;
+    const fullTitle = `${data.title} | ${this.config.siteName()}`;
 
     this.setTag('description', description);
+    this.setTag('author', this.config.displayName());
 
     // Reset robots on every page so a previous noindex (e.g. 404) doesn't leak.
     this.setTag('robots', data.noindex ? 'noindex, follow' : 'index, follow');
@@ -59,7 +61,7 @@ export class SeoService {
     this.setProperty('og:description', description);
     this.setProperty('og:type', type);
     this.setProperty('og:url', url);
-    this.setProperty('og:site_name', SITE_NAME);
+    this.setProperty('og:site_name', this.config.siteName());
     this.setProperty('og:locale', locale);
     this.setProperty('og:image', image);
 
@@ -105,23 +107,5 @@ export class SeoService {
 
   private setProperty(property: string, content: string): void {
     this.meta.updateTag({ property, content });
-  }
-
-  private absoluteUrl(path?: string): string {
-    const pathname = path ?? this.document.location.pathname;
-    if (/^https?:\/\//i.test(pathname)) {
-      return pathname;
-    }
-    return `${SITE_URL}${pathname.startsWith('/') ? '' : '/'}${pathname}`;
-  }
-
-  private resolveImage(image?: string): string {
-    if (!image) {
-      return DEFAULT_OG_IMAGE;
-    }
-    if (/^https?:\/\//i.test(image)) {
-      return image;
-    }
-    return `${SITE_URL}${image.startsWith('/') ? '' : '/'}${image}`;
   }
 }

@@ -10,6 +10,8 @@ interface AdminSettings {
   themeMode?: string;
   themePrimary?: string | null;
   themeSecondary?: string | null;
+  siteName?: string | null;
+  siteUrl?: string | null;
   showAbout?: boolean;
   showExperiences?: boolean;
   showEducations?: boolean;
@@ -41,6 +43,9 @@ interface ThemePreset {
 })
 export class SettingsComponent implements OnInit {
   settings = signal<AdminSettings>({ skillsCardView: false });
+
+  siteName = signal<string>('');
+  siteUrl = signal<string>('');
 
   themePresets: ThemePreset[] = [
     { id: 'iris', nameKey: 'theme_preset_iris', primary: '#6a45e8', secondary: '#d47bf7' },
@@ -76,6 +81,8 @@ export class SettingsComponent implements OnInit {
     this.http.get<AdminSettings>('/api/admin/settings').subscribe({
       next: (s) => {
         this.settings.set(s);
+        this.siteName.set(s.siteName ?? '');
+        this.siteUrl.set(s.siteUrl ?? '');
         const sec: Record<string, boolean> = {};
         for (const d of this.sectionToggles) {
           sec[d.key] = (s as any)[d.flag] !== false;
@@ -96,6 +103,14 @@ export class SettingsComponent implements OnInit {
     const checked = (event.target as HTMLInputElement).checked;
     this.settings.update((s) => ({ ...s, skillsCardView: checked }));
     this.http.put('/api/admin/settings', { skillsCardView: checked }).subscribe({
+      next: () => this.toast.success(this.i18n.t('toast_saved')),
+      error: () => this.toast.error(this.i18n.t('save_failed')),
+    });
+  }
+
+  saveSite(): void {
+    const body = { siteName: this.siteName().trim() || null, siteUrl: this.siteUrl().trim() || null };
+    this.http.put('/api/admin/settings', body).subscribe({
       next: () => this.toast.success(this.i18n.t('toast_saved')),
       error: () => this.toast.error(this.i18n.t('save_failed')),
     });

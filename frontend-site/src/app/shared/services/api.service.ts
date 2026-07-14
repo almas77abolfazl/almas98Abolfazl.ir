@@ -134,6 +134,8 @@ export interface SiteSettings {
   themeMode?: string;
   themePrimary?: string | null;
   themeSecondary?: string | null;
+  siteName?: string | null;
+  siteUrl?: string | null;
   showAbout?: boolean;
   showExperiences?: boolean;
   showEducations?: boolean;

@@ -5,10 +5,10 @@
       <!-- Logo -->
       <a routerLink="/" class="flex items-center gap-2 group">
         <div class="w-8 h-8 rounded-lg brand-gradient bg-linear-to-br flex items-center justify-center text-white text-xs font-bold">
-          A
+          {{ config.brandInitial() }}
         </div>
         <span class="brand-gradient-text text-base font-semibold">
-          {{ i18n.isFa ? 'ابوالفضل' : 'almas98' }}
+          {{ config.siteName() }}
         </span>
       </a>
 
@@ -48,7 +48,7 @@
       <div class="flex items-center gap-2">
         <!-- Resume download (desktop) -->
         @if (resumeUrl()) {
-          <a [href]="resumeHref" target="_blank" rel="noopener"
+          <a [href]="resumeHref" download rel="noopener"
             class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold brand-bg text-white transition-all shadow-sm brand-soft"
             [title]="i18n.t('downloadResume')">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,7 +130,7 @@
           </a>
         }
         @if (resumeUrl()) {
-          <a [href]="resumeHref" target="_blank" rel="noopener" (click)="closeMenu()"
+          <a [href]="resumeHref" download rel="noopener" (click)="closeMenu()"
             class="flex items-center gap-2 px-4 py-3 text-sm font-medium brand-text hover-brand-soft transition-all">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

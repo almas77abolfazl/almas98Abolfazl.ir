@@ -13,11 +13,17 @@ interface SitemapUrl {
 export class SitemapService {
   constructor(private readonly prisma: PrismaService) {}
 
-  private get baseUrl(): string {
+  private get fallbackBaseUrl(): string {
     return (process.env.SITE_URL || 'https://almas98abolfazl.ir').replace(/\/+$/, '');
   }
 
+  private async resolveBaseUrl(): Promise<string> {
+    const settings = await this.prisma.siteSettings.findFirst();
+    return settings?.siteUrl ? settings.siteUrl.replace(/\/+$/, '') : this.fallbackBaseUrl;
+  }
+
   async generate(): Promise<string> {
+    const baseUrl = await this.resolveBaseUrl();
     const articles = await this.prisma.articles.findMany({
       where: { published: true },
       select: { slug: true, updatedAt: true },
@@ -25,9 +31,9 @@ export class SitemapService {
     });
 
     const urls: SitemapUrl[] = [
-      ...STATIC_PATHS.map((path) => ({ loc: `${this.baseUrl}${path}` })),
+      ...STATIC_PATHS.map((path) => ({ loc: `${baseUrl}${path}` })),
       ...articles.map((article) => ({
-        loc: `${this.baseUrl}/blog/${article.slug}`,
+        loc: `${baseUrl}/blog/${article.slug}`,
         lastmod: article.updatedAt.toISOString(),
       })),
     ];

@@ -7,7 +7,7 @@ import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
 import { SiteSettingsService } from '../../shared/services/site-settings.service';
 import { AboutMe, Experience, Skill, Testimonial } from '../../shared/services/api.service';
-import { SITE_URL, AUTHOR_NAME } from '../../shared/site-config';
+import { SiteConfigService } from '../../shared/services/site-config.service';
 
 @Component({
   selector: 'app-home',
@@ -32,12 +32,13 @@ export class HomeComponent implements OnInit {
     public i18n: I18nService,
     private api: ApiService,
     private seo: SeoService,
-    public siteSettings: SiteSettingsService
+    public siteSettings: SiteSettingsService,
+    private config: SiteConfigService,
   ) {}
 
   ngOnInit(): void {
     this.seo.update({
-      title: AUTHOR_NAME,
+      title: this.config.displayName(),
       description: this.i18n.t('seoHomeDesc'),
       path: '/',
       type: 'profile',
@@ -45,6 +46,8 @@ export class HomeComponent implements OnInit {
 
     this.api.getAboutMe().subscribe(data => {
       this.aboutMe = data;
+      const ownerName = this.i18n.isFa && data.fullNameFa ? data.fullNameFa : data.fullName;
+      this.seo.setTitle(ownerName);
       this.applyPersonJsonLd(data);
     });
     this.api.getExperiences().subscribe(data => this.experiences = data);
@@ -53,11 +56,15 @@ export class HomeComponent implements OnInit {
   }
 
   private applyPersonJsonLd(aboutMe?: AboutMe): void {
+    const ownerName =
+      aboutMe && this.i18n.isFa && aboutMe.fullNameFa
+        ? aboutMe.fullNameFa
+        : aboutMe?.fullName || this.config.displayName();
     const schema: Record<string, unknown> = {
       '@context': 'https://schema.org',
       '@type': 'Person',
-      name: AUTHOR_NAME,
-      url: SITE_URL,
+      name: ownerName,
+      url: this.config.siteUrl(),
     };
     if (aboutMe?.title) {
       schema['jobTitle'] = aboutMe.title;
@@ -82,8 +89,7 @@ export class HomeComponent implements OnInit {
   get resumeHref(): string | undefined {
     const url = this.aboutMe?.resumeUrl;
     if (!url) return undefined;
-    if (/^https?:\/\//i.test(url)) return url;
-    return url.startsWith('/') ? `${SITE_URL}${url}` : `${SITE_URL}/${url}`;
+    return this.config.assetUrl(url);
   }
 
   get topSkills(): Skill[] {

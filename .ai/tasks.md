@@ -448,6 +448,9 @@
 
 ---
 
+- [x] **11.3 Admin login page redesign** ✅
+   - Branded, full-screen centered login card: gradient accent bar, `A` logo mark, EN/FA labels, back-to-site link, language toggle, error/loading states — reusing the brand palette. Auth flow unchanged (`fetch('/api/auth/login')` + `localStorage`).
+
 ## Phase 12: Content Flow & UX Polish 🔲
 
 > **Goal:** tighten the public-site UX so navigation between the home teaser and dedicated pages is logical, and polish a few component visuals from the prior session.
@@ -525,6 +528,41 @@
 
 - [x] **11.2b Footer nav gating** — N/A: the footer no longer renders section nav links (only social/RSS/copyright), so there is nothing to gate.
 - [x] **11.2c `prisma db push`** — the 9 `show*` columns were added to `schema.prisma`; `prisma db push` was run (alongside the 13.1 columns) so they now exist.
+
+---
+
+## Phase 14: Dynamic Site Identity & Admin Token Handling 🔲
+
+> **Goal:** remove every hard-coded owner name and domain so the project is fork-friendly, and harden the admin session so an invalid/expired token forces a logout.
+
+- [x] **14.1 Dynamic owner name** ✅
+   - No more hard-coded `Abolfazl Nasiri Almas` / `ابوالفضل نصیری الماس` in templates, SEO meta, JSON-LD, or the RSS feed.
+   - New frontend-site `SiteConfigService` (`shared/services/site-config.service.ts`) loads `AboutMe.fullName`/`fullNameFa` and exposes `displayName()` (FA falls back to EN). `SeoService`, `HomeComponent` (title + Person JSON-LD), `ArticleDetailComponent` (author), `HeaderComponent`, `AboutMeComponent`, and `FooterComponent` (brand glyph + site name) all read from it.
+   - Backend `RssService` builds its description from `AboutMe.fullName` (FA-aware).
+
+- [x] **14.2 Dynamic site name + domain** ✅
+   - `SiteSettings` gained `siteName String?` and `siteUrl String?` (`prisma db push` applied; client regenerated). Editable in the admin **Settings** page (new Site name / Site URL card).
+   - `SITE_URL` / `SITE_NAME` env vars remain as fallbacks (forkers can still set them in `docker-compose.yml` / `.env`).
+   - frontend-site `SiteConfigService` resolves the canonical URL used for SEO title suffix, OG/canonical, sitemap, and absolute asset URLs; `SeoService` delegates `absoluteUrl`/`resolveImage` to it.
+   - Backend `sitemap` + `rss` services prefer `SiteSettings.siteUrl`/`siteName`, then env, then default.
+   - `SiteSettings` interface (frontend-site `api.service.ts`) and `AdminSettings` interface (admin settings component) extended with the new fields.
+
+- [x] **14.3 SEO description placeholder** ✅
+   - `i18n` SEO description strings (`seoHomeDesc`, `seoAboutDesc`, `seoExperiencesDesc`, `seoSkillsDesc`, `seoBlogDesc`, `seoVideosDesc`, `seoProjectsDesc`, `seoEducationsDesc`, `seoContactDesc`) use a `{name}` token resolved at runtime by `SeoService.update()` against `SiteConfigService.displayName()`.
+
+- [x] **14.4 Admin token handling** ✅
+   - `AuthService.isLoggedIn()` now decodes the JWT and treats an expired/malformed token as logged-out (best-effort client check), so `AdminGuard` redirects correctly.
+   - `ErrorInterceptor` logs the admin out and redirects to `/login` on any `401` from a guarded endpoint (the `/api/auth/login` attempt is excluded so it keeps its own inline error). Invalid/expired tokens therefore never silently persist.
+
+- [x] **14.5 Dashboard Top Pages — friendly names** ✅
+   - The Top Pages list previously printed raw route paths (`/about-me`, `/blog`, `/blog/some-slug`, …). It now maps each tracked URL to a localized page name via a new `pageLabel()` helper in `DashboardComponent` (reusing the existing admin i18n nav keys: `page_home`, `nav_about`, `nav_experiences`, `nav_skills`, `page_blog`, `nav_videos`, `nav_projects`, `nav_contact`, `page_notFound`).
+   - Article detail URLs (`/blog/:slug`) render as `Article · <slug>` so individual posts stay distinguishable; the raw URL is still available in the `title` tooltip.
+   - New i18n keys `page_blog` / `page_article` / `page_notFound` (EN + FA) added to `admin-i18n.service.ts`.
+
+- [x] **14.6 Dashboard horizontal scroll fix** ✅
+   - Symptom: the dashboard showed a horizontal scrollbar even though nothing visibly overflowed.
+   - Cause: the daily-traffic SVG chart's hover tooltips (`whitespace-nowrap`, centered on each data point via `-translate-x-1/2`) extended past the right edge of the chart card for the last point; because the shell `<main>` is `overflow-auto`, the invisible overflow produced a horizontal scrollbar.
+   - Fix: added `overflow-x-clip` to the chart's `relative h-56 w-full` container so the tooltips can no longer push the layout horizontally (vertical tooltip overflow is preserved).
 
 
 

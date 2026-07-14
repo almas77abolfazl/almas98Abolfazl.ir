@@ -2,6 +2,17 @@
     <div>
       <h1 class="admin-title mb-6">{{ i18n.t('nav_settings') }}</h1>
 
+      <div class="admin-card mb-6">
+        <p class="admin-field-label mb-0.5">{{ i18n.t('site_name') }}</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">{{ i18n.t('site_name_help') }}</p>
+        <input type="text" [ngModel]="siteName()" (ngModelChange)="siteName.set($event)" (blur)="saveSite()" (keydown.enter)="$event.target.blur()"
+          class="admin-input mb-4" [placeholder]="i18n.t('site_name')" />
+        <p class="admin-field-label mb-0.5">{{ i18n.t('site_url') }}</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">{{ i18n.t('site_url_help') }}</p>
+        <input type="url" [ngModel]="siteUrl()" (ngModelChange)="siteUrl.set($event)" (blur)="saveSite()" (keydown.enter)="$event.target.blur()"
+          class="admin-input" placeholder="https://example.com" dir="ltr" />
+      </div>
+
       <div class="admin-card mb-6 flex items-center justify-between">
         <div>
           <p class="admin-field-label mb-0.5">{{ i18n.t('skills_display') }}</p>

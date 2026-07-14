@@ -5,7 +5,7 @@ import { marked } from 'marked';
 import { ApiService, Article } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
-import { AUTHOR_NAME } from '../../shared/site-config';
+import { SiteConfigService } from '../../shared/services/site-config.service';
 
 @Component({
   selector: 'app-article-detail',
@@ -25,7 +25,7 @@ export class ArticleDetailComponent implements OnInit {
     return marked.parse(art.content, { async: false }) as string;
   });
 
-  constructor(public i18n: I18nService, private api: ApiService, private route: ActivatedRoute, private seo: SeoService) {}
+  constructor(public i18n: I18nService, private api: ApiService, private route: ActivatedRoute, private seo: SeoService, private config: SiteConfigService) {}
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug') || '';
@@ -64,7 +64,7 @@ export class ArticleDetailComponent implements OnInit {
       '@type': 'Article',
       headline: article.title,
       description,
-      author: { '@type': 'Person', name: AUTHOR_NAME },
+      author: { '@type': 'Person', name: this.config.displayName() },
       inLanguage: article.language,
       dateModified: article.updatedAt,
     };
