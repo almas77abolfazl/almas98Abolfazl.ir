@@ -7,7 +7,7 @@ import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
 import { SiteSettingsService } from '../../shared/services/site-settings.service';
 import { AboutMe, Experience, Skill, Testimonial } from '../../shared/services/api.service';
-import { SITE_URL, AUTHOR_NAME, SOCIAL_LINKS } from '../../shared/site-config';
+import { SITE_URL, AUTHOR_NAME } from '../../shared/site-config';
 
 @Component({
   selector: 'app-home',
@@ -22,9 +22,6 @@ export class HomeComponent implements OnInit {
   skills: Skill[] = [];
   testimonials: Testimonial[] = [];
   isLoading = true;
-  contact = { name: '', email: '', subject: '', message: '' };
-  success = false;
-  error = '';
   newTestimonial = { authorName: '', companyRole: '', email: '', content: '', authorImageUrl: '' };
   testimonialSuccess = false;
   testimonialError = '';
@@ -68,8 +65,12 @@ export class HomeComponent implements OnInit {
     if (aboutMe?.avatarUrl) {
       schema['image'] = aboutMe.avatarUrl;
     }
-    if (SOCIAL_LINKS.length) {
-      schema['sameAs'] = SOCIAL_LINKS;
+    const socials = aboutMe
+      ? [aboutMe.linkedinUrl, aboutMe.githubUrl, aboutMe.youtubeUrl, aboutMe.twitterUrl, aboutMe.instagramUrl]
+          .filter((u): u is string => !!u)
+      : [];
+    if (socials.length) {
+      schema['sameAs'] = socials;
     }
     this.seo.setJsonLd(schema);
   }
@@ -78,37 +79,19 @@ export class HomeComponent implements OnInit {
     return this.experiences[0];
   }
 
+  get resumeHref(): string | undefined {
+    const url = this.aboutMe?.resumeUrl;
+    if (!url) return undefined;
+    if (/^https?:\/\//i.test(url)) return url;
+    return url.startsWith('/') ? `${SITE_URL}${url}` : `${SITE_URL}/${url}`;
+  }
+
   get topSkills(): Skill[] {
     return this.skills.slice(0, 6);
   }
 
   private isValidEmail(email: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
-
-  onSubmit(): void {
-    this.error = '';
-    this.success = false;
-    const name = this.contact.name.trim();
-    const email = this.contact.email.trim();
-    const message = this.contact.message.trim();
-    if (!name || !message) {
-      this.error = this.i18n.isFa ? 'نام و پیام الزامی است' : 'Name and message are required';
-      return;
-    }
-    if (!this.isValidEmail(email)) {
-      this.error = this.i18n.isFa ? 'یک ایمیل معتبر وارد کنید' : 'Please enter a valid email';
-      return;
-    }
-    this.api.postContactMessage(this.contact).subscribe({
-      next: () => {
-        this.success = true;
-        this.contact = { name: '', email: '', subject: '', message: '' };
-      },
-      error: () => {
-        this.error = this.i18n.isFa ? 'خطا در ارسال پیام' : 'Failed to send message';
-      }
-    });
   }
 
   submitTestimonial(): void {

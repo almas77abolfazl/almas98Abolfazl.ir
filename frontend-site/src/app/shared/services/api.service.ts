@@ -9,6 +9,15 @@ export interface AboutMe {
   bio?: string; bioFa?: string;
   avatarUrl?: string;
   resumeUrl?: string;
+  resumeName?: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  youtubeUrl?: string;
+  twitterUrl?: string;
+  instagramUrl?: string;
   createdAt: string;
   updatedAt: string;
 }

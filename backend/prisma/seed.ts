@@ -16,7 +16,7 @@ async function main() {
       title: 'Full Stack Developer',
       bio: 'Passionate about building scalable web applications and cloud-native systems.',
       avatarUrl: 'https://example.com/avatar.jpg',
-      resumeUrl: 'https://example.com/resume.pdf',
+      resumeUrl: undefined,
     },
   });
 

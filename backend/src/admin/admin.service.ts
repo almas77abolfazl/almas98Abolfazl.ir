@@ -13,7 +13,12 @@ export class AdminService {
   ) {}
 
   // AboutMe (singleton)
-  async upsertAboutMe(data: { fullName: string; fullNameFa?: string; title: string; titleFa?: string; bio?: string; bioFa?: string; avatarUrl?: string; resumeUrl?: string; resumeName?: string }) {
+  async upsertAboutMe(data: {
+    fullName: string; fullNameFa?: string; title: string; titleFa?: string;
+    bio?: string; bioFa?: string; avatarUrl?: string; resumeUrl?: string; resumeName?: string;
+    email?: string; phone?: string; location?: string;
+    linkedinUrl?: string; githubUrl?: string; youtubeUrl?: string; twitterUrl?: string; instagramUrl?: string;
+  }) {
     const existing = await this.prisma.aboutMe.findFirst();
     if (existing) {
       return this.prisma.aboutMe.update({ where: { id: existing.id }, data });

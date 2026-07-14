@@ -479,40 +479,40 @@
 >
 > **Note:** there is currently **no public `educations` page/component** (only admin) — that's why Educations is "missing" on the site. The Education tab is built new in 13.3.
 
-- [ ] **13.1 Backend: AboutMe profile + social fields**
+- [x] **13.1 Backend: AboutMe profile + social fields**
    - Extend `AboutMe` (Prisma) with nullable fields: `email String?`, `phone String?`, `location String?`, `linkedinUrl String?`, `githubUrl String?`, `youtubeUrl String?`, `twitterUrl String?`, `instagramUrl String?` (optional `telegramUrl String?`).
    - Run `prisma db push` + `prisma generate` (creates columns; no data migration needed).
    - Public `GET /api/about-me` already returns the full row (`findFirst()`); admin `upsertAboutMe` passes fields through — add the new keys if the DTO is explicit.
    - Replace the misleading seed placeholder `resumeUrl: 'https://example.com/resume.pdf'` (owner uploads the real file; harmless but confusing).
 
-- [ ] **13.2 Admin: About Me form — contact + social inputs**
+- [x] **13.2 Admin: About Me form — contact + social inputs**
    - Add (language-neutral) inputs to the About Me admin form: Email, Phone, Location, LinkedIn, GitHub, YouTube, Twitter/X, Instagram (telegram optional), with icons/labels.
    - Persist via the existing `POST /api/admin/about-me`.
 
-- [ ] **13.3 Frontend: Tabbed About Me page**
+- [x] **13.3 Frontend: Tabbed About Me page**
    - `/about-me` becomes a tabbed hub: **Bio | Experience | Education | Skills | Contact** (tab bar with `routerLink`/signal state; animated underline matching the design system).
    - Fetch `aboutMe`, `experiences`, `educations`, `skills` (reuse `ApiService`); reuse the existing markup/logic from `experiences.component.*` and `skills.component.*`.
    - **Education tab is new** — render `GET /api/educations` in a timeline/list style matching Experiences (bilingual `Fa` fallback).
    - Tabs gated by the Phase 11.2 visibility flags: `showExperiences` / `showSkills` / `showEducations` / `showContact` hide their tab; `showAbout` hides the whole page + nav entry. If only one tab is visible, skip the tab bar.
    - Bio tab = current About Me content (avatar + name + title + bio + resume button).
 
-- [ ] **13.4 Routing cleanup**
+- [x] **13.4 Routing cleanup**
    - Remove standalone `experiences` and `skills` route components from `app.routes.ts`; add **permanent redirects** `{ path: 'experiences', redirectTo: 'about-me' }` and `{ path: 'skills', redirectTo: 'about-me' }` (and `pathMatch: 'full'`) so old links/bookmarks don't 404. Keep home teasers (already gated by visibility flags).
    - Update any internal `routerLink="/experiences"` / `"/skills"` references (none expected beyond nav, which is replaced in 13.3).
 
-- [ ] **13.5 Contact tab**
+- [x] **13.5 Contact tab**
    - Personal-info card: Email (`mailto:`), Phone (`tel:`), Location — shown only when the field is present.
    - Move the existing contact **message form** (currently only on the home page) into this tab, keeping the backend's required-email validation + rate limiting.
    - **Home page:** replace the full contact `<section>` (gated by `showContact`) with a compact **CTA card** linking to `/about-me` (Contact tab) to avoid duplicating the form. Keep the testimonial form on home.
 
-- [ ] **13.6 Footer: dynamic social links**
+- [x] **13.6 Footer: dynamic social links**
    - `FooterComponent` fetches `GET /api/about-me` and renders icon links for any present social URLs (LinkedIn / GitHub / YouTube / Twitter / Instagram / telegram) + keeps the existing RSS link + copyright.
    - Icons open in a new tab (`target="_blank" rel="noopener"`); a link is hidden when its URL is empty. Gate nothing else (footer always shows when links exist).
 
-- [ ] **13.7 SEO: Person JSON-LD `sameAs`**
+- [x] **13.7 SEO: Person JSON-LD `sameAs`**
    - Feed the AboutMe social URLs into the home `Person` JSON-LD `sameAs` array (replace the static empty `SOCIAL_LINKS` in `site-config.ts` — populate it dynamically from `getAboutMe()` at bootstrap, or pass the list to `SeoService.setJsonLd`).
 
-- [ ] **13.8 Resume download-link bug fix**
+- [x] **13.8 Resume download-link bug fix**
    - Symptom: resume uploaded in admin but the link on the site is wrong / doesn't download.
    - Fix:
      - Add `download` attribute to the resume `<a>` in `header.component.html` and `about-me.component.html` (download instead of navigating).
@@ -523,8 +523,8 @@
 
 ## Phase 11.2 follow-ups (from the in-progress section-visibility work) 🔲
 
-- [ ] **11.2b Footer nav gating** — the in-progress 11.2 only gated the **header** + **home** sections; the footer's nav/social area should also honor `SiteSettingsService.visible(...)` (reuse the same flags).
-- [ ] **11.2c `prisma db push`** — the 9 `show*` columns were added to `schema.prisma` but the migration/`db push` must be run so the columns exist before `GET/PUT /api/settings` is exercised.
+- [x] **11.2b Footer nav gating** — N/A: the footer no longer renders section nav links (only social/RSS/copyright), so there is nothing to gate.
+- [x] **11.2c `prisma db push`** — the 9 `show*` columns were added to `schema.prisma`; `prisma db push` was run (alongside the 13.1 columns) so they now exist.
 
 
 

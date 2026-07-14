@@ -59,6 +59,42 @@
           </div>
         </div>
 
+        <!-- Contact & Social -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label class="admin-field-label">{{ i18n.t('about_email') }}</label>
+            <input [(ngModel)]="model.email" name="email" type="email" class="admin-input" [placeholder]="i18n.t('about_email')" />
+          </div>
+          <div>
+            <label class="admin-field-label">{{ i18n.t('about_phone') }}</label>
+            <input [(ngModel)]="model.phone" name="phone" dir="ltr" class="admin-input" [placeholder]="i18n.t('about_phone')" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="admin-field-label">{{ i18n.t('about_location') }}</label>
+            <input [(ngModel)]="model.location" name="location" class="admin-input" [placeholder]="i18n.t('about_location')" />
+          </div>
+          <div>
+            <label class="admin-field-label">{{ i18n.t('about_linkedin') }}</label>
+            <input [(ngModel)]="model.linkedinUrl" name="linkedinUrl" dir="ltr" class="admin-input" [placeholder]="'linkedin.com/in/...'" />
+          </div>
+          <div>
+            <label class="admin-field-label">{{ i18n.t('about_github') }}</label>
+            <input [(ngModel)]="model.githubUrl" name="githubUrl" dir="ltr" class="admin-input" [placeholder]="'github.com/...'" />
+          </div>
+          <div>
+            <label class="admin-field-label">{{ i18n.t('about_youtube') }}</label>
+            <input [(ngModel)]="model.youtubeUrl" name="youtubeUrl" dir="ltr" class="admin-input" [placeholder]="'youtube.com/...'" />
+          </div>
+          <div>
+            <label class="admin-field-label">{{ i18n.t('about_twitter') }}</label>
+            <input [(ngModel)]="model.twitterUrl" name="twitterUrl" dir="ltr" class="admin-input" [placeholder]="'x.com/...'" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="admin-field-label">{{ i18n.t('about_instagram') }}</label>
+            <input [(ngModel)]="model.instagramUrl" name="instagramUrl" dir="ltr" class="admin-input" [placeholder]="'instagram.com/...'" />
+          </div>
+        </div>
+
         <div class="flex items-center gap-3">
           <button type="submit" class="admin-btn admin-btn-primary">{{ i18n.t('save') }}</button>
         </div>

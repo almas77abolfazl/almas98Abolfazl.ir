@@ -55,7 +55,7 @@
               </a>
             }
             @if (aboutMe?.resumeUrl) {
-              <a [href]="aboutMe!.resumeUrl" target="_blank" rel="noopener"
+              <a [href]="resumeHref" target="_blank" rel="noopener"
                 class="px-6 py-3 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-medium brand-border-hover transition-all">
                 {{ i18n.isFa ? 'رزومه' : 'Resume' }}
               </a>
@@ -305,74 +305,19 @@
   </section>
   }
 
-  <!-- Contact -->
+  <!-- Contact CTA (full form lives on the About Me → Contact tab) -->
   @if (siteSettings.visible('contact')) {
-    <section class="bg-slate-50 dark:bg-slate-800/50 py-16 sm:py-20">
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-10">
-        <h2 class="section-title mb-2">
-          {{ i18n.isFa ? 'با من در تماس باشید' : 'Get in Touch' }}
-        </h2>
-        <p class="text-slate-500 dark:text-slate-400 text-sm">
-          {{ i18n.isFa ? 'پیام شما را می‌شنوم' : 'I\'d love to hear from you' }}
-        </p>
+    <section class="page-shell py-12 sm:py-16">
+      <div class="rounded-3xl brand-soft px-8 py-12 text-center">
+        <h2 class="section-title mb-2">{{ i18n.t('contactTitle') }}</h2>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mb-6">{{ i18n.t('contactSubtitle') }}</p>
+        <a routerLink="/about-me" [queryParams]="{ tab: 'contact' }"
+          class="inline-flex items-center gap-2 px-6 py-3 brand-bg text-white rounded-xl font-medium transition-all shadow-lg brand-soft hover:brand-soft hover:-translate-y-0.5">
+          {{ i18n.t('contactSend') }}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
       </div>
-
-      <form (ngSubmit)="onSubmit()" class="bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-slate-900/50 p-8 space-y-5 border border-slate-100 dark:border-slate-700">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-              {{ i18n.isFa ? 'نام' : 'Name' }}
-            </label>
-            <input [(ngModel)]="contact.name" name="name" required
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all"
-              [placeholder]="i18n.isFa ? 'نام شما' : 'Your name'" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-              {{ i18n.isFa ? 'ایمیل' : 'Email' }}
-            </label>
-            <input type="email" [(ngModel)]="contact.email" name="email" required
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all"
-              [placeholder]="i18n.isFa ? 'ایمیل شما' : 'your@email.com'" />
-          </div>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-            {{ i18n.isFa ? 'موضوع' : 'Subject' }}
-          </label>
-          <input [(ngModel)]="contact.subject" name="subject"
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all"
-            [placeholder]="i18n.isFa ? 'موضوع پیام' : 'Subject'" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
-            {{ i18n.isFa ? 'پیام' : 'Message' }}
-          </label>
-          <textarea [(ngModel)]="contact.message" name="message" rows="4" required
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all resize-none"
-            [placeholder]="i18n.isFa ? 'پیام خود را بنویسید...' : 'Write your message...'"></textarea>
-        </div>
-
-        @if (success) {
-          <div class="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-sm">
-            <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-            </svg>
-            {{ i18n.isFa ? 'پیام با موفقیت ارسال شد!' : 'Message sent successfully!' }}
-          </div>
-        }
-        @if (error) {
-          <div class="p-3 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm">{{ error }}</div>
-        }
-
-        <button type="submit"
-          class="w-full py-3 brand-bg text-white rounded-xl font-semibold transition-all shadow-lg brand-soft hover:brand-soft hover:-translate-y-0.5">
-          {{ i18n.isFa ? 'ارسال پیام' : 'Send Message' }}
-        </button>
-      </form>
-    </div>
-  </section>
+    </section>
   }
 
   <!-- Testimonial modal -->

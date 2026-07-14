@@ -4,6 +4,7 @@ import { I18nService } from '../../services/i18n.service';
 import { ThemeService } from '../../services/theme.service';
 import { ApiService } from '../../services/api.service';
 import { SiteSettingsService } from '../../services/site-settings.service';
+import { SITE_URL } from '../../site-config';
 
 @Component({
   selector: 'app-header',
@@ -28,6 +29,13 @@ export class HeaderComponent implements OnInit {
       next: (data) => this.resumeUrl.set(data.resumeUrl || undefined),
       error: () => {},
     });
+  }
+
+  get resumeHref(): string | undefined {
+    const url = this.resumeUrl();
+    if (!url) return undefined;
+    if (/^https?:\/\//i.test(url)) return url;
+    return url.startsWith('/') ? `${SITE_URL}${url}` : `${SITE_URL}/${url}`;
   }
 
   get isFa(): boolean {

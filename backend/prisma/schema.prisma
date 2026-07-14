@@ -17,6 +17,14 @@ model AboutMe {
   avatarUrl   String?
   resumeUrl   String?
   resumeName  String?
+  email        String?
+  phone        String?
+  location     String?
+  linkedinUrl  String?
+  githubUrl    String?
+  youtubeUrl   String?
+  twitterUrl   String?
+  instagramUrl String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
