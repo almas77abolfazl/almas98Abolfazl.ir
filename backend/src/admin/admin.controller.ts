@@ -444,7 +444,10 @@ export class AdminController {
   }
 
   @Put('settings')
-  updateSettings(@Body() body: { skillsCardView?: boolean }) {
+  updateSettings(
+    @Body()
+    body: { skillsCardView?: boolean; themeMode?: string; themePrimary?: string; themeSecondary?: string },
+  ) {
     return this.adminService.updateSettings(body);
   }
 

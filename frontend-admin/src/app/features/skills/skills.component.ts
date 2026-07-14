@@ -35,7 +35,6 @@ export class SkillsComponent implements OnInit {
   categories = signal<SkillCategoryOption[]>([]);
   editId?: string;
   dirty = signal(false);
-  settings = signal<{ skillsCardView: boolean }>({ skillsCardView: false });
 
   markDirty(): void {
     this.dirty.set(true);
@@ -72,10 +71,6 @@ export class SkillsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.http.get<{ skillsCardView: boolean }>('/api/admin/settings').subscribe({
-      next: (s) => this.settings.set(s),
-      error: () => {},
-    });
     this.loadCategories();
     this.load();
   }
@@ -114,15 +109,6 @@ export class SkillsComponent implements OnInit {
         this.load();
         this.toast.success(this.i18n.t('toast_updated'));
       },
-      error: () => this.toast.error(this.i18n.t('save_failed')),
-    });
-  }
-
-  toggleCardView(event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.settings.update((s) => ({ ...s, skillsCardView: checked }));
-    this.http.put('/api/admin/settings', { skillsCardView: checked }).subscribe({
-      next: () => this.toast.success(this.i18n.t('toast_saved')),
       error: () => this.toast.error(this.i18n.t('save_failed')),
     });
   }

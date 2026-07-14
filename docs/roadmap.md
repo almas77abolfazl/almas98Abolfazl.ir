@@ -215,9 +215,19 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 
 ## Phase 11: Site Customization 🔲
 
-- **11.1 Theme color customization** — keep the current black/white + Iris-Violet/Orchid palette as the default; make the accent colors runtime-configurable from admin Settings. Migrate themeable utilities to CSS variables (`--brand-primary` / `--brand-secondary`) seeded from the current values; add `themeMode` (`default`/`custom`) + `themePrimary`/`themeSecondary` to `SiteSettings`; Settings page gets Default + a few presets + a 2-color custom picker (no full color system). Admin panel keeps its own fixed palette.
+- **11.1 Theme color customization** ✅ — `SiteSettings` gained `themeMode` (`default`/`custom`), `themePrimary`, `themeSecondary`. The public site's themeable utilities already read `--brand-*` CSS variables; a new `ThemeColorService` applies them at bootstrap from `GET /api/settings` (persisted to `localStorage`, re-applied before first paint via an `index.html` inline script). The dedicated Admin **Settings** page (`/admin/settings`) has a **Theme** card: Default + 3 curated presets (Iris Violet / Crimson Rose / Azure / Amber Glow) + a 2-color custom picker with live preview, saved via `PUT /api/admin/settings`. Primary buttons use the brand gradient. The site name/logo uses the brand gradient too. Admin panel keeps its own fixed palette.
 - **11.2 Section visibility toggles** — add boolean flags to `SiteSettings` (`showAbout`, `showSkills`, `showProjects`, `showVideos`, `showTestimonials`, `showArticles`, `showExperiences`, `showEducations`, `showContact`); the public site's nav/footer/home hide a section when its flag is off. Managed from a "Sections" area in admin Settings.
 - **11.3 Admin login page redesign** — the `/login` route is already outside the panel shell (routing is fine); this is a **visual** task: a branded, full-screen centered login card (logo, gradient accent, EN/FA labels, link back to the site) reusing the `--brand-*` variables. Auth flow unchanged.
+
+## Phase 12: Content Flow & UX Polish 🔲
+
+**Goal:** make the home → dedicated-page navigation logical and polish a few component visuals.
+
+- **12.1 Home → About Me content flow** ✅ — the home hero previously rendered the *full* `bio` and the "About Me / بیشتر بدانید" CTA linked to `/about-me` which rendered the *same* full `bio` (redundant). The hero now shows the bio as a short teaser (`line-clamp-3`); the full biography lives only on the About Me page, so "read more" reveals genuinely *more*.
+- **12.2 Skills group-name appearance** ✅ — `/skills` group headers use a gradient initial badge + bold title + skill-count chip.
+- **12.3 Persian hero greeting** ✅ — `خوش آمدید` → `درود`; `سلام، من ابوالفضل` → `ابوالفضل هستم`.
+- **12.4 Testimonials: horizontal scroll + ellipsis + modal** ✅ — horizontal scroll carousel with `line-clamp` text, prev/next buttons, drag-to-scroll, RTL-aware direction, and a full-text modal (click card → modal; Esc / backdrop / × to close; body scroll lock).
+- **12.5 Admin sidebar group headers** ✅ — group labels (Content / Engagement / System) use a colored dot (iris / jade / amber) + trailing divider, on both the desktop sidebar and mobile drawer.
 
 
 
@@ -238,7 +248,8 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 | 7 | Dark/Light Theme Polish | 🔶 7.1–7.4, 7.6 done (7.5 dropped by decision) |
 | 8 | Admin Panel UI Overhaul | ✅ 8.0–8.11 done |
 | 9 | Additional Features | 🔶 9.2, 9.3, 9.9, 9.10 done; 9.4–9.8 dropped |
-| 11 | Site Customization | 🔲 11.1 theme colors, 11.2 section visibility, 11.3 login redesign |
+| 11 | Site Customization | 🔶 11.1 theme colors ✅; 11.2 section visibility, 11.3 login redesign pending |
+| 12 | Content Flow & UX Polish | 🔶 12.1–12.5 done (home/about-me flow, skills/hero/testimonials/admin polish) |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.
 

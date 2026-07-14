@@ -8,10 +8,10 @@ export class SiteSettingsService {
   async getSettings() {
     const existing = await this.prisma.siteSettings.findFirst();
     if (existing) return existing;
-    return this.prisma.siteSettings.create({ data: { skillsCardView: false } });
+    return this.prisma.siteSettings.create({ data: { skillsCardView: false, themeMode: 'default' } });
   }
 
-  async updateSettings(data: { skillsCardView?: boolean }) {
+  async updateSettings(data: { skillsCardView?: boolean; themeMode?: string; themePrimary?: string; themeSecondary?: string }) {
     const existing = await this.prisma.siteSettings.findFirst();
     if (existing) {
       return this.prisma.siteSettings.update({ where: { id: existing.id }, data });

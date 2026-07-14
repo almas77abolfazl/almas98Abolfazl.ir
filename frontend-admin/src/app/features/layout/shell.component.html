@@ -16,7 +16,14 @@
         </div>
 
         <nav class="flex-1 space-y-1 overflow-y-auto p-3">
-          @for (item of nav; track item.path) {
+          @for (item of nav; track item.path; let i = $index) {
+            @if (item.group && (i === 0 || nav[i - 1].group !== item.group)) {
+              <div class="flex items-center gap-2 px-3 pb-2 pt-5">
+                <span class="h-1.5 w-1.5 shrink-0 rounded-full" [class]="groupDot(item.group)"></span>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ i18n.t(item.group) }}</span>
+                <span class="h-px flex-1 bg-slate-200 dark:bg-slate-700/70"></span>
+              </div>
+            }
             <a [routerLink]="item.path"
               routerLinkActive="admin-nav-link-active"
               #r="routerLinkActive"
@@ -65,7 +72,14 @@
         </div>
 
         <nav class="flex-1 space-y-1 overflow-y-auto p-3">
-          @for (item of nav; track item.path) {
+          @for (item of nav; track item.path; let i = $index) {
+            @if (item.group && (i === 0 || nav[i - 1].group !== item.group)) {
+              <div class="flex items-center gap-2 px-3 pb-2 pt-5">
+                <span class="h-1.5 w-1.5 shrink-0 rounded-full" [class]="groupDot(item.group)"></span>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ i18n.t(item.group) }}</span>
+                <span class="h-px flex-1 bg-slate-200 dark:bg-slate-700/70"></span>
+              </div>
+            }
             <a [routerLink]="item.path" (click)="closeMenu()"
               routerLinkActive="admin-nav-link-active"
               #r="routerLinkActive"

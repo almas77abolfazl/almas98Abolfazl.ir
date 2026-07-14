@@ -9,7 +9,7 @@
 
   @if (isLoading) {
     <div class="flex items-center justify-center py-20">
-      <div class="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+      <div class="w-8 h-8 border-2 brand-border border-t-transparent rounded-full animate-spin"></div>
     </div>
   } @else if (aboutMe) {
     <div class="grid md:grid-cols-5 gap-10 items-start">
@@ -20,9 +20,9 @@
           <div class="sticky top-24">
             <div class="relative inline-block">
               <img [src]="aboutMe.avatarUrl" [alt]="i18n.isFa ? (aboutMe.fullNameFa || aboutMe.fullName) : aboutMe.fullName"
-                class="w-full max-w-xs md:max-w-full aspect-square object-cover rounded-3xl shadow-2xl shadow-indigo-200/50 dark:shadow-indigo-900/30">
+                class="w-full max-w-xs md:max-w-full aspect-square object-cover rounded-3xl shadow-2xl brand-soft">
               <!-- Decoration -->
-              <div class="absolute -bottom-3 -right-3 w-full h-full rounded-3xl border-2 border-indigo-300 dark:border-indigo-700 -z-10"></div>
+              <div class="absolute -bottom-3 -right-3 w-full h-full rounded-3xl border-2 brand-soft -z-10"></div>
             </div>
           </div>
         </div>
@@ -33,7 +33,7 @@
         <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-1">
           {{ i18n.isFa ? (aboutMe.fullNameFa || aboutMe.fullName) : aboutMe.fullName }}
         </h2>
-        <p class="text-lg font-medium text-indigo-600 dark:text-indigo-400 mb-6">
+        <p class="text-lg font-medium brand-text mb-6">
           {{ i18n.isFa ? (aboutMe.titleFa || aboutMe.title) : aboutMe.title }}
         </p>
 
@@ -46,7 +46,7 @@
         @if (aboutMe.resumeUrl) {
           <div class="mt-8 flex gap-3 flex-wrap">
             <a [href]="aboutMe.resumeUrl" target="_blank" rel="noopener"
-              class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition-all shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5">
+              class="inline-flex items-center gap-2 px-6 py-3 brand-bg text-white rounded-xl font-medium transition-all shadow-lg brand-soft hover:brand-soft hover:-translate-y-0.5">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

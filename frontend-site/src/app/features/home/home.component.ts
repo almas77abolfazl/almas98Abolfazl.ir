@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -28,6 +28,7 @@ export class HomeComponent implements OnInit {
   testimonialSuccess = false;
   testimonialError = '';
   uploadingImage = false;
+  selectedTestimonial = signal<Testimonial | null>(null);
 
   constructor(
     public i18n: I18nService,
@@ -188,5 +189,58 @@ export class HomeComponent implements OnInit {
 
   testimonialInitial(name: string): string {
     return (name || '?').trim().charAt(0).toUpperCase();
+  }
+
+  isLong(t: Testimonial): boolean {
+    const text = this.i18n.isFa ? (t.contentFa || t.content) : t.content;
+    return (text || '').length > 120;
+  }
+
+  private testiDown = false;
+  private testiDragged = false;
+  private testiStartX = 0;
+  private testiStartScroll = 0;
+
+  onTestiDown(e: MouseEvent, el: HTMLElement): void {
+    this.testiDown = true;
+    this.testiDragged = false;
+    this.testiStartX = e.pageX;
+    this.testiStartScroll = el.scrollLeft;
+  }
+
+  onTestiMove(e: MouseEvent, el: HTMLElement): void {
+    if (!this.testiDown) return;
+    const walk = e.pageX - this.testiStartX;
+    if (Math.abs(walk) > 5) this.testiDragged = true;
+    el.scrollLeft = this.testiStartScroll - walk;
+  }
+
+  onTestiUp(el: HTMLElement): void {
+    this.testiDown = false;
+  }
+
+  scrollTestimonials(el: HTMLElement, dir: number): void {
+    el.scrollBy({ left: dir * 340, behavior: 'smooth' });
+  }
+
+  openTestimonial(t: Testimonial): void {
+    if (this.testiDragged) {
+      this.testiDragged = false;
+      return;
+    }
+    this.selectedTestimonial.set(t);
+    document.body.classList.add('overflow-hidden');
+  }
+
+  closeTestimonial(): void {
+    this.selectedTestimonial.set(null);
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.selectedTestimonial()) {
+      this.closeTestimonial();
+    }
   }
 }

@@ -414,6 +414,14 @@
 
 - **Scope note:** only the *primary accent* and *secondary/gradient* are customizable (not every shade). This keeps templates simple and avoids a full design-token system.
 
+- [x] **11.1 Theme color customization** ✅
+  - `SiteSettings` (Prisma) extended with `themeMode String @default("default")` (`"default" | "custom"`), `themePrimary String?`, `themeSecondary String?`; `prisma db push` applied earlier.
+  - Backend: `updateSettings` DTO + `AdminController`/`SiteSettingsService` accept/store the three fields; public `GET /api/settings` already returns them.
+  - Public site: new `ThemeColorService` (`shared/services/theme-color.service.ts`) fetches `GET /api/settings` at bootstrap (`App` constructor) and, when `themeMode === 'custom'`, applies `--brand-primary`/`--brand-primary-light`/`--brand-secondary`/`--brand-secondary-light`/`--brand-primary-rgb`/`--brand-secondary-rgb` on `document.documentElement` (light variants derived via `lighten()`); persists the resolved palette to `localStorage('site_theme')`. Default mode clears the overrides so the stylesheet `:root` defaults win.
+  - `index.html` FOBT inline script re-applies the saved palette before first paint (mirrors the dark-mode FOBT), avoiding a flash on custom themes.
+  - Dedicated Admin **Settings** page (`/admin/settings`, with sidebar nav item): the skills display toggle + a **Theme** card — Default radio (current Iris Violet palette) + 3 curated preset swatches (Iris Violet / Crimson Rose / Azure / Amber Glow) + a 2-color custom picker (primary + secondary) with a live preview, all persisted via `PUT /api/admin/settings`. Primary site buttons render the brand gradient (`.brand-bg`); the site name/logo uses the brand gradient (`brand-gradient-text`). Admin panel keeps its own fixed palette.
+  - `SiteSettings` interface (`frontend-site/api.service.ts`) updated with the new fields; bilingual i18n keys added (`theme_title`, `theme_help`, `theme_default`, `theme_custom`, `theme_presets`, `theme_preset_*`, `theme_primary`, `theme_secondary`, `theme_preview`).
+
 ### 11.2 **Section visibility toggles**
 - **Goal:** let the owner hide entire site sections (skills, projects, videos, testimonials, blog, about, experiences, education, contact…) so the site adapts to the content they actually have — e.g. someone who doesn't make videos can hide that section everywhere.
 
@@ -436,6 +444,29 @@
   - Reuse the site's `--brand-*` variables so it matches a chosen theme.
   - Keep the existing `fetch('/api/auth/login')` + `localStorage` token flow; only the template/styles change.
   - Accessibility: focus the first field, Enter submits, show a clear error.
+
+---
+
+## Phase 12: Content Flow & UX Polish 🔲
+
+> **Goal:** tighten the public-site UX so navigation between the home teaser and dedicated pages is logical, and polish a few component visuals from the prior session.
+
+- [x] **12.1 Home → About Me content flow** ✅
+  - **Problem:** the home hero rendered the *full* `bio`, and the "About Me / بیشتر بدانید" CTA linked to `/about-me`, which rendered the *same* full `bio` — redundant and illogical ("read more" led to identical content).
+  - **Fix:** the home hero now shows the bio as a short teaser (`line-clamp-3`); the full biography lives only on the About Me page. The CTA now genuinely reveals *more*, making the flow logical.
+  - Files: `frontend-site/src/app/features/home/home.component.html`.
+
+- [x] **12.2 Skills group-name appearance** ✅
+  - `/skills` group headers replaced the plain dot + text with a gradient initial badge + bold title + skill-count chip (`skills.component.html`).
+
+- [x] **12.3 Persian hero greeting** ✅
+  - `خوش آمدید` → `درود`; `سلام، من ابوالفضل` → `ابوالفضل هستم` (home hero, `home.component.html`).
+
+- [x] **12.4 Testimonials: horizontal scroll + ellipsis + modal** ✅
+  - Horizontal scrollable carousel with `line-clamp` text, prev/next buttons, drag-to-scroll, RTL-aware direction, and a full-text modal (click card → modal; Esc / backdrop / × to close; body scroll lock). `home.component.html` + `home.component.ts`.
+
+- [x] **12.5 Admin sidebar group headers** ✅
+  - Group labels (Content / Engagement / System) now use a colored dot (iris / jade / amber) + trailing divider for a cleaner, more distinctive look — applied to both the desktop sidebar and the mobile drawer (`shell.component.html` + `shell.component.ts`).
 
 
 

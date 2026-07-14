@@ -37,6 +37,21 @@
         }
       } catch (e) {}
     })();
+    (function () {
+      try {
+        var t = localStorage.getItem('site_theme');
+        if (t) {
+          var c = JSON.parse(t);
+          var s = document.documentElement.style;
+          s.setProperty('--brand-primary', c.primary);
+          s.setProperty('--brand-primary-light', c.primaryLight);
+          s.setProperty('--brand-secondary', c.secondary);
+          s.setProperty('--brand-secondary-light', c.secondaryLight);
+          s.setProperty('--brand-primary-rgb', c.primaryRgb);
+          s.setProperty('--brand-secondary-rgb', c.secondaryRgb);
+        }
+      } catch (e) {}
+    })();
   </script>
 </head>
 <body>

@@ -150,6 +150,9 @@ model Projects {
 model SiteSettings {
   id             String   @id @default(uuid())
   skillsCardView Boolean  @default(false)
+  themeMode      String   @default("default") // 'default' | 'custom'
+  themePrimary   String?  // hex, e.g. #7a5cf5
+  themeSecondary String?  // hex, e.g. #9678fb
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }

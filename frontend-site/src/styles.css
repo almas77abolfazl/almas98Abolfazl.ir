@@ -84,9 +84,9 @@
   /* --- Semantic tokens (used by custom utilities below) --- */
   --color-primary: #16161f;
   --color-primary-light: #222231;
-  --color-secondary: #7a5cf5;      /* iris */
-  --color-secondary-dark: #6a45e8;
-  --color-accent: #c25ff0;         /* orchid */
+  --color-secondary: var(--brand-primary);      /* iris -> brand primary (theme-driven) */
+  --color-secondary-dark: var(--brand-primary);
+  --color-accent: var(--brand-secondary);         /* orchid -> brand secondary (theme-driven) */
 
   /* Light theme surfaces & text */
   --color-background: #eceef4;      /* soft cool gray so white cards clearly pop */
@@ -98,10 +98,16 @@
   --font-fa: "Vazirmatn", system-ui, -apple-system, sans-serif;
 }
 
+/* --- Runtime themeable brand colors (set on :root / .dark; overridable at runtime) --- */
 :root {
   color-scheme: light dark;
+  --brand-primary: #6a45e8;
+  --brand-primary-rgb: 106, 69, 232;
+  --brand-primary-light: #9678fb;
+  --brand-secondary: #d47bf7;
+  --brand-secondary-rgb: 212, 123, 247;
+  --brand-secondary-light: #e3a3ff;
 }
-
 .dark {
   /* Dark theme: deep iris-charcoal, not default Tailwind slate-blue */
   --color-background: #0f0f17;
@@ -113,7 +119,67 @@
   --color-slate-400: #9a9ab0;
   --color-slate-500: #7d7d93;
   --color-slate-600: #4b4b60;
+
+  --brand-primary: #9678fb;
+  --brand-primary-rgb: 150, 120, 251;
+  --brand-primary-light: #b7a6ff;
+  --brand-secondary: #e3a3ff;
+  --brand-secondary-rgb: 227, 163, 255;
+  --brand-secondary-light: #eec7ff;
 }
+
+/* Brand accent helper classes (read the variables above) */
+.brand-text { color: var(--brand-primary); }
+.dark .brand-text { color: var(--brand-primary-light); }
+.brand-text-secondary { color: var(--brand-secondary); }
+.dark .brand-text-secondary { color: var(--brand-secondary-light); }
+.brand-text-hover:hover { color: var(--brand-primary); }
+.dark .brand-text-hover:hover { color: var(--brand-primary-light); }
+
+.brand-bg { background-image: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); }
+.brand-bg:hover { filter: brightness(1.1); }
+.brand-bg-secondary { background-color: var(--brand-secondary); }
+
+/* Brand-colored text on group hover (e.g. card titles inside a.group link) */
+.brand-group-hover { transition: color 0.2s; }
+.group:hover .brand-group-hover { color: var(--brand-primary); }
+.dark .group:hover .brand-group-hover { color: var(--brand-primary-light); }
+
+/* Brand-tinted background on hover (nav links, etc.) */
+.hover-brand-soft { transition: background-color 0.2s; }
+.hover-brand-soft:hover { background-color: rgba(var(--brand-primary-rgb), 0.1); }
+.dark .hover-brand-soft:hover { background-color: rgba(var(--brand-primary-rgb), 0.18); }
+
+.brand-border { border-color: var(--brand-primary); }
+.dark .brand-border { border-color: var(--brand-primary-light); }
+.brand-border-hover:hover { border-color: var(--brand-primary); }
+.dark .brand-border-hover:hover { border-color: var(--brand-primary-light); }
+.brand-border-strong { border-color: rgba(var(--brand-primary-rgb), 0.4); }
+
+.brand-soft { background-color: rgba(var(--brand-primary-rgb), 0.1); }
+.brand-soft-dark { background-color: rgba(var(--brand-primary-rgb), 0.18); color: var(--brand-primary); }
+.dark .brand-soft-dark { color: var(--brand-primary-light); }
+
+.brand-ring { --tw-ring-color: rgba(var(--brand-primary-rgb), 0.6); }
+
+.brand-gradient { background-image: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)); }
+.brand-gradient-text {
+  background-image: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-underline { background-image: linear-gradient(to right, var(--brand-primary), var(--brand-secondary)); }
+
+.brand-spinner {
+  border-color: var(--brand-primary) var(--brand-primary) var(--brand-primary) transparent;
+}
+.dark .brand-spinner {
+  border-color: var(--brand-primary-light) var(--brand-primary-light) var(--brand-primary-light) transparent;
+}
+
+
 
 body {
   background-color: var(--color-background);
@@ -209,7 +275,7 @@ html[dir="rtl"] .timeline-item::before {
 
 .card-hover:hover {
   transform: translateY(-4px);
-  box-shadow: 0 18px 40px -12px rgba(106, 69, 232, 0.18);
+  box-shadow: 0 18px 40px -12px rgba(var(--brand-primary-rgb), 0.18);
 }
 
 .dark .card-hover:hover {
@@ -255,7 +321,11 @@ input:focus, textarea:focus, select:focus {
 
   /* Hierarchy 1 — small eyebrow / section label */
   .section-label {
-    @apply mb-2 text-xs font-semibold uppercase tracking-widest text-indigo-600 dark:text-indigo-400;
+    @apply mb-2 text-xs font-semibold uppercase tracking-widest;
+    color: var(--brand-primary);
+  }
+  .dark .section-label {
+    color: var(--brand-primary-light);
   }
 
   /* Hierarchy 2 — page title */
@@ -275,7 +345,8 @@ input:focus, textarea:focus, select:focus {
 
   /* Accent underline beneath a title */
   .title-underline {
-    @apply mt-3 h-1 w-12 rounded-full bg-linear-to-r from-indigo-500 to-violet-400;
+    @apply mt-3 h-1 w-12 rounded-full;
+    background-image: linear-gradient(to right, var(--brand-primary), var(--brand-secondary));
   }
 
   /* Hierarchy 4 — long-form body text: capped measure + comfortable leading */
@@ -298,18 +369,27 @@ input:focus, textarea:focus, select:focus {
     @apply mt-8 mb-3 text-xl font-bold tracking-tight text-slate-900 dark:text-white;
   }
   .article-content a {
-    @apply text-indigo-600 underline underline-offset-2 dark:text-indigo-400;
+    color: var(--brand-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
-  .article-content a:hover { @apply text-indigo-700 dark:text-indigo-300; }
+  .dark .article-content a {
+    color: var(--brand-primary-light);
+  }
+  .article-content a:hover { color: var(--brand-primary-light); }
+  .dark .article-content a:hover { color: var(--brand-primary); }
   .article-content ul { @apply mb-5 list-disc space-y-2 ps-6; }
   .article-content ol { @apply mb-5 list-decimal space-y-2 ps-6; }
   .article-content blockquote {
-    @apply my-6 border-s-4 border-indigo-300 ps-4 italic text-slate-500 dark:border-indigo-500/50 dark:text-slate-400;
+    @apply my-6 ps-4 italic text-slate-500 dark:text-slate-400;
+    border-inline-start: 4px solid rgba(var(--brand-primary-rgb), 0.5);
   }
   .article-content img { @apply my-6 w-full rounded-xl; }
   .article-content hr { @apply my-8 border-slate-200 dark:border-slate-700; }
   .article-content code {
-    @apply rounded bg-slate-100 px-1.5 py-0.5 text-sm font-medium text-indigo-700 dark:bg-slate-800 dark:text-indigo-300;
+    @apply rounded px-1.5 py-0.5 text-sm font-medium dark:bg-slate-800;
+    color: var(--brand-primary);
+    background-color: rgba(var(--brand-primary-rgb), 0.12);
   }
   .article-content pre {
     @apply my-6 overflow-x-auto rounded-xl bg-slate-900 p-4 text-sm leading-relaxed text-slate-100 dark:bg-black/40;
@@ -317,7 +397,6 @@ input:focus, textarea:focus, select:focus {
   .article-content pre code {
     @apply bg-transparent p-0 text-slate-100 dark:text-slate-100;
   }
-  [dir="rtl"] .article-content blockquote { @apply border-s-0 border-e-4 ps-0 pe-4; }
 }
 
 /* RTL / Persian typography: drop latin letter-spacing, add a little line-height */
@@ -341,4 +420,13 @@ input:focus, textarea:focus, select:focus {
   height: 1px;
   background: linear-gradient(to right, transparent, var(--color-secondary), transparent);
   opacity: 0.35;
+}
+
+/* Horizontal scroll containers — hide the scrollbar for a cleaner look */
+.horizontal-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
 }

@@ -1,11 +1,11 @@
 <div class="min-h-screen">
 
   <!-- Hero -->
-  <section class="relative overflow-hidden bg-linear-to-br from-slate-50 to-indigo-50/40 dark:from-slate-900 dark:to-slate-800/80 pt-16 pb-16 sm:pt-20 sm:pb-20">
+  <section class="relative overflow-hidden bg-linear-to-br from-slate-50 to-[var(--brand-soft)] dark:from-slate-900 dark:to-slate-800/80 pt-16 pb-16 sm:pt-20 sm:pb-20">
     <!-- Background decoration -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-indigo-200/30 dark:bg-indigo-900/20 rounded-full blur-3xl"></div>
-      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-violet-200/40 dark:bg-violet-900/20 rounded-full blur-3xl"></div>
+      <div class="absolute -top-40 -right-40 w-80 h-80 brand-soft rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-40 -left-40 w-80 h-80 brand-soft rounded-full blur-3xl"></div>
     </div>
 
     <div class="relative page-shell">
@@ -28,30 +28,33 @@
         <!-- Text -->
         <div class="text-center md:text-start animate-fade-up delay-100">
           <p class="section-label mb-3">
-            {{ i18n.isFa ? 'خوش آمدید' : 'Welcome' }}
+            {{ i18n.isFa ? 'درود' : 'Welcome' }}
           </p>
           <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-white mb-4 leading-tight">
-            {{ i18n.isFa ? 'سلام، من ' : 'Hi, I\'m ' }}
-            <span class="gradient-text">
-              {{ i18n.isFa ? (aboutMe?.fullNameFa || aboutMe?.fullName) : aboutMe?.fullName }}
-            </span>
+            @if (i18n.isFa) {
+              <span class="gradient-text">{{ aboutMe?.fullNameFa || aboutMe?.fullName }}</span>
+              <span class="text-slate-900 dark:text-white"> هستم</span>
+            } @else {
+              <span class="text-slate-900 dark:text-white">Hi, I'm </span>
+              <span class="gradient-text">{{ aboutMe?.fullName }}</span>
+            }
           </h1>
           <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 font-medium mb-4">
             {{ i18n.isFa ? (aboutMe?.titleFa || aboutMe?.title) : aboutMe?.title }}
           </p>
-          <p class="prose-measure mx-auto md:mx-0 mb-8">
+          <p class="prose-measure mx-auto line-clamp-3 md:mx-0 mb-8">
             {{ i18n.isFa ? (aboutMe?.bioFa || aboutMe?.bio) : aboutMe?.bio }}
           </p>
 
           <!-- CTAs -->
           <div class="flex flex-wrap gap-3 justify-center md:justify-start">
             <a routerLink="/about-me"
-              class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition-all shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5">
+              class="px-6 py-3 brand-bg text-white rounded-xl font-medium transition-all shadow-lg brand-soft hover:brand-soft hover:-translate-y-0.5">
               {{ i18n.isFa ? 'بیشتر بدانید' : 'About Me' }}
             </a>
             @if (aboutMe?.resumeUrl) {
               <a [href]="aboutMe!.resumeUrl" target="_blank" rel="noopener"
-                class="px-6 py-3 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-medium hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all">
+                class="px-6 py-3 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-medium brand-border-hover transition-all">
                 {{ i18n.isFa ? 'رزومه' : 'Resume' }}
               </a>
             }
@@ -84,14 +87,14 @@
     <section class="page-shell py-12 sm:py-16">
       <div class="flex items-center justify-between mb-8">
         <h2 class="section-title">{{ i18n.t('experiencesTitle') }}</h2>
-        <a routerLink="/experiences" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+        <a routerLink="/experiences" class="text-sm brand-text hover:underline font-medium">
           {{ i18n.t('readMore') }} →
         </a>
       </div>
       <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 card-hover">
         <div class="flex items-start gap-4">
-          <div class="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center flex-shrink-0">
-            <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-12 h-12 rounded-xl brand-soft brand-soft-dark flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 brand-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
@@ -99,7 +102,7 @@
             <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
               {{ i18n.isFa ? (latestExperience.roleFa || latestExperience.role) : latestExperience.role }}
             </h3>
-            <p class="text-indigo-600 dark:text-indigo-400 font-medium text-sm mt-0.5">
+            <p class="brand-text font-medium text-sm mt-0.5">
               {{ i18n.isFa ? (latestExperience.companyFa || latestExperience.company) : latestExperience.company }}
             </p>
             <p class="text-slate-400 dark:text-slate-500 text-xs mt-1">
@@ -117,7 +120,7 @@
     <section class="page-shell pb-12 sm:pb-16">
       <div class="flex items-center justify-between mb-8">
         <h2 class="section-title">{{ i18n.t('skillsTitle') }}</h2>
-        <a routerLink="/skills" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+        <a routerLink="/skills" class="text-sm brand-text hover:underline font-medium">
           {{ i18n.t('readMore') }} →
         </a>
       </div>
@@ -134,42 +137,67 @@
   <!-- Testimonials -->
   @if (testimonials.length > 0) {
     <section class="page-shell py-12 sm:py-16">
-      <div class="mb-8">
-        <h2 class="section-title">{{ i18n.t('testimonialsTitle') }}</h2>
-        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">{{ i18n.t('testimonialsSubtitle') }}</p>
+      <div class="mb-8 flex items-end justify-between gap-4">
+        <div>
+          <h2 class="section-title">{{ i18n.t('testimonialsTitle') }}</h2>
+          <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">{{ i18n.t('testimonialsSubtitle') }}</p>
+        </div>
+        <div class="hidden shrink-0 md:flex items-center gap-2" dir="ltr">
+          <button type="button" (click)="scrollTestimonials(testiScroll, -1)"
+            class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+            [attr.aria-label]="i18n.isFa ? 'قبلی' : 'Previous'">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button type="button" (click)="scrollTestimonials(testiScroll, 1)"
+            class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+            [attr.aria-label]="i18n.isFa ? 'بعدی' : 'Next'">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div #testiScroll
+        (mousedown)="onTestiDown($event, testiScroll)"
+        (mousemove)="onTestiMove($event, testiScroll)"
+        (mouseup)="onTestiUp(testiScroll)"
+        (mouseleave)="onTestiUp(testiScroll)"
+        class="flex cursor-grab select-none gap-5 overflow-x-auto pb-4 snap-x snap-mandatory horizontal-scroll active:cursor-grabbing">
         @for (t of testimonials; track t.id) {
-          <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 card-hover relative">
-            <svg class="w-8 h-8 text-indigo-200 dark:text-indigo-900/60 mb-3" fill="currentColor" viewBox="0 0 24 24">
+          <button type="button" (click)="openTestimonial(t)"
+            class="group flex w-[300px] shrink-0 snap-start flex-col rounded-2xl border border-slate-100 bg-white p-6 text-start shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800">
+            <svg class="h-8 w-8 brand-soft mb-3" fill="currentColor" viewBox="0 0 24 24">
               <path d="M9.5 7C6.46 7 4 9.46 4 12.5V20h7.5v-7.5H8c0-1.93 1.57-3.5 3.5-3.5V7zm10 0c-3.04 0-5.5 2.46-5.5 5.5V20H22v-7.5h-3.5c0-1.93 1.57-3.5 3.5-3.5V7z"/>
             </svg>
-            <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+            <p class="flex-1 leading-relaxed text-slate-700 dark:text-slate-300 line-clamp-4">
               {{ i18n.isFa ? (t.contentFa || t.content) : t.content }}
             </p>
-            <div class="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
-              <div class="flex items-center gap-3">
-                @if (t.authorImageUrl) {
-                  <img [src]="t.authorImageUrl" [alt]="i18n.isFa ? (t.authorNameFa || t.authorName) : t.authorName"
-                    class="w-10 h-10 rounded-full object-cover ring-2 ring-indigo-100 dark:ring-indigo-900/50 flex-shrink-0" />
-                } @else {
-                  <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 flex items-center justify-center font-semibold flex-shrink-0">
-                    {{ testimonialInitial(i18n.isFa ? (t.authorNameFa || t.authorName) : t.authorName) }}
-                  </div>
-                }
-                <div>
-                  <p class="font-semibold text-slate-900 dark:text-white text-sm">
-                    {{ i18n.isFa ? (t.authorNameFa || t.authorName) : t.authorName }}
-                  </p>
-                  @if (i18n.isFa ? (t.companyRoleFa || t.companyRole) : t.companyRole) {
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      {{ i18n.isFa ? (t.companyRoleFa || t.companyRole) : t.companyRole }}
-                    </p>
-                  }
+            @if (isLong(t)) {
+              <p class="mt-2 text-xs font-medium brand-text">{{ i18n.t('readMore') }}</p>
+            }
+            <div class="mt-4 flex items-center gap-3 border-t border-slate-100 pt-4 dark:border-slate-700">
+              @if (t.authorImageUrl) {
+                <img [src]="t.authorImageUrl" [alt]="i18n.isFa ? (t.authorNameFa || t.authorName) : t.authorName"
+                  class="h-10 w-10 shrink-0 rounded-full object-cover ring-2 brand-soft" />
+              } @else {
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full brand-soft font-semibold brand-text dark:brand-soft-dark">
+                  {{ testimonialInitial(i18n.isFa ? (t.authorNameFa || t.authorName) : t.authorName) }}
                 </div>
+              }
+              <div class="min-w-0">
+                <p class="truncate font-semibold text-slate-900 dark:text-white text-sm">
+                  {{ i18n.isFa ? (t.authorNameFa || t.authorName) : t.authorName }}
+                </p>
+                @if (i18n.isFa ? (t.companyRoleFa || t.companyRole) : t.companyRole) {
+                  <p class="truncate text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    {{ i18n.isFa ? (t.companyRoleFa || t.companyRole) : t.companyRole }}
+                  </p>
+                }
               </div>
             </div>
-          </div>
+          </button>
         }
       </div>
     </section>
@@ -188,19 +216,19 @@
           <div>
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ i18n.t('testimonialName') }}</label>
             <input [(ngModel)]="newTestimonial.authorName" name="authorName" required
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all"
               [placeholder]="i18n.t('testimonialName')" />
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ i18n.t('testimonialCompany') }}</label>
             <input [(ngModel)]="newTestimonial.companyRole" name="companyRole"
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all"
               [placeholder]="i18n.t('testimonialCompany')" />
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ i18n.t('testimonialEmail') }}</label>
             <input [(ngModel)]="newTestimonial.email" name="email" type="email" required
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all"
               [placeholder]="i18n.t('testimonialEmail')" />
           </div>
         </div>
@@ -217,13 +245,13 @@
               }
             </div>
             <div class="flex flex-col gap-2">
-              <div class="flex cursor-pointer items-center justify-center rounded-xl border border-slate-200 px-4 py-2.5 text-center text-sm text-slate-500 transition-colors hover:border-indigo-400 hover:text-indigo-600 dark:border-slate-700 dark:text-slate-400"
+              <div class="flex cursor-pointer items-center justify-center rounded-xl border border-slate-200 px-4 py-2.5 text-center text-sm text-slate-500 transition-colors hover:brand-border brand-text-hover dark:border-slate-700 dark:text-slate-400"
                 (click)="fileInput.click()"
                 (dragover)="onDragOver($event)"
                 (drop)="onDrop($event)">
                 @if (uploadingImage) {
                   <span class="inline-flex items-center gap-2">
-                    <span class="h-4 w-4 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent"></span>
+                    <span class="h-4 w-4 animate-spin rounded-full border-2 brand-spinner"></span>
                     {{ i18n.t('testimonialUploading') }}
                   </span>
                 } @else {
@@ -232,7 +260,7 @@
               </div>
               <div class="flex items-center gap-2">
                 <button type="button" (click)="fileInput.click()" [disabled]="uploadingImage"
-                  class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 brand-border-hover transition-colors">
                   {{ newTestimonial.authorImageUrl ? i18n.t('testimonialReplace') : i18n.t('testimonialChoose') }}
                 </button>
                 @if (newTestimonial.authorImageUrl) {
@@ -249,7 +277,7 @@
         <div>
           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ i18n.t('testimonialContent') }}</label>
           <textarea [(ngModel)]="newTestimonial.content" name="content" rows="4" required
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all resize-none"
             [placeholder]="i18n.t('testimonialContent')"></textarea>
         </div>
 
@@ -266,7 +294,7 @@
         }
 
         <button type="submit"
-          class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition-all shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5">
+          class="w-full py-3 brand-bg text-white rounded-xl font-semibold transition-all shadow-lg brand-soft hover:brand-soft hover:-translate-y-0.5">
           {{ i18n.t('testimonialSubmit') }}
         </button>
       </form>
@@ -292,7 +320,7 @@
               {{ i18n.isFa ? 'نام' : 'Name' }}
             </label>
             <input [(ngModel)]="contact.name" name="name" required
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all"
               [placeholder]="i18n.isFa ? 'نام شما' : 'Your name'" />
           </div>
           <div>
@@ -300,7 +328,7 @@
               {{ i18n.isFa ? 'ایمیل' : 'Email' }}
             </label>
             <input type="email" [(ngModel)]="contact.email" name="email" required
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all"
               [placeholder]="i18n.isFa ? 'ایمیل شما' : 'your@email.com'" />
           </div>
         </div>
@@ -309,7 +337,7 @@
             {{ i18n.isFa ? 'موضوع' : 'Subject' }}
           </label>
           <input [(ngModel)]="contact.subject" name="subject"
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all"
             [placeholder]="i18n.isFa ? 'موضوع پیام' : 'Subject'" />
         </div>
         <div>
@@ -317,7 +345,7 @@
             {{ i18n.isFa ? 'پیام' : 'Message' }}
           </label>
           <textarea [(ngModel)]="contact.message" name="message" rows="4" required
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all resize-none"
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 brand-ring focus:border-transparent transition-all resize-none"
             [placeholder]="i18n.isFa ? 'پیام خود را بنویسید...' : 'Write your message...'"></textarea>
         </div>
 
@@ -334,11 +362,56 @@
         }
 
         <button type="submit"
-          class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition-all shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:-translate-y-0.5">
+          class="w-full py-3 brand-bg text-white rounded-xl font-semibold transition-all shadow-lg brand-soft hover:brand-soft hover:-translate-y-0.5">
           {{ i18n.isFa ? 'ارسال پیام' : 'Send Message' }}
         </button>
       </form>
     </div>
   </section>
+
+  <!-- Testimonial modal -->
+  @if (selectedTestimonial()) {
+    <div class="fixed inset-0 z-[60] flex items-center justify-center p-4" (click)="closeTestimonial()">
+      <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+      <div class="relative z-10 max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-7 shadow-2xl dark:bg-slate-800 animate-fade-up"
+        (click)="$event.stopPropagation()">
+        <button type="button" (click)="closeTestimonial()"
+          class="absolute top-4 end-4 flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+          [attr.aria-label]="i18n.t('close')">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <svg class="h-9 w-9 brand-soft mb-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M9.5 7C6.46 7 4 9.46 4 12.5V20h7.5v-7.5H8c0-1.93 1.57-3.5 3.5-3.5V7zm10 0c-3.04 0-5.5 2.46-5.5 5.5V20H22v-7.5h-3.5c0-1.93 1.57-3.5 3.5-3.5V7z"/>
+        </svg>
+        <p class="leading-relaxed text-slate-700 dark:text-slate-200">
+          {{ i18n.isFa ? (selectedTestimonial()!.contentFa || selectedTestimonial()!.content) : selectedTestimonial()!.content }}
+        </p>
+        <div class="mt-6 flex items-center gap-3 border-t border-slate-100 pt-5 dark:border-slate-700">
+          @if (selectedTestimonial()!.authorImageUrl) {
+            <img [src]="selectedTestimonial()!.authorImageUrl"
+              [alt]="i18n.isFa ? (selectedTestimonial()!.authorNameFa || selectedTestimonial()!.authorName) : selectedTestimonial()!.authorName"
+              class="h-12 w-12 shrink-0 rounded-full object-cover ring-2 brand-soft" />
+          } @else {
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full brand-soft font-semibold brand-text dark:brand-soft-dark">
+              {{ testimonialInitial(i18n.isFa ? (selectedTestimonial()!.authorNameFa || selectedTestimonial()!.authorName) : selectedTestimonial()!.authorName) }}
+            </div>
+          }
+          <div class="min-w-0">
+            <p class="font-semibold text-slate-900 dark:text-white">
+              {{ i18n.isFa ? (selectedTestimonial()!.authorNameFa || selectedTestimonial()!.authorName) : selectedTestimonial()!.authorName }}
+            </p>
+            @if (i18n.isFa ? (selectedTestimonial()!.companyRoleFa || selectedTestimonial()!.companyRole) : selectedTestimonial()!.companyRole) {
+              <p class="truncate text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                {{ i18n.isFa ? (selectedTestimonial()!.companyRoleFa || selectedTestimonial()!.companyRole) : selectedTestimonial()!.companyRole }}
+              </p>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 
 </div>

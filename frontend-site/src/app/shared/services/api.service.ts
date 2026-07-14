@@ -122,6 +122,9 @@ export interface Project {
 export interface SiteSettings {
   id: string;
   skillsCardView: boolean;
+  themeMode?: string;
+  themePrimary?: string | null;
+  themeSecondary?: string | null;
   createdAt: string;
   updatedAt: string;
 }
