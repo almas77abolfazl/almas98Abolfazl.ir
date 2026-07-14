@@ -25,13 +25,13 @@
           </a>
         }
         @if (siteSettings.visible('experiences')) {
-          <a routerLink="/experiences" routerLinkActive="brand-text brand-soft"
+          <a routerLink="/about-me" [queryParams]="{ tab: 'experiences' }"
             class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('experiences') }}
           </a>
         }
         @if (siteSettings.visible('skills')) {
-          <a routerLink="/skills" routerLinkActive="brand-text brand-soft"
+          <a routerLink="/about-me" [queryParams]="{ tab: 'skills' }"
             class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('skills') }}
           </a>
@@ -124,13 +124,13 @@
           </a>
         }
         @if (siteSettings.visible('experiences')) {
-          <a routerLink="/experiences" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+          <a routerLink="/about-me" [queryParams]="{ tab: 'experiences' }" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
             class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('experiences') }}
           </a>
         }
         @if (siteSettings.visible('skills')) {
-          <a routerLink="/skills" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+          <a routerLink="/about-me" [queryParams]="{ tab: 'skills' }" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
             class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('skills') }}
           </a>

@@ -89,7 +89,7 @@
     <section class="page-shell py-12 sm:py-16">
       <div class="flex items-center justify-between mb-8">
         <h2 class="section-title">{{ i18n.t('experiencesTitle') }}</h2>
-        <a routerLink="/experiences" class="text-sm brand-text hover:underline font-medium">
+        <a routerLink="/about-me" [queryParams]="{ tab: 'experience' }" class="text-sm brand-text hover:underline font-medium">
           {{ i18n.t('readMore') }} →
         </a>
       </div>
@@ -122,7 +122,7 @@
     <section class="page-shell pb-12 sm:pb-16">
       <div class="flex items-center justify-between mb-8">
         <h2 class="section-title">{{ i18n.t('skillsTitle') }}</h2>
-        <a routerLink="/skills" class="text-sm brand-text hover:underline font-medium">
+        <a routerLink="/about-me" [queryParams]="{ tab: 'skills' }" class="text-sm brand-text hover:underline font-medium">
           {{ i18n.t('readMore') }} →
         </a>
       </div>
