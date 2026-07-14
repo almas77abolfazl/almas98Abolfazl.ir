@@ -38,10 +38,6 @@ export class HeaderComponent implements OnInit {
     return url.startsWith('/') ? `${SITE_URL}${url}` : `${SITE_URL}/${url}`;
   }
 
-  get isFa(): boolean {
-    return this.i18n.currentLang() === 'fa';
-  }
-
   toggleMenu(): void {
     this.menuOpen.update(v => !v);
   }

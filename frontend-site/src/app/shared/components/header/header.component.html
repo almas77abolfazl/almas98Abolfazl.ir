@@ -124,13 +124,13 @@
           </a>
         }
         @if (siteSettings.visible('experiences')) {
-          <a routerLink="/about-me" [queryParams]="{ tab: 'experiences' }" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+          <a routerLink="/about-me" [queryParams]="{ tab: 'experiences' }" (click)="closeMenu()"
             class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('experiences') }}
           </a>
         }
         @if (siteSettings.visible('skills')) {
-          <a routerLink="/about-me" [queryParams]="{ tab: 'skills' }" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+          <a routerLink="/about-me" [queryParams]="{ tab: 'skills' }" (click)="closeMenu()"
             class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('skills') }}
           </a>
