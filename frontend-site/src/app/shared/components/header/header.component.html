@@ -18,30 +18,42 @@
           class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
           {{ i18n.t('home') }}
         </a>
-        <a routerLink="/about-me" routerLinkActive="brand-text brand-soft"
-          class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('about') }}
-        </a>
-        <a routerLink="/experiences" routerLinkActive="brand-text brand-soft"
-          class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('experiences') }}
-        </a>
-        <a routerLink="/skills" routerLinkActive="brand-text brand-soft"
-          class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('skills') }}
-        </a>
-        <a routerLink="/blog" routerLinkActive="brand-text brand-soft"
-          class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('articles') }}
-        </a>
-        <a routerLink="/videos" routerLinkActive="brand-text brand-soft"
-          class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('videos') }}
-        </a>
-        <a routerLink="/projects" routerLinkActive="brand-text brand-soft"
-          class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('projects') }}
-        </a>
+        @if (siteSettings.visible('about')) {
+          <a routerLink="/about-me" routerLinkActive="brand-text brand-soft"
+            class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('about') }}
+          </a>
+        }
+        @if (siteSettings.visible('experiences')) {
+          <a routerLink="/experiences" routerLinkActive="brand-text brand-soft"
+            class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('experiences') }}
+          </a>
+        }
+        @if (siteSettings.visible('skills')) {
+          <a routerLink="/skills" routerLinkActive="brand-text brand-soft"
+            class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('skills') }}
+          </a>
+        }
+        @if (siteSettings.visible('articles')) {
+          <a routerLink="/blog" routerLinkActive="brand-text brand-soft"
+            class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('articles') }}
+          </a>
+        }
+        @if (siteSettings.visible('videos')) {
+          <a routerLink="/videos" routerLinkActive="brand-text brand-soft"
+            class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('videos') }}
+          </a>
+        }
+        @if (siteSettings.visible('projects')) {
+          <a routerLink="/projects" routerLinkActive="brand-text brand-soft"
+            class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('projects') }}
+          </a>
+        }
       </nav>
 
       <!-- Controls -->
@@ -105,30 +117,42 @@
           class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
           {{ i18n.t('home') }}
         </a>
-        <a routerLink="/about-me" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
-          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('about') }}
-        </a>
-        <a routerLink="/experiences" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
-          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('experiences') }}
-        </a>
-        <a routerLink="/skills" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
-          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('skills') }}
-        </a>
-        <a routerLink="/blog" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
-          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('articles') }}
-        </a>
-        <a routerLink="/videos" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
-          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('videos') }}
-        </a>
-        <a routerLink="/projects" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
-          class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
-          {{ i18n.t('projects') }}
-        </a>
+        @if (siteSettings.visible('about')) {
+          <a routerLink="/about-me" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+            class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('about') }}
+          </a>
+        }
+        @if (siteSettings.visible('experiences')) {
+          <a routerLink="/experiences" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+            class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('experiences') }}
+          </a>
+        }
+        @if (siteSettings.visible('skills')) {
+          <a routerLink="/skills" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+            class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('skills') }}
+          </a>
+        }
+        @if (siteSettings.visible('articles')) {
+          <a routerLink="/blog" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+            class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('articles') }}
+          </a>
+        }
+        @if (siteSettings.visible('videos')) {
+          <a routerLink="/videos" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+            class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('videos') }}
+          </a>
+        }
+        @if (siteSettings.visible('projects')) {
+          <a routerLink="/projects" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+            class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
+            {{ i18n.t('projects') }}
+          </a>
+        }
         @if (resumeUrl()) {
           <a [href]="resumeUrl()" target="_blank" rel="noopener" (click)="closeMenu()"
             class="flex items-center gap-2 px-4 py-3 text-sm font-medium brand-text hover-brand-soft transition-all">

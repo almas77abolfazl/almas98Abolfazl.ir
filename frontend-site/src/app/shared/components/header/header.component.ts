@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService } from '../../services/i18n.service';
 import { ThemeService } from '../../services/theme.service';
 import { ApiService } from '../../services/api.service';
+import { SiteSettingsService } from '../../services/site-settings.service';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +20,7 @@ export class HeaderComponent implements OnInit {
     public i18n: I18nService,
     public theme: ThemeService,
     private api: ApiService,
+    public siteSettings: SiteSettingsService,
   ) {}
 
   ngOnInit(): void {

@@ -15,6 +15,23 @@
       </div>
 
       <div class="admin-card mb-6">
+        <p class="admin-field-label mb-0.5">{{ i18n.t('sections_title') }}</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">{{ i18n.t('sections_help') }}</p>
+        <div class="divide-y divide-slate-100 dark:divide-slate-800">
+          @for (d of sectionToggles; track d.key) {
+            <div class="flex items-center justify-between py-2.5">
+              <span class="text-sm text-slate-700 dark:text-slate-200">{{ i18n.t(d.labelKey) }}</span>
+              <label class="relative inline-flex cursor-pointer items-center">
+                <input type="checkbox" class="peer sr-only" [checked]="sections()[d.key]" (change)="toggleSection(d, $event)" />
+                <div class="h-6 w-11 rounded-full bg-slate-200 transition-colors peer-checked:bg-indigo-600 dark:bg-slate-700"></div>
+                <span class="absolute start-0.5 top-0.5 h-5 w-5 rounded-full bg-white transition-transform peer-checked:translate-x-full rtl:peer-checked:-translate-x-full"></span>
+              </label>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="admin-card mb-6">
         <p class="admin-field-label mb-0.5">{{ i18n.t('theme_title') }}</p>
         <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">{{ i18n.t('theme_help') }}</p>
 

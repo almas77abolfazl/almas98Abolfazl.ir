@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { ApiService } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
+import { SiteSettingsService } from '../../shared/services/site-settings.service';
 import { AboutMe, Experience, Skill, Testimonial } from '../../shared/services/api.service';
 import { SITE_URL, AUTHOR_NAME, SOCIAL_LINKS } from '../../shared/site-config';
 
@@ -33,7 +34,8 @@ export class HomeComponent implements OnInit {
   constructor(
     public i18n: I18nService,
     private api: ApiService,
-    private seo: SeoService
+    private seo: SeoService,
+    public siteSettings: SiteSettingsService
   ) {}
 
   ngOnInit(): void {

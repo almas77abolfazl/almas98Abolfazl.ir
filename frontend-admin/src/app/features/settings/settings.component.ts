@@ -10,6 +10,21 @@ interface AdminSettings {
   themeMode?: string;
   themePrimary?: string | null;
   themeSecondary?: string | null;
+  showAbout?: boolean;
+  showExperiences?: boolean;
+  showEducations?: boolean;
+  showSkills?: boolean;
+  showProjects?: boolean;
+  showArticles?: boolean;
+  showVideos?: boolean;
+  showTestimonials?: boolean;
+  showContact?: boolean;
+}
+
+interface SectionToggle {
+  key: string;
+  flag: string;
+  labelKey: string;
 }
 
 interface ThemePreset {
@@ -38,6 +53,19 @@ export class SettingsComponent implements OnInit {
   secondary = signal<string>('#d47bf7');
   gradient = computed(() => `linear-gradient(135deg, ${this.primary()}, ${this.secondary()})`);
 
+  sectionToggles: SectionToggle[] = [
+    { key: 'about', flag: 'showAbout', labelKey: 'nav_about' },
+    { key: 'experiences', flag: 'showExperiences', labelKey: 'nav_experiences' },
+    { key: 'educations', flag: 'showEducations', labelKey: 'nav_educations' },
+    { key: 'skills', flag: 'showSkills', labelKey: 'nav_skills' },
+    { key: 'projects', flag: 'showProjects', labelKey: 'nav_projects' },
+    { key: 'articles', flag: 'showArticles', labelKey: 'nav_articles' },
+    { key: 'videos', flag: 'showVideos', labelKey: 'nav_videos' },
+    { key: 'testimonials', flag: 'showTestimonials', labelKey: 'nav_testimonials' },
+    { key: 'contact', flag: 'showContact', labelKey: 'nav_contact' },
+  ];
+  sections = signal<Record<string, boolean>>({});
+
   constructor(
     private http: HttpClient,
     public i18n: AdminI18nService,
@@ -48,6 +76,11 @@ export class SettingsComponent implements OnInit {
     this.http.get<AdminSettings>('/api/admin/settings').subscribe({
       next: (s) => {
         this.settings.set(s);
+        const sec: Record<string, boolean> = {};
+        for (const d of this.sectionToggles) {
+          sec[d.key] = (s as any)[d.flag] !== false;
+        }
+        this.sections.set(sec);
         const isCustom = s.themeMode === 'custom' && !!s.themePrimary && !!s.themeSecondary;
         this.mode.set(isCustom ? 'custom' : 'default');
         if (isCustom) {
@@ -105,6 +138,17 @@ export class SettingsComponent implements OnInit {
   setSecondary(v: string): void {
     this.secondary.set(v);
     this.onCustomColorChange();
+  }
+
+  toggleSection(d: SectionToggle, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.sections.update((sec) => ({ ...sec, [d.key]: checked }));
+    const body: Record<string, boolean> = {};
+    body[d.flag] = checked;
+    this.http.put('/api/admin/settings', body).subscribe({
+      next: () => this.toast.success(this.i18n.t('toast_saved')),
+      error: () => this.toast.error(this.i18n.t('save_failed')),
+    });
   }
 
   onCustomColorChange(): void {

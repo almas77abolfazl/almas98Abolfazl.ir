@@ -11,7 +11,21 @@ export class SiteSettingsService {
     return this.prisma.siteSettings.create({ data: { skillsCardView: false, themeMode: 'default' } });
   }
 
-  async updateSettings(data: { skillsCardView?: boolean; themeMode?: string; themePrimary?: string; themeSecondary?: string }) {
+  async updateSettings(data: {
+    skillsCardView?: boolean;
+    themeMode?: string;
+    themePrimary?: string;
+    themeSecondary?: string;
+    showAbout?: boolean;
+    showExperiences?: boolean;
+    showEducations?: boolean;
+    showSkills?: boolean;
+    showProjects?: boolean;
+    showArticles?: boolean;
+    showVideos?: boolean;
+    showTestimonials?: boolean;
+    showContact?: boolean;
+  }) {
     const existing = await this.prisma.siteSettings.findFirst();
     if (existing) {
       return this.prisma.siteSettings.update({ where: { id: existing.id }, data });

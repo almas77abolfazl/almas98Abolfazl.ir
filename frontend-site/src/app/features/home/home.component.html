@@ -48,10 +48,12 @@
 
           <!-- CTAs -->
           <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-            <a routerLink="/about-me"
-              class="px-6 py-3 brand-bg text-white rounded-xl font-medium transition-all shadow-lg brand-soft hover:brand-soft hover:-translate-y-0.5">
-              {{ i18n.isFa ? 'بیشتر بدانید' : 'About Me' }}
-            </a>
+            @if (siteSettings.visible('about')) {
+              <a routerLink="/about-me"
+                class="px-6 py-3 brand-bg text-white rounded-xl font-medium transition-all shadow-lg brand-soft hover:brand-soft hover:-translate-y-0.5">
+                {{ i18n.isFa ? 'بیشتر بدانید' : 'About Me' }}
+              </a>
+            }
             @if (aboutMe?.resumeUrl) {
               <a [href]="aboutMe!.resumeUrl" target="_blank" rel="noopener"
                 class="px-6 py-3 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-medium brand-border-hover transition-all">
@@ -67,13 +69,13 @@
   <!-- Quick Stats -->
   <section class="page-shell -mt-8">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      @if (experiences.length > 0) {
+      @if (experiences.length > 0 && siteSettings.visible('experiences')) {
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-700 text-center card-hover animate-fade-up delay-200">
           <p class="text-3xl font-bold gradient-text">{{ experiences.length }}+</p>
           <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">{{ i18n.isFa ? 'تجربه کاری' : 'Experiences' }}</p>
         </div>
       }
-      @if (skills.length > 0) {
+      @if (skills.length > 0 && siteSettings.visible('skills')) {
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-700 text-center card-hover animate-fade-up delay-300">
           <p class="text-3xl font-bold gradient-text">{{ skills.length }}+</p>
           <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">{{ i18n.isFa ? 'مهارت' : 'Skills' }}</p>
@@ -83,7 +85,7 @@
   </section>
 
   <!-- Latest Experience -->
-  @if (latestExperience) {
+  @if (latestExperience && siteSettings.visible('experiences')) {
     <section class="page-shell py-12 sm:py-16">
       <div class="flex items-center justify-between mb-8">
         <h2 class="section-title">{{ i18n.t('experiencesTitle') }}</h2>
@@ -116,7 +118,7 @@
   }
 
   <!-- Top Skills -->
-  @if (topSkills.length > 0) {
+  @if (topSkills.length > 0 && siteSettings.visible('skills')) {
     <section class="page-shell pb-12 sm:pb-16">
       <div class="flex items-center justify-between mb-8">
         <h2 class="section-title">{{ i18n.t('skillsTitle') }}</h2>
@@ -135,7 +137,7 @@
   }
 
   <!-- Testimonials -->
-  @if (testimonials.length > 0) {
+  @if (testimonials.length > 0 && siteSettings.visible('testimonials')) {
     <section class="page-shell py-12 sm:py-16">
       <div class="mb-8 flex items-end justify-between gap-4">
         <div>
@@ -204,7 +206,8 @@
   }
 
   <!-- Leave a testimonial -->
-  <section class="bg-slate-50 dark:bg-slate-800/50 py-16 sm:py-20">
+  @if (siteSettings.visible('testimonials')) {
+    <section class="bg-slate-50 dark:bg-slate-800/50 py-16 sm:py-20">
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-10">
         <h2 class="section-title mb-2">{{ i18n.t('testimonialLeave') }}</h2>
@@ -300,9 +303,11 @@
       </form>
     </div>
   </section>
+  }
 
   <!-- Contact -->
-  <section class="bg-slate-50 dark:bg-slate-800/50 py-16 sm:py-20">
+  @if (siteSettings.visible('contact')) {
+    <section class="bg-slate-50 dark:bg-slate-800/50 py-16 sm:py-20">
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-10">
         <h2 class="section-title mb-2">
@@ -368,6 +373,7 @@
       </form>
     </div>
   </section>
+  }
 
   <!-- Testimonial modal -->
   @if (selectedTestimonial()) {

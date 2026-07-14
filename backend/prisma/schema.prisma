@@ -153,6 +153,15 @@ model SiteSettings {
   themeMode      String   @default("default") // 'default' | 'custom'
   themePrimary   String?  // hex, e.g. #7a5cf5
   themeSecondary String?  // hex, e.g. #9678fb
+  showAbout        Boolean @default(true)
+  showExperiences  Boolean @default(true)
+  showEducations   Boolean @default(true)
+  showSkills       Boolean @default(true)
+  showProjects     Boolean @default(true)
+  showArticles     Boolean @default(true)
+  showVideos       Boolean @default(true)
+  showTestimonials Boolean @default(true)
+  showContact      Boolean @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }

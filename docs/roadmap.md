@@ -234,6 +234,17 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 - **6.7 SSR / Prerender** — **deferred by decision.** Client-side `SeoService` works for Google (renders JS), and the homepage — the primary shared link — already has correct static OG tags in `index.html`. The only gap is per-route social previews for *deep* links, which are rare for a personal portfolio. Prerendering the static routes wouldn't fix article previews anyway (only full SSR would), and full SSR requires a persistent Node process (breaks pure-static Nginx) — disproportionate here. Revisit with **full SSR** (or a targeted backend OG endpoint) only if/when individual article links are actively shared on social media.
 - **7.5 Theme toggle animation** — dropped by decision (minor polish).
 
+## Phase 13: About Me Hub, Contact & Social Footer 🔲
+
+- **13.1 AboutMe profile + social fields** — add nullable `email`, `phone`, `location`, and social URLs (`linkedinUrl`, `githubUrl`, `youtubeUrl`, `twitterUrl`, `instagramUrl`) to `AboutMe`; `prisma db push` applied. Public `GET /about-me` already returns the full row so new fields flow through.
+- **13.2 Admin About Me form** — add contact + social inputs (persisted via `POST /api/admin/about-me`).
+- **13.3 Tabbed About Me page** — `/about-me` becomes **Bio | Experience | Education | Skills | Contact**; reuses existing experiences/skills rendering and adds a new Education tab (there is currently no public Educations page). Tabs gated by the Phase 11.2 visibility flags.
+- **13.4 Routing cleanup** — drop standalone `/experiences` + `/skills` routes; redirect old links to `/about-me`; keep home teasers.
+- **13.5 Contact tab** — personal-info card (email `mailto:`, phone `tel:`, location) + the existing message form moved here from the home page; home gets a compact CTA instead of the duplicated form.
+- **13.6 Footer social links** — `FooterComponent` renders owner-editable social/profile icons (LinkedIn / GitHub / YouTube / Twitter / Instagram) alongside the existing RSS link.
+- **13.7 Person JSON-LD `sameAs`** — populate the home `Person` structured data from the AboutMe social URLs.
+- **13.8 Resume link bug** — add `download` to resume links, make the `/api/uploads/...` URL robust (prefix `SITE_URL` if relative), verify nginx serves uploads, drop the seed placeholder.
+
 ## Timeline
 
 | Phase | Focus | Status |
@@ -248,8 +259,9 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 | 7 | Dark/Light Theme Polish | 🔶 7.1–7.4, 7.6 done (7.5 dropped by decision) |
 | 8 | Admin Panel UI Overhaul | ✅ 8.0–8.11 done |
 | 9 | Additional Features | 🔶 9.2, 9.3, 9.9, 9.10 done; 9.4–9.8 dropped |
-| 11 | Site Customization | 🔶 11.1 theme colors ✅; 11.2 section visibility, 11.3 login redesign pending |
+| 11 | Site Customization | 🔶 11.1 theme colors ✅; 11.2 section visibility ✅; 11.3 login redesign pending |
 | 12 | Content Flow & UX Polish | 🔶 12.1–12.5 done (home/about-me flow, skills/hero/testimonials/admin polish) |
+| 13 | About Me Hub, Contact & Social Footer | 🔲 13.1–13.8 pending (tabbed about-me, contact tab, social footer, resume bug) |
 
 > Detailed task breakdowns for all phases live in `.ai/tasks.md`.
 

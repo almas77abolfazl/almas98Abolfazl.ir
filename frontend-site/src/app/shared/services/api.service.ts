@@ -110,7 +110,7 @@ export interface Project {
   id: string;
   title: string; titleFa?: string;
   description?: string; descriptionFa?: string;
-  techStack: string[];
+  techStack: string[] | null;
   liveUrl?: string;
   repoUrl?: string;
   coverUrl?: string;
@@ -125,6 +125,15 @@ export interface SiteSettings {
   themeMode?: string;
   themePrimary?: string | null;
   themeSecondary?: string | null;
+  showAbout?: boolean;
+  showExperiences?: boolean;
+  showEducations?: boolean;
+  showSkills?: boolean;
+  showProjects?: boolean;
+  showArticles?: boolean;
+  showVideos?: boolean;
+  showTestimonials?: boolean;
+  showContact?: boolean;
   createdAt: string;
   updatedAt: string;
 }
