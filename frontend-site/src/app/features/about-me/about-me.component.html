@@ -18,7 +18,7 @@
       <nav class="flex flex-wrap gap-1 mb-8 border-b border-slate-200 dark:border-slate-700">
         @for (t of visibleTabs; track t.key) {
           <button type="button" (click)="setTab(t.key)"
-            class="relative px-4 py-2.5 text-sm font-medium transition-all"
+            class="relative px-4 py-2.5 text-sm font-medium transition-all cursor-pointer"
             [class.brand-text]="currentTab === t.key"
             [class.text-slate-500]="currentTab !== t.key"
             [class.dark:text-slate-400]="currentTab !== t.key">

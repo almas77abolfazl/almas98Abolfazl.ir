@@ -46,7 +46,7 @@
                       {{ i18n.isFa ? (skill.nameFa || skill.name) : skill.name }}
                     </span>
                     <span class="text-xs font-semibold brand-text tabular-nums">
-                      {{ skill.proficiency ?? 0 }}%
+                      {{ skill?.proficiency ?? 0 }}%
                     </span>
                   </div>
                   <div class="w-full h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
