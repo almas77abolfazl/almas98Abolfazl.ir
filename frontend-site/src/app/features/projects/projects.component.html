@@ -17,17 +17,18 @@
   } @else {
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       @for (project of projects(); track project.id) {
-        <div class="flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-700 card-hover">
-          @if (project.coverUrl) {
-            <div class="w-full aspect-video bg-slate-100 dark:bg-slate-900">
-              <img [src]="project.coverUrl" [alt]="i18n.isFa ? (project.titleFa || project.title) : project.title"
-                loading="lazy" class="w-full h-full object-cover" />
-            </div>
-          }
-          <div class="flex flex-col flex-1 p-5">
-            <h2 class="text-base font-bold text-slate-900 dark:text-white mb-1">
-              {{ i18n.isFa ? (project.titleFa || project.title) : project.title }}
-            </h2>
+      <div class="flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-700 card-hover group">
+        @if (project.coverUrl) {
+          <a routerLink="/projects/{{ project.id }}" class="block w-full aspect-video bg-slate-100 dark:bg-slate-900">
+            <img [src]="project.coverUrl" [alt]="i18n.isFa ? (project.titleFa || project.title) : project.title"
+              loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          </a>
+        }
+        <div class="flex flex-col flex-1 p-5">
+          <a routerLink="/projects/{{ project.id }}"
+            class="text-base font-bold text-slate-900 dark:text-white mb-1 brand-group-hover transition-colors">
+            {{ i18n.isFa ? (project.titleFa || project.title) : project.title }}
+          </a>
             @if (project.description || project.descriptionFa) {
               <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-3">
                 {{ i18n.isFa ? (project.descriptionFa || project.description) : project.description }}

@@ -1,0 +1,166 @@
+
+    <div>
+      <h1 class="admin-title mb-6">{{ i18n.t('nav_reports') }}</h1>
+
+      @if (loading()) {
+        <div class="flex items-center justify-center py-20">
+          <div class="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      } @else if (reports(); as r) {
+        <!-- Summary cards -->
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6 mb-6">
+          <div class="admin-stat">
+            <div class="admin-stat-icon">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('rep_totalPageViews') }}</p>
+              <p class="text-xl font-bold text-slate-900 dark:text-white">{{ r.totals.pageViews }}</p>
+            </div>
+          </div>
+
+          <div class="admin-stat">
+            <div class="admin-stat-icon">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2V6a2 2 0 00-2-2z" /></svg>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('rep_articles') }}</p>
+              <p class="text-xl font-bold text-slate-900 dark:text-white">{{ r.totals.articles }}</p>
+            </div>
+          </div>
+
+          <div class="admin-stat">
+            <div class="admin-stat-icon">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('rep_projects') }}</p>
+              <p class="text-xl font-bold text-slate-900 dark:text-white">{{ r.totals.projects }}</p>
+            </div>
+          </div>
+
+          <div class="admin-stat">
+            <div class="admin-stat-icon">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('rep_likes') }}</p>
+              <p class="text-xl font-bold text-rose-600 dark:text-rose-400">{{ r.totals.likes }}</p>
+            </div>
+          </div>
+
+          <div class="admin-stat">
+            <div class="admin-stat-icon">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3v18h18M7 16l4-4 3 3 5-6" /></svg>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('rep_articleViews') }}</p>
+              <p class="text-xl font-bold text-slate-900 dark:text-white">{{ r.totals.articleViews }}</p>
+            </div>
+          </div>
+
+          <div class="admin-stat">
+            <div class="admin-stat-icon">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3v18h18M7 16l4-4 3 3 5-6" /></svg>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('rep_projectViews') }}</p>
+              <p class="text-xl font-bold text-slate-900 dark:text-white">{{ r.totals.projectViews }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Report cards (each is self-contained and easy to extend) -->
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+          <!-- Top Pages (site-wide) -->
+          <div class="admin-card lg:col-span-2">
+            <h2 class="mb-4 text-lg font-bold text-slate-900 dark:text-white">{{ i18n.t('rep_topPages') }}</h2>
+            <div class="space-y-3">
+              @for (item of topPagesItems(r); track item.url) {
+                <div>
+                  <div class="mb-1 flex items-center justify-between text-sm">
+                    <span class="truncate text-slate-700 dark:text-slate-300" [title]="item.url">{{ item.title }}</span>
+                    <span class="ml-3 shrink-0 font-semibold text-slate-900 dark:text-white">{{ item.value }}</span>
+                  </div>
+                  <div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div class="h-full rounded-full bg-linear-to-r from-indigo-500 to-violet-400"
+                      [style.width.%]="maxValue(topPagesItems(r)) ? (item.value / maxValue(topPagesItems(r))) * 100 : 0"></div>
+                  </div>
+                </div>
+              } @empty {
+                <div class="text-slate-500 dark:text-slate-400">{{ i18n.t('noData') }}</div>
+              }
+            </div>
+          </div>
+
+          <!-- Most Liked Articles -->
+          <div class="admin-card">
+            <h2 class="mb-4 text-lg font-bold text-slate-900 dark:text-white">{{ i18n.t('rep_topLiked') }}</h2>
+            <div class="space-y-3">
+              @for (item of topLikedItems(r); track item.slug) {
+                <div>
+                  <div class="mb-1 flex items-center justify-between text-sm">
+                    <span class="truncate text-slate-700 dark:text-slate-300" [title]="item.title">{{ item.title }}</span>
+                    <span class="ml-3 shrink-0 font-semibold text-rose-600 dark:text-rose-400">{{ item.value }}</span>
+                  </div>
+                  <div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div class="h-full rounded-full bg-linear-to-r from-rose-400 to-rose-500"
+                      [style.width.%]="maxValue(topLikedItems(r)) ? (item.value / maxValue(topLikedItems(r))) * 100 : 0"></div>
+                  </div>
+                </div>
+              } @empty {
+                <div class="text-slate-500 dark:text-slate-400">{{ i18n.t('noData') }}</div>
+              }
+            </div>
+          </div>
+
+          <!-- Most Viewed Articles -->
+          <div class="admin-card">
+            <h2 class="mb-4 text-lg font-bold text-slate-900 dark:text-white">{{ i18n.t('rep_topViewedArticles') }}</h2>
+            <div class="space-y-3">
+              @for (item of topViewedArticlesItems(r); track item.slug) {
+                <div>
+                  <div class="mb-1 flex items-center justify-between text-sm">
+                    <span class="truncate text-slate-700 dark:text-slate-300" [title]="item.title">{{ item.title }}</span>
+                    <span class="ml-3 shrink-0 font-semibold text-slate-900 dark:text-white">{{ item.value }}</span>
+                  </div>
+                  <div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div class="h-full rounded-full bg-linear-to-r from-indigo-500 to-violet-400"
+                      [style.width.%]="maxValue(topViewedArticlesItems(r)) ? (item.value / maxValue(topViewedArticlesItems(r))) * 100 : 0"></div>
+                  </div>
+                </div>
+              } @empty {
+                <div class="text-slate-500 dark:text-slate-400">{{ i18n.t('noData') }}</div>
+              }
+            </div>
+          </div>
+
+          <!-- Most Viewed Projects -->
+          <div class="admin-card lg:col-span-2">
+            <h2 class="mb-4 text-lg font-bold text-slate-900 dark:text-white">{{ i18n.t('rep_topViewedProjects') }}</h2>
+            <div class="space-y-3">
+              @for (item of topViewedProjectsItems(r); track item.id) {
+                <div>
+                  <div class="mb-1 flex items-center justify-between text-sm">
+                    <a [routerLink]="['/projects']" [title]="item.title"
+                      class="truncate text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                      {{ item.title }}
+                    </a>
+                    <span class="ml-3 shrink-0 font-semibold text-slate-900 dark:text-white">{{ item.value }}</span>
+                  </div>
+                  <div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div class="h-full rounded-full bg-linear-to-r from-indigo-500 to-violet-400"
+                      [style.width.%]="maxValue(topViewedProjectsItems(r)) ? (item.value / maxValue(topViewedProjectsItems(r))) * 100 : 0"></div>
+                  </div>
+                </div>
+              } @empty {
+                <div class="text-slate-500 dark:text-slate-400">{{ i18n.t('noData') }}</div>
+              }
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="text-center py-20 text-slate-400 dark:text-slate-500">{{ i18n.t('noData') }}</div>
+      }
+    </div>

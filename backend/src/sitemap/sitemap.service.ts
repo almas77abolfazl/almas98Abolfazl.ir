@@ -29,12 +29,20 @@ export class SitemapService {
       select: { slug: true, updatedAt: true },
       orderBy: { updatedAt: 'desc' },
     });
+    const projects = await this.prisma.projects.findMany({
+      select: { id: true, updatedAt: true },
+      orderBy: { updatedAt: 'desc' },
+    });
 
     const urls: SitemapUrl[] = [
       ...STATIC_PATHS.map((path) => ({ loc: `${baseUrl}${path}` })),
       ...articles.map((article) => ({
         loc: `${baseUrl}/blog/${article.slug}`,
         lastmod: article.updatedAt.toISOString(),
+      })),
+      ...projects.map((project) => ({
+        loc: `${baseUrl}/projects/${project.id}`,
+        lastmod: project.updatedAt.toISOString(),
       })),
     ];
 

@@ -106,7 +106,7 @@ html[dir="rtl"] body {
 /* ---- Shared components: minimal, modern admin UI ---- */
 @layer components {
   .admin-card {
-    @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700/70 dark:bg-slate-800;
+    @apply rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700/70 dark:bg-slate-800 m-1;
   }
 
   .admin-stat {

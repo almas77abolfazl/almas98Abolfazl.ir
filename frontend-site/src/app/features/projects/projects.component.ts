@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ApiService, Project } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
@@ -7,7 +8,7 @@ import { SeoService } from '../../shared/services/seo.service';
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './projects.component.html',
 })
 export class ProjectsComponent implements OnInit {

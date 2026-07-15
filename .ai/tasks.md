@@ -564,6 +564,35 @@
    - Cause: the daily-traffic SVG chart's hover tooltips (`whitespace-nowrap`, centered on each data point via `-translate-x-1/2`) extended past the right edge of the chart card for the last point; because the shell `<main>` is `overflow-auto`, the invisible overflow produced a horizontal scrollbar.
    - Fix: added `overflow-x-clip` to the chart's `relative h-56 w-full` container so the tooltips can no longer push the layout horizontally (vertical tooltip overflow is preserved).
 
+---
 
+## Phase 15: Article Like Toggle, Article Stats & Project Detail 🔲
 
+> **Goal:** let visitors remove a like they previously gave (toggle), give the owner a **Reports** hub in the admin panel (article likes, article views, project views, and site-wide visit breakdowns — extensible for future reports), and give projects an article-style detail page with rich Markdown content (including inline images) — but without likes.
+
+### 15.1 Article like toggle (unlike) ✅
+- Backend: new `DELETE /api/articles/:slug/like` → `ArticlesService.unlikeArticle(slug, ip)`. It looks up the `ArticleLike` row by the compound unique `articleId_ipHash`; if present it deletes it and decrements `Articles.likeCount` (clamped at 0 to guard against negative counts). If the IP had not liked, it returns the current count unchanged.
+- Frontend (`ArticleDetailComponent`): the old `like()` (which disabled the button after liking) is replaced by `toggleLike()` — clicking while liked calls `unlikeArticle` and clears `localStorage('liked_'+slug)`; clicking while not liked calls `likeArticle` and sets it. The button is now always clickable; its label switches between `Like` and `Unlike` (new i18n key `unlike`), with a `title` hint.
+- `ApiService.unlikeArticle(slug)` added (`DELETE`).
+
+### 15.2 Admin Reports hub ✅
+- Renamed from "Article Stats" to a general **Reports** hub (`/admin/reports`, `nav_reports` = "Reporting" / "گزارش‌گیری") so it can host any future report, not just articles.
+- Moved out of the **Content** sidebar group into its own **Reports** group (`nav_group_reports` = "Reports" / "گزارش‌ها", violet group dot) — it's analytics, not content editing.
+- Backend: new admin-guarded `GET /api/analytics/reports` returns a structured, extensible payload:
+  - `totals`: `pageViews` (all `PageView` rows), `articleViews` (`/blog/%`), `projectViews` (`/projects/%`), `articles` (published), `projects`, `likes` (sum of `Articles.likeCount`).
+  - `topPages`: site-wide top 10 URLs (grouped) — the detailed visit breakdown that complements the dashboard's overview.
+  - `articles.topLiked`: up to 10 published articles by `likeCount` desc (`slug`, `title`, `likeCount`).
+  - `articles.topViewed`: up to 10 `/blog/*` paths from `PageView` grouped by URL, slug mapped back to the article `title` (falls back to the slug if deleted).
+  - `projects.topViewed`: up to 10 `/projects/*` paths mapped back to project titles (FA-aware).
+  - `daily`: last 30 days of page views (kept for potential future charts).
+- Frontend admin: the **Reports** page renders six summary stat cards (page views / articles / projects / likes / article views / project views) plus self-contained report cards — Top Pages (site-wide), Most Liked Articles (rose bars), Most Viewed Articles (brand-gradient bars), Most Viewed Projects (brand-gradient bars, links to `/projects`). Each report is a standalone card, so new reports are added by extending the backend payload + one more card.
+- New i18n keys `nav_reports`, `nav_group_reports`, `rep_totalPageViews`, `rep_articleViews`, `rep_projectViews`, `rep_articles`, `rep_projects`, `rep_likes`, `rep_topPages`, `rep_topLiked`, `rep_topViewedArticles`, `rep_topViewedProjects`, `rep_views` (EN + FA).
+
+### 15.3 Project detail page (article-like, no likes) ✅
+- Backend: new public `GET /api/projects/:id` → `ProjectsService.findById(id)` (404 if missing), so a single project can be fetched.
+- Frontend site: new `ProjectDetailComponent` at `/projects/:id` — cover image, bilingual title (FA fallback), Markdown-rendered `description`/`descriptionFa` via `marked` (reusing the `.article-content` styles, so inline uploaded images render), tech-stack badges, and Live demo / Source code links. No like button. Sets SEO meta + a `CreativeWork` JSON-LD (`author` from `SiteConfigService`). Loading/error (404) states included.
+- List cards now link to the detail page (cover + title are `routerLink`s; the Live/Source links stay separate to avoid nested anchors). The project detail URL is also added to the sitemap (`/projects/:id` with `lastmod`).
+- Admin: the project `description` (EN) and `descriptionFa` (FA) textareas are replaced by `MarkdownEditorComponent` (with image upload/insert), so owners can author rich, image-bearing project write-ups. `ngModelChange` marks the form dirty so the unsaved-changes guard still fires.
+
+> Note: project detail routes use the project `id` (not a slug) to avoid a schema migration; article-style clean URLs are preserved for blog via slugs.
 

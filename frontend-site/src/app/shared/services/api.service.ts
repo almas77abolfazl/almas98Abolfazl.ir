@@ -202,6 +202,10 @@ export class ApiService {
     return this.http.post<ArticleLikeResult>(`${this.baseUrl}/articles/${slug}/like`, {});
   }
 
+  unlikeArticle(slug: string): Observable<{ likeCount: number }> {
+    return this.http.delete<{ likeCount: number }>(`${this.baseUrl}/articles/${slug}/like`);
+  }
+
   postContactMessage(body: { name: string; email: string; subject?: string; message: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/contact-messages`, body);
   }
@@ -216,6 +220,10 @@ export class ApiService {
 
   getProjects(): Observable<Project[]> {
     return this.http.get<Project[]>(`${this.baseUrl}/projects`);
+  }
+
+  getProjectById(id: string): Observable<Project> {
+    return this.http.get<Project>(`${this.baseUrl}/projects/${id}`);
   }
 
   getSettings(): Observable<SiteSettings> {

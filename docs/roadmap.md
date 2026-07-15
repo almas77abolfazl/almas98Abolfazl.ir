@@ -258,6 +258,16 @@ Published articles are exposed as an RSS 2.0 feed for readers and feed aggregato
 - **14.5 Dashboard Top Pages — friendly names** ✅ — the Top Pages list now shows localized page names instead of raw route paths (a `pageLabel()` helper maps `/`, `/about-me`, `/blog`, `/blog/:slug`, `/videos`, `/projects`, … using the admin i18n keys; article URLs render as `Article · <slug>`). New i18n keys `page_blog` / `page_article` / `page_notFound`.
 - **14.6 Dashboard horizontal scroll fix** ✅ — the dashboard's phantom horizontal scrollbar (caused by the daily-traffic chart's `whitespace-nowrap` hover tooltips overflowing the chart card while the shell `<main>` is `overflow-auto`) is fixed by clipping horizontal overflow on the chart container (`overflow-x-clip`).
 
+## Phase 15: Article Like Toggle, Article Stats & Project Detail 🔲
+
+> **Goal:** let visitors remove a like they previously gave (toggle), give the owner article analytics in the admin panel (most liked / most viewed), and give projects an article-style detail page with rich Markdown content (including inline images) — but without likes.
+
+- **15.1 Article like toggle (unlike)** ✅ — new `DELETE /api/articles/:slug/like` (`ArticlesService.unlikeArticle`) deletes the `ArticleLike` row (by compound unique `articleId_ipHash`) and decrements `likeCount` (clamped ≥ 0). `ArticleDetailComponent` now has `toggleLike()` that likes/unlikes and syncs `localStorage('liked_'+slug)`; the button is always clickable and switches `Like`/`Unlike` (new `unlike` i18n key).
+- **15.2 Admin Reports hub** ✅ — renamed from "Article Stats" to a general **Reports** hub (`/admin/reports`, "Reporting" / "گزارش‌گیری") and moved out of the Content group into its own **Reports** sidebar group. New admin-guarded `GET /api/analytics/reports` returns an extensible payload: `totals` (page views / article views / project views / articles / projects / likes), `topPages` (site-wide top URLs), `articles.topLiked` + `articles.topViewed`, and `projects.topViewed` (both derived from `PageView`). The Reports page shows six summary cards + self-contained report cards (Top Pages, Most Liked Articles, Most Viewed Articles, Most Viewed Projects); new reports are added by extending the payload + one card. New i18n keys `nav_reports`, `nav_group_reports`, `rep_*`.
+- **15.3 Project detail page (article-like, no likes)** ✅ — new public `GET /api/projects/:id`; new `ProjectDetailComponent` at `/projects/:id` renders cover, bilingual title, Markdown `description`/`descriptionFa` (via `marked`, reusing `.article-content` so inline images show), tech badges and Live/Source links, with SEO + `CreativeWork` JSON-LD. List cards link to the detail page; the detail URL is added to the sitemap. Admin project `description`/`descriptionFa` now use `MarkdownEditorComponent` (with image upload).
+
+> Note: project detail routes use the project `id` (not a slug) to avoid a schema migration; blog keeps slug-based clean URLs.
+
 ## Timeline
 
 | Phase | Focus | Status |

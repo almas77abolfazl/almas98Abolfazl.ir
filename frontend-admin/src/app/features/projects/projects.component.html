@@ -17,11 +17,11 @@
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> {{ i18n.t('proj_description') }}</label>
-            <textarea [(ngModel)]="model.description" name="description" rows="3" class="admin-input"></textarea>
+            <app-markdown-editor [(ngModel)]="model.description" name="description" dir="ltr" (ngModelChange)="markDirty()"></app-markdown-editor>
           </div>
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> {{ i18n.t('proj_description') }}</label>
-            <textarea [(ngModel)]="model.descriptionFa" name="descriptionFa" rows="3" dir="rtl" class="admin-input font-fa"></textarea>
+            <app-markdown-editor [(ngModel)]="model.descriptionFa" name="descriptionFa" dir="rtl" [isFa]="true" (ngModelChange)="markDirty()"></app-markdown-editor>
           </div>
         </div>
 

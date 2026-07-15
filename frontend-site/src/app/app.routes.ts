@@ -5,6 +5,7 @@ import { BlogComponent } from './features/blog/blog.component';
 import { ArticleDetailComponent } from './features/article-detail/article-detail.component';
 import { VideosComponent } from './features/videos/videos.component';
 import { ProjectsComponent } from './features/projects/projects.component';
+import { ProjectDetailComponent } from './features/project-detail/project-detail.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 
 export const routes: Routes = [
@@ -16,5 +17,6 @@ export const routes: Routes = [
   { path: 'blog/:slug', component: ArticleDetailComponent },
   { path: 'videos', component: VideosComponent },
   { path: 'projects', component: ProjectsComponent },
+  { path: 'projects/:id', component: ProjectDetailComponent },
   { path: '**', component: NotFoundComponent }
 ];

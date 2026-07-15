@@ -48,6 +48,7 @@ export class ShellComponent {
     { path: '/skill-categories', key: 'nav_skill_categories', icon: 'M7 7h.01M7 3h5a1.99 1.99 0 011.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z', group: 'nav_group_content' },
     { path: '/projects', key: 'nav_projects', icon: 'M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z', group: 'nav_group_content' },
     { path: '/articles', key: 'nav_articles', icon: 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2V6a2 2 0 00-2-2z', group: 'nav_group_content' },
+    { path: '/reports', key: 'nav_reports', icon: 'M9 17v-6h-3l4-5 4 5h-3v6m-4 3a2 2 0 01-2-2v-3m10 5a2 2 0 002-2v-3', group: 'nav_group_reports' },
     { path: '/videos', key: 'nav_videos', icon: 'M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z', group: 'nav_group_content' },
     { path: '/testimonials', key: 'nav_testimonials', icon: 'M8 10H5a2 2 0 01-2-2V5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2zm0 0h2a2 2 0 002-2v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2a2 2 0 002 2zm0 0v6a2 2 0 002 2h2a2 2 0 002-2v-4a2 2 0 00-2-2H8z', group: 'nav_group_engagement' },
     { path: '/messages', key: 'nav_messages', icon: 'M8 10H5a2 2 0 01-2-2V5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2zm0 0h2a2 2 0 002-2v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2a2 2 0 002 2zm0 0v6a2 2 0 002 2h2a2 2 0 002-2v-4a2 2 0 00-2-2H8z', group: 'nav_group_engagement' },
@@ -82,6 +83,7 @@ export class ShellComponent {
       case 'nav_group_content': return 'bg-indigo-400';
       case 'nav_group_engagement': return 'bg-emerald-400';
       case 'nav_group_system': return 'bg-amber-400';
+      case 'nav_group_reports': return 'bg-violet-400';
       default: return 'bg-slate-400';
     }
   }

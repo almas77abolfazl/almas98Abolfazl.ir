@@ -7,6 +7,7 @@ import { AdminI18nService } from '../../core/services/admin-i18n.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ConfirmService } from '../../core/services/confirm.service';
 import { ImageUploadComponent } from '../../core/components/image-upload.component';
+import { MarkdownEditorComponent } from '../../core/components/markdown-editor.component';
 
 interface Project {
   id?: string;
@@ -23,7 +24,7 @@ type SortCol = 'title' | 'order' | null;
 
 @Component({
   selector: 'app-projects',
-  imports: [CommonModule, FormsModule, DragDropModule, ImageUploadComponent],
+  imports: [CommonModule, FormsModule, DragDropModule, ImageUploadComponent, MarkdownEditorComponent],
   templateUrl: './projects.component.html',
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })

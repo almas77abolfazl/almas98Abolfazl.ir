@@ -1,0 +1,79 @@
+<section class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pt-10 pb-16 sm:pt-12 sm:pb-20">
+
+  <a routerLink="/projects"
+    class="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 brand-text-hover mb-8 group transition-colors">
+    <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+    </svg>
+    {{ i18n.t('backToProjects') }}
+  </a>
+
+  @if (loading()) {
+    <div class="flex items-center justify-center py-20">
+      <div class="w-8 h-8 border-2 brand-border border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  } @else if (project(); as p) {
+    <article>
+      @if (p.coverUrl) {
+        <div class="w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
+          <img [src]="p.coverUrl" [alt]="title(p)" class="w-full h-full object-cover">
+        </div>
+      }
+
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-4 leading-tight">
+        {{ title(p) }}
+      </h1>
+
+      @if (p.techStack?.length) {
+        <div class="flex flex-wrap gap-2 mb-6">
+          @for (tech of p.techStack; track tech) {
+            <span class="px-2.5 py-0.5 text-xs font-medium rounded-full brand-soft brand-text">
+              {{ tech }}
+            </span>
+          }
+        </div>
+      }
+
+      <div class="divider mb-8"></div>
+
+      @if (descriptionHtml()) {
+        <div class="prose-measure article-content text-base"
+          [dir]="i18n.isFa ? 'rtl' : 'ltr'"
+          [innerHTML]="descriptionHtml()"></div>
+      } @else {
+        <p class="text-slate-500 dark:text-slate-400">{{ i18n.t('noData') }}</p>
+      }
+
+      @if (p.liveUrl || p.repoUrl) {
+        <div class="mt-10 flex items-center gap-4 pt-6 border-t border-slate-100 dark:border-slate-700">
+          @if (p.liveUrl) {
+            <a [href]="p.liveUrl" target="_blank" rel="noopener"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full brand-bg text-white text-sm font-semibold hover:opacity-90 transition-opacity">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              {{ i18n.t('projectLive') }}
+            </a>
+          }
+          @if (p.repoUrl) {
+            <a [href]="p.repoUrl" target="_blank" rel="noopener"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-500 transition-colors">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.5 2.87 8.32 6.84 9.67.5.09.68-.22.68-.49 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.36-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.36 9.36 0 0112 6.84c.85 0 1.71.12 2.51.34 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.35 4.8-4.58 5.05.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.02 10.02 0 0022 12.26C22 6.58 17.52 2 12 2z" />
+              </svg>
+              {{ i18n.t('projectCode') }}
+            </a>
+          }
+        </div>
+      }
+    </article>
+  } @else {
+    <div class="text-center py-20">
+      <p class="text-slate-400 dark:text-slate-500">{{ i18n.t('articleNotFound') }}</p>
+      <a routerLink="/projects" class="mt-4 inline-block brand-text hover:underline text-sm">
+        {{ i18n.t('goBack') }}
+      </a>
+    </div>
+  }
+
+</section>

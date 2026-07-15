@@ -84,17 +84,27 @@ export class ArticleDetailComponent implements OnInit {
     this.progress.set(height > 0 ? Math.min(100, (el.scrollTop / height) * 100) : 0);
   }
 
-  like(): void {
+  toggleLike(): void {
     const art = this.article();
-    if (this.liked() || !art) {
+    if (!art) {
       return;
     }
-    this.api.likeArticle(art.slug).subscribe({
-      next: (res) => {
-        this.likeCount.set(res.likeCount);
-        this.liked.set(true);
-        localStorage.setItem(`liked_${art.slug}`, '1');
-      },
-    });
+    if (this.liked()) {
+      this.api.unlikeArticle(art.slug).subscribe({
+        next: (res) => {
+          this.likeCount.set(res.likeCount);
+          this.liked.set(false);
+          localStorage.removeItem(`liked_${art.slug}`);
+        },
+      });
+    } else {
+      this.api.likeArticle(art.slug).subscribe({
+        next: (res) => {
+          this.likeCount.set(res.likeCount);
+          this.liked.set(true);
+          localStorage.setItem(`liked_${art.slug}`, '1');
+        },
+      });
+    }
   }
 }

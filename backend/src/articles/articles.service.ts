@@ -54,4 +54,38 @@ export class ArticlesService {
 
     return { likeCount: updated.likeCount, alreadyLiked: false };
   }
+
+  async unlikeArticle(slug: string, ip: string): Promise<{ likeCount: number }> {
+    const article = await this.prisma.articles.findUnique({ where: { slug } });
+    if (!article || !article.published) {
+      throw new NotFoundException('Article not found');
+    }
+
+    const ipHash = createHash('sha256').update(ip).digest('hex');
+
+    // No like recorded for this IP → nothing to remove.
+    const existing = await this.prisma.articleLike.findUnique({
+      where: { articleId_ipHash: { articleId: article.id, ipHash } },
+    });
+    if (!existing) {
+      return { likeCount: article.likeCount };
+    }
+
+    await this.prisma.articleLike.delete({
+      where: { articleId_ipHash: { articleId: article.id, ipHash } },
+    });
+
+    const updated = await this.prisma.articles.update({
+      where: { id: article.id },
+      data: { likeCount: { decrement: 1 } },
+    });
+
+    // Guard against a negative count (e.g. inconsistent data).
+    const likeCount = updated.likeCount < 0 ? 0 : updated.likeCount;
+    if (likeCount !== updated.likeCount) {
+      await this.prisma.articles.update({ where: { id: article.id }, data: { likeCount: 0 } });
+    }
+
+    return { likeCount };
+  }
 }

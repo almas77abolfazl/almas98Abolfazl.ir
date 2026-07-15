@@ -1,4 +1,4 @@
-import { Controller, Get, Ip, Param, Post, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Ip, Param, Post, Query } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 
 @Controller('articles')
@@ -18,5 +18,10 @@ export class ArticlesController {
   @Post(':slug/like')
   like(@Param('slug') slug: string, @Ip() ip: string) {
     return this.articlesService.likeArticle(slug, ip);
+  }
+
+  @Delete(':slug/like')
+  unlike(@Param('slug') slug: string, @Ip() ip: string) {
+    return this.articlesService.unlikeArticle(slug, ip);
   }
 }
