@@ -151,7 +151,7 @@
   - Shared constants in `shared/site-config.ts` (`SITE_URL`, `SITE_NAME`, `AUTHOR_NAME`, `DEFAULT_OG_IMAGE`, `SOCIAL_LINKS`)
 
 - [x] 6.2 **Meta tags per page**
-  - `<title>`: `Page Name | almas98Abolfazl.ir`
+  - `<title>`: `Page Name | almas98abolfazl.ir`
   - `<meta name="description">`: per-page, bilingual (i18n `seo*Desc` keys)
   - Open Graph: `og:title`, `og:description`, `og:type`, `og:url`, `og:site_name`, `og:locale`, `og:image`
   - Twitter Card: `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`

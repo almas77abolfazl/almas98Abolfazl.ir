@@ -1,6 +1,6 @@
 # Project Overview
 
-**almas98Abolfazl.ir** — Personal portfolio website for Abolfazl Nasiri Almas (almas98).
+**almas98abolfazl.ir** — Personal portfolio website for Abolfazl Nasiri Almas (almas98).
 
 A full-stack bilingual (Persian/English) portfolio platform with a public-facing site and a private admin panel.
 
@@ -30,7 +30,7 @@ A full-stack bilingual (Persian/English) portfolio platform with a public-facing
 ## Monorepo Structure
 
 ```
-almas98Abolfazl.ir/
+almas98abolfazl.ir/
 ├── backend/                  # NestJS API
 │   ├── prisma/
 │   │   └── schema.prisma     # Single source of truth for DB schema

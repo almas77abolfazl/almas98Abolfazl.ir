@@ -3,7 +3,7 @@
 ## Monorepo Layout
 
 ```
-almas98Abolfazl.ir/
+almas98abolfazl.ir/
 ├── backend/                   NestJS API
 ├── frontend-site/             Angular 20 — public portfolio site
 ├── frontend-admin/            Angular 20 — admin panel (SPA)

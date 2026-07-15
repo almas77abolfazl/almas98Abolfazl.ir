@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Personal portfolio website for `almas98Abolfazl.ir` with public showcase, admin management panel, and analytics dashboard.
+Personal portfolio website for `almas98abolfazl.ir` with public showcase, admin management panel, and analytics dashboard.
 
 - **Stack:** NestJS + Prisma + PostgreSQL (backend), Angular 20 (frontend), Nginx + Docker Compose (deployment)
 - **Deployment target:** Single VPS (2 CPU, 2GB RAM, 40GB SSD)
@@ -11,7 +11,7 @@ Personal portfolio website for `almas98Abolfazl.ir` with public showcase, admin 
 ## Architecture
 
 ```
-almas98Abolfazl.ir/
+almas98abolfazl.ir/
 ├── backend/           # NestJS API
 ├── frontend-site/     # Angular SSG/Static (public)
 ├── frontend-admin/    # Angular SPA (admin panel)

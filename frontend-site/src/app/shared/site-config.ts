@@ -3,7 +3,7 @@
  * The production domain can be changed here in one place.
  */
 export const SITE_URL = 'https://almas98abolfazl.ir';
-export const SITE_NAME = 'almas98Abolfazl.ir';
+export const SITE_NAME = 'almas98abolfazl.ir';
 export const AUTHOR_NAME = 'Abolfazl Nasiri Almas';
 export const AUTHOR_NAME_FA = 'ابوالفضل نصیری الماس';
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-default.png`;

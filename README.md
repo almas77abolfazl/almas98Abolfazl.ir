@@ -1,4 +1,4 @@
-# almas98Abolfazl.ir
+# almas98abolfazl.ir
 
 A production-ready bilingual (Persian/English) personal portfolio website, built as a full-stack monorepo with Docker Compose.
 
@@ -53,8 +53,8 @@ A production-ready bilingual (Persian/English) personal portfolio website, built
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/almas98Abolfazl.ir.git
-   cd almas98Abolfazl.ir
+   git clone https://github.com/your-username/almas98abolfazl.ir.git
+   cd almas98abolfazl.ir
    ```
 
 2. (Optional) Create a `.env` file in the root directory to override default credentials:
@@ -140,7 +140,7 @@ The repository includes `.vscode/launch.json` and `.vscode/tasks.json` configure
 ## Project Structure
 
 ```
-almas98Abolfazl.ir/
+almas98abolfazl.ir/
 ├── backend/                    # NestJS REST API
 │   ├── prisma/
 │   │   └── schema.prisma       # Single source of truth for DB schema
