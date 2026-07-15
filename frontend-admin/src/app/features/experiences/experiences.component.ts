@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+import { DatePickerComponent } from '../../core/components/date-picker.component';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ConfirmService } from '../../core/services/confirm.service';
@@ -20,7 +21,7 @@ type SortCol = 'role' | 'company' | 'startDate' | null;
 
 @Component({
   selector: 'app-experiences',
-  imports: [CommonModule, FormsModule, DragDropModule],
+  imports: [CommonModule, FormsModule, DragDropModule, DatePickerComponent],
   templateUrl: './experiences.component.html',
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })

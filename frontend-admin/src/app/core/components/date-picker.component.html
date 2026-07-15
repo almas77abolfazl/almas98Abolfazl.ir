@@ -1,0 +1,79 @@
+<div class="relative">
+  <button
+    type="button"
+    class="admin-input flex items-center justify-between text-start"
+    [class.cursor-not-allowed]="disabled"
+    [class.opacity-60]="disabled"
+    [disabled]="disabled"
+    (click)="toggle()"
+  >
+    <span [class.text-slate-400]="!display()">{{ display() || placeholder }}</span>
+    <svg class="h-4 w-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M8 2v4M16 2v4M3 9h18M5 4h14a2 2 0 012 2v13a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z" />
+    </svg>
+  </button>
+
+  @if (open()) {
+    <div class="fixed inset-0 z-20" (click)="close()"></div>
+    <div
+      class="absolute z-30 mt-1 w-64 rounded-xl border border-slate-200 bg-white p-3 shadow-xl dark:border-slate-700 dark:bg-slate-900"
+    >
+      <div class="mb-2 flex items-center justify-between">
+        <button
+          type="button"
+          class="rounded-lg p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+          (click)="prevMonth()"
+        >&lsaquo;</button>
+        <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+          {{ monthNames[viewMonth()] }} {{ viewYear() }}
+        </span>
+        <button
+          type="button"
+          class="rounded-lg p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+          (click)="nextMonth()"
+        >&rsaquo;</button>
+      </div>
+
+      <div class="grid grid-cols-7 gap-1 text-center text-[11px] text-slate-400">
+        @for (w of weekdays; track w) {
+          <span>{{ w }}</span>
+        }
+      </div>
+
+      <div class="grid grid-cols-7 gap-1">
+        @for (week of calendar(); track $index) {
+          @for (cell of week; track $index) {
+            @if (cell.date) {
+              <button
+                type="button"
+                class="flex h-8 w-8 items-center justify-center rounded-lg text-sm transition-colors hover:bg-indigo-100 dark:hover:bg-indigo-500/20"
+                [class.bg-indigo-600]="isSelected(cell.date)"
+                [class.text-white]="isSelected(cell.date)"
+                [class.hover:bg-indigo-100]="!isSelected(cell.date)"
+                (click)="select(cell.date)"
+              >{{ cell.day }}</button>
+            } @else {
+              <span class="flex h-8 w-8 items-center justify-center text-sm text-slate-300 dark:text-slate-600">
+                {{ cell.day }}
+              </span>
+            }
+          }
+        }
+      </div>
+
+      <div class="mt-2 flex items-center justify-between border-t border-slate-100 pt-2 dark:border-slate-800">
+        <button
+          type="button"
+          class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+          (click)="clear()"
+        >Clear</button>
+        <button
+          type="button"
+          class="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+          (click)="close()"
+        >Close</button>
+      </div>
+    </div>
+  }
+</div>

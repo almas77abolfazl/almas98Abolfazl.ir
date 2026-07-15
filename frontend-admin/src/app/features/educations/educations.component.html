@@ -39,11 +39,11 @@
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label">{{ i18n.t('edu_startDate') }}</label>
-            <input type="date" [(ngModel)]="model.startDate" name="startDate" required class="admin-input" />
+            <app-date-picker [(ngModel)]="model.startDate" name="startDate" [placeholder]="i18n.t('edu_startDate')"></app-date-picker>
           </div>
           <div>
             <label class="admin-field-label">{{ i18n.t('edu_endDate') }}</label>
-            <input type="date" [(ngModel)]="model.endDate" name="endDate" class="admin-input" />
+            <app-date-picker [(ngModel)]="model.endDate" name="endDate" [placeholder]="i18n.t('edu_endDate')"></app-date-picker>
           </div>
         </div>
 
