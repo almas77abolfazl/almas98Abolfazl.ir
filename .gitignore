@@ -36,9 +36,10 @@ Thumbs.db
 coverage
 .jest-cache
 
-# Uploaded media (served by backend at /api/uploads)
+# Uploaded media at runtime (served by backend at /api/uploads).
+# NOTE: `backend/src/uploads/` is SOURCE CODE (the UploadsModule) and MUST be
+# committed. Only ignore the runtime upload directory, not every `uploads/` dir.
 backend/uploads/
-uploads/
 
 # Logs
 logs
