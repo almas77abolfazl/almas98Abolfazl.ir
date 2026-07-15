@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
@@ -8,6 +8,7 @@ import { SeoService } from '../../shared/services/seo.service';
   standalone: true,
   imports: [RouterLink],
   templateUrl: './not-found.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotFoundComponent implements OnInit {
   constructor(

@@ -22,7 +22,7 @@
     <article>
       @if (art.coverUrl) {
         <div class="w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
-          <img [src]="art.coverUrl" [alt]="art.title" class="w-full h-full object-cover">
+          <img [src]="art.coverUrl" [alt]="art.title" loading="lazy" decoding="async" class="w-full h-full object-cover">
         </div>
       }
 

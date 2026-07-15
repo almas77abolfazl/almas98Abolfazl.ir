@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { marked } from 'marked';
@@ -11,6 +11,7 @@ import { SiteConfigService } from '../../shared/services/site-config.service';
   selector: 'app-project-detail',
   imports: [CommonModule, RouterLink],
   templateUrl: './project-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectDetailComponent implements OnInit {
   project = signal<Project | null>(null);

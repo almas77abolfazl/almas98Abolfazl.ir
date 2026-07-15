@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService, Video } from '../../shared/services/api.service';
@@ -14,6 +14,7 @@ interface VideoView extends Video {
   selector: 'app-videos',
   imports: [CommonModule],
   templateUrl: './videos.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VideosComponent implements OnInit {
   videos = signal<VideoView[]>([]);

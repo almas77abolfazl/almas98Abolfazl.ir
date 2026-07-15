@@ -21,7 +21,7 @@
         @if (project.coverUrl) {
           <a routerLink="/projects/{{ project.id }}" class="block w-full aspect-video bg-slate-100 dark:bg-slate-900">
             <img [src]="project.coverUrl" [alt]="i18n.isFa ? (project.titleFa || project.title) : project.title"
-              loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
           </a>
         }
         <div class="flex flex-col flex-1 p-5">

@@ -1,4 +1,4 @@
-import { Component, signal, effect } from '@angular/core';
+import { Component, signal, effect, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService, Article } from '../../shared/services/api.service';
@@ -9,6 +9,7 @@ import { SeoService } from '../../shared/services/seo.service';
   selector: 'app-blog',
   imports: [CommonModule, RouterLink],
   templateUrl: './blog.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BlogComponent {
   articles = signal<Article[]>([]);

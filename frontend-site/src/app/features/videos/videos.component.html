@@ -29,7 +29,7 @@
               <button type="button" (click)="play(video.id)"
                 class="group absolute inset-0 w-full h-full flex items-center justify-center"
                 [attr.aria-label]="i18n.t('playVideo')">
-                <img [src]="video.thumb" [alt]="i18n.isFa ? (video.titleFa || video.title) : video.title"
+                <img [src]="video.thumb" [alt]="i18n.isFa ? (video.titleFa || video.title) : video.title" loading="lazy" decoding="async"
                   class="absolute inset-0 w-full h-full object-cover" />
                 <span class="absolute inset-0 bg-black/25 group-hover:bg-black/40 transition-colors"></span>
                 <span class="relative w-14 h-14 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">

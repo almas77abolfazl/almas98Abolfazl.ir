@@ -17,7 +17,7 @@
             <div class="relative">
               <div class="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden ring-4 ring-white dark:ring-slate-700 shadow-2xl">
                 <img [src]="aboutMe!.avatarUrl" [alt]="i18n.isFa ? (aboutMe!.fullNameFa || aboutMe!.fullName) : aboutMe!.fullName"
-                  class="w-full h-full object-cover">
+                  class="w-full h-full object-cover" fetchpriority="high" decoding="async">
               </div>
               <!-- Online indicator -->
               <div class="absolute -bottom-2 -right-2 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900"></div>
@@ -182,7 +182,7 @@
             <div class="mt-4 flex items-center gap-3 border-t border-slate-100 pt-4 dark:border-slate-700">
               @if (t.authorImageUrl) {
                 <img [src]="t.authorImageUrl" [alt]="i18n.isFa ? (t.authorNameFa || t.authorName) : t.authorName"
-                  class="h-10 w-10 shrink-0 rounded-full object-cover ring-2 brand-soft" />
+                  class="h-10 w-10 shrink-0 rounded-full object-cover ring-2 brand-soft" loading="lazy" decoding="async" />
               } @else {
                 <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full brand-soft font-semibold brand-text dark:brand-soft-dark">
                   {{ testimonialInitial(i18n.isFa ? (t.authorNameFa || t.authorName) : t.authorName) }}
@@ -240,7 +240,7 @@
           <div class="flex items-center gap-4">
             <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-dashed border-slate-300 bg-slate-50 text-slate-400 dark:border-slate-600 dark:bg-slate-800/50 dark:text-slate-500">
               @if (newTestimonial.authorImageUrl) {
-                <img [src]="newTestimonial.authorImageUrl" alt="" class="h-full w-full object-cover" />
+                 <img [src]="newTestimonial.authorImageUrl" alt="" class="h-full w-full object-cover" loading="lazy" decoding="async" />
               } @else {
                 <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -342,9 +342,9 @@
         </p>
         <div class="mt-6 flex items-center gap-3 border-t border-slate-100 pt-5 dark:border-slate-700">
           @if (selectedTestimonial()!.authorImageUrl) {
-            <img [src]="selectedTestimonial()!.authorImageUrl"
-              [alt]="i18n.isFa ? (selectedTestimonial()!.authorNameFa || selectedTestimonial()!.authorName) : selectedTestimonial()!.authorName"
-              class="h-12 w-12 shrink-0 rounded-full object-cover ring-2 brand-soft" />
+             <img [src]="selectedTestimonial()!.authorImageUrl"
+               [alt]="i18n.isFa ? (selectedTestimonial()!.authorNameFa || selectedTestimonial()!.authorName) : selectedTestimonial()!.authorName"
+               class="h-12 w-12 shrink-0 rounded-full object-cover ring-2 brand-soft" loading="lazy" decoding="async" />
           } @else {
             <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full brand-soft font-semibold brand-text dark:brand-soft-dark">
               {{ testimonialInitial(i18n.isFa ? (selectedTestimonial()!.authorNameFa || selectedTestimonial()!.authorName) : selectedTestimonial()!.authorName) }}

@@ -1,22 +1,19 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
-import { AboutMeComponent } from './features/about-me/about-me.component';
-import { BlogComponent } from './features/blog/blog.component';
-import { ArticleDetailComponent } from './features/article-detail/article-detail.component';
-import { VideosComponent } from './features/videos/videos.component';
-import { ProjectsComponent } from './features/projects/projects.component';
-import { ProjectDetailComponent } from './features/project-detail/project-detail.component';
-import { NotFoundComponent } from './features/not-found/not-found.component';
 
+// Home is the LCP entry route, so it stays eager. Every other feature is
+// lazy-loaded so third-party libs they pull in (e.g. `marked` used by the
+// article/project detail pages) are split into their own chunks and never
+// downloaded on the initial home navigation.
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'about-me', component: AboutMeComponent },
+  { path: 'about-me', loadComponent: () => import('./features/about-me/about-me.component').then(m => m.AboutMeComponent) },
   { path: 'experiences', redirectTo: 'about-me', pathMatch: 'full' },
   { path: 'skills', redirectTo: 'about-me', pathMatch: 'full' },
-  { path: 'blog', component: BlogComponent },
-  { path: 'blog/:slug', component: ArticleDetailComponent },
-  { path: 'videos', component: VideosComponent },
-  { path: 'projects', component: ProjectsComponent },
-  { path: 'projects/:id', component: ProjectDetailComponent },
-  { path: '**', component: NotFoundComponent }
+  { path: 'blog', loadComponent: () => import('./features/blog/blog.component').then(m => m.BlogComponent) },
+  { path: 'blog/:slug', loadComponent: () => import('./features/article-detail/article-detail.component').then(m => m.ArticleDetailComponent) },
+  { path: 'videos', loadComponent: () => import('./features/videos/videos.component').then(m => m.VideosComponent) },
+  { path: 'projects', loadComponent: () => import('./features/projects/projects.component').then(m => m.ProjectsComponent) },
+  { path: 'projects/:id', loadComponent: () => import('./features/project-detail/project-detail.component').then(m => m.ProjectDetailComponent) },
+  { path: '**', loadComponent: () => import('./features/not-found/not-found.component').then(m => m.NotFoundComponent) },
 ];

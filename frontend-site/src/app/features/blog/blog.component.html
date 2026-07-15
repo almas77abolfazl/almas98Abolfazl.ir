@@ -22,7 +22,7 @@
           @if (article.coverUrl) {
             <div class="w-full h-40 rounded-xl overflow-hidden mb-4">
               <img [src]="article.coverUrl" [alt]="article.title"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
             </div>
           }
           <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-2 brand-group-hover transition-colors">

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService, Project } from '../../shared/services/api.service';
@@ -10,6 +10,7 @@ import { SeoService } from '../../shared/services/seo.service';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './projects.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectsComponent implements OnInit {
   projects = signal<Project[]>([]);

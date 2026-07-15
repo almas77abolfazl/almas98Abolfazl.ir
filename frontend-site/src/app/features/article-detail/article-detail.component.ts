@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, HostListener } from '@angular/core';
+import { Component, OnInit, signal, computed, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { marked } from 'marked';
@@ -11,6 +11,7 @@ import { SiteConfigService } from '../../shared/services/site-config.service';
   selector: 'app-article-detail',
   imports: [CommonModule, RouterLink],
   templateUrl: './article-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArticleDetailComponent implements OnInit {
   article = signal<Article | null>(null);

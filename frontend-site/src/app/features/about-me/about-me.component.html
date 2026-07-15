@@ -40,6 +40,7 @@
               <div class="sticky top-24">
                 <div class="relative inline-block">
                   <img [src]="aboutMe.avatarUrl" [alt]="i18n.isFa ? (aboutMe.fullNameFa || aboutMe.fullName) : aboutMe.fullName"
+  loading="lazy" decoding="async"
                     class="w-full max-w-xs md:max-w-full aspect-square object-cover rounded-3xl shadow-2xl brand-soft">
                   <div class="absolute -bottom-3 -right-3 w-full h-full rounded-3xl border-2 brand-soft -z-10"></div>
                 </div>
