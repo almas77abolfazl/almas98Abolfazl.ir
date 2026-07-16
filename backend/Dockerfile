@@ -2,6 +2,7 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 COPY package*.json ./
+COPY prisma/schema.prisma ./prisma/schema.prisma
 RUN npm install
 COPY . .
 RUN npx prisma generate
