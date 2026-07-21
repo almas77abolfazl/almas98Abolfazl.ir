@@ -6,3 +6,7 @@
 ## 2026-07-21 - Caching and Deferred API Calls in Angular
 **Learning:** Initial application load can be significantly slowed down by fetching data for off-screen sections (like testimonials or deep experiences).
 **Action:** Use an `IntersectionObserver` directive to trigger API requests only when elements enter the viewport. Combine this with RxJS `shareReplay(1)` in the service layer to cache responses, preventing redundant network requests on revisits.
+
+## 2026-07-21 - Resolving Layout Shifts (CLS) in Angular Async Sections
+**Learning:** CLS (Cumulative Layout Shift) drastically hurts UX and Lighthouse scores when asynchronously loaded lists (like Experiences, Skills, Testimonials) cause sections to expand unexpectedly once the API responds. Simply hiding the sections with `@if` until data is ready causes content below it to shift downwards.
+**Action:** Always reserve predictable vertical space using `min-h-[value]` or fixed heights on section containers while their inner content fetches. Pair this with skeleton loaders (`animate-pulse`) tied to loading state flags (`isLoading`) in the component class to give immediate visual feedback.
