@@ -1,12 +1,10 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './features/home/home.component';
 
-// Home is the LCP entry route, so it stays eager. Every other feature is
-// lazy-loaded so third-party libs they pull in (e.g. `marked` used by the
+// Every feature is lazy-loaded so third-party libs they pull in (e.g. `marked` used by the
 // article/project detail pages) are split into their own chunks and never
-// downloaded on the initial home navigation.
+// downloaded on the initial home navigation. Home is also lazy-loaded for smaller initial chunk.
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent) },
   { path: 'about-me', loadComponent: () => import('./features/about-me/about-me.component').then(m => m.AboutMeComponent) },
   { path: 'experiences', redirectTo: 'about-me', pathMatch: 'full' },
   { path: 'skills', redirectTo: 'about-me', pathMatch: 'full' },
