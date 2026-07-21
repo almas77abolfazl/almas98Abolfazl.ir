@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 
 export interface AboutMe {
   id: string;
@@ -166,11 +166,16 @@ export interface Testimonial {
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private baseUrl = '/api';
+  private aboutMe$?: Observable<AboutMe>;
+  private settings$?: Observable<SiteSettings>;
 
   constructor(private http: HttpClient) {}
 
   getAboutMe(): Observable<AboutMe> {
-    return this.http.get<AboutMe>(`${this.baseUrl}/about-me`);
+    if (!this.aboutMe$) {
+      this.aboutMe$ = this.http.get<AboutMe>(`${this.baseUrl}/about-me`).pipe(shareReplay(1));
+    }
+    return this.aboutMe$;
   }
 
   getExperiences(): Observable<Experience[]> {
@@ -227,7 +232,10 @@ export class ApiService {
   }
 
   getSettings(): Observable<SiteSettings> {
-    return this.http.get<SiteSettings>(`${this.baseUrl}/settings`);
+    if (!this.settings$) {
+      this.settings$ = this.http.get<SiteSettings>(`${this.baseUrl}/settings`).pipe(shareReplay(1));
+    }
+    return this.settings$;
   }
 
   getTestimonials(): Observable<Testimonial[]> {
