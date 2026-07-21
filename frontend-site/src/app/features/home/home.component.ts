@@ -8,11 +8,12 @@ import { SeoService } from '../../shared/services/seo.service';
 import { SiteSettingsService } from '../../shared/services/site-settings.service';
 import { AboutMe, Experience, Skill, Testimonial } from '../../shared/services/api.service';
 import { SiteConfigService } from '../../shared/services/site-config.service';
+import { LazyInitDirective } from '../../shared/directives/lazy-init.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, LazyInitDirective],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -50,9 +51,24 @@ export class HomeComponent implements OnInit {
       this.seo.setTitle(ownerName);
       this.applyPersonJsonLd(data);
     });
-    this.api.getExperiences().subscribe(data => this.experiences = data);
-    this.api.getSkills().subscribe(data => this.skills = data);
-    this.api.getTestimonials().subscribe(data => this.testimonials = data);
+  }
+
+  loadExperiences(): void {
+    if (this.experiences.length === 0) {
+      this.api.getExperiences().subscribe(data => this.experiences = data);
+    }
+  }
+
+  loadSkills(): void {
+    if (this.skills.length === 0) {
+      this.api.getSkills().subscribe(data => this.skills = data);
+    }
+  }
+
+  loadTestimonials(): void {
+    if (this.testimonials.length === 0) {
+      this.api.getTestimonials().subscribe(data => this.testimonials = data);
+    }
   }
 
   private applyPersonJsonLd(aboutMe?: AboutMe): void {
