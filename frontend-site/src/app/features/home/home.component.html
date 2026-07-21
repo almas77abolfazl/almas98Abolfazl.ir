@@ -84,6 +84,8 @@
     </div>
   </section>
 
+  <!-- Deferred lower sections -->
+  @defer (on viewport) {
   <!-- Latest Experience -->
   @if (latestExperience && siteSettings.visible('experiences')) {
     <section class="page-shell py-12 sm:py-16">
@@ -318,6 +320,10 @@
         </a>
       </div>
     </section>
+  }
+
+  } @placeholder {
+    <div class="min-h-[500px]"></div>
   }
 
   <!-- Testimonial modal -->
