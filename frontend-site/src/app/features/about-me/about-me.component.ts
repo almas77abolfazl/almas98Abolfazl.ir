@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, AboutMe, Experience, Education, Skill, SkillCategory } from '../../shared/services/api.service';
@@ -7,6 +7,7 @@ import { SeoService } from '../../shared/services/seo.service';
 import { SiteSettingsService } from '../../shared/services/site-settings.service';
 import { SiteConfigService } from '../../shared/services/site-config.service';
 import { ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 interface SkillGroup {
   key: string;
@@ -31,18 +32,26 @@ interface TabDef {
   styleUrl: './about-me.component.scss'
 })
 export class AboutMeComponent implements OnInit {
-  aboutMe?: AboutMe;
-  experiences: Experience[] = [];
-  educations: Education[] = [];
+  destroyRef = inject(DestroyRef);
+  api = inject(ApiService);
+  i18n = inject(I18nService);
+  seo = inject(SeoService);
+  siteSettings = inject(SiteSettingsService);
+  route = inject(ActivatedRoute);
+  config = inject(SiteConfigService);
+
+  aboutMe = toSignal(this.api.getAboutMe());
+  experiences = toSignal(this.api.getExperiences(), { initialValue: [] });
+  educations = toSignal(this.api.getEducations(), { initialValue: [] });
   groups = signal<SkillGroup[]>([]);
   isLoading = signal(true);
   cardView = signal(false);
 
   tab = signal<TabKey>('bio');
 
-  contact = { name: '', email: '', subject: '', message: '' };
-  success = false;
-  error = '';
+  contact = signal({ name: '', email: '', subject: '', message: '' });
+  success = signal(false);
+  error = signal('');
 
   readonly tabs: TabDef[] = [
     { key: 'bio', titleKey: 'aboutMeTitle', flag: 'about' },
@@ -52,14 +61,7 @@ export class AboutMeComponent implements OnInit {
     { key: 'contact', titleKey: 'contactTitle', flag: 'contact' },
   ];
 
-  constructor(
-    public i18n: I18nService,
-    private api: ApiService,
-    private seo: SeoService,
-    public siteSettings: SiteSettingsService,
-    private route: ActivatedRoute,
-    private config: SiteConfigService,
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.seo.update({
@@ -73,16 +75,12 @@ export class AboutMeComponent implements OnInit {
       this.tab.set(initialTab);
     }
 
-    this.api.getAboutMe().subscribe(data => this.aboutMe = data);
-    this.api.getExperiences().subscribe(data => this.experiences = data);
-    this.api.getEducations().subscribe(data => this.educations = data);
-
-    this.api.getSettings().subscribe({
+    this.api.getSettings().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (settings) => this.cardView.set(settings.skillsCardView),
       error: () => this.cardView.set(false),
     });
 
-    this.api.getSkills().subscribe({
+    this.api.getSkills().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (skills) => this.buildGroups(skills),
       error: () => this.isLoading.set(false),
     });
@@ -105,7 +103,7 @@ export class AboutMeComponent implements OnInit {
   // Skills grouping (mirrors the old standalone Skills page)
   private buildGroups(skills: Skill[]): void {
     const skillMap = new Map(skills.map((s) => [s.id, s]));
-    this.api.getSkillCategories().subscribe({
+    this.api.getSkillCategories().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (cats: SkillCategory[]) => {
         let groups: SkillGroup[];
         if (cats.length) {
@@ -164,7 +162,7 @@ export class AboutMeComponent implements OnInit {
   }
 
   get resumeHref(): string | undefined {
-    const url = this.aboutMe?.resumeUrl;
+    const url = this.aboutMe()?.resumeUrl;
     if (!url) return undefined;
     return this.config.assetUrl(url);
   }
@@ -176,32 +174,36 @@ export class AboutMeComponent implements OnInit {
     });
   }
 
-  // Contact form (moved from the home page)
+  updateContact(key: string, value: string): void {
+    this.contact.update(c => ({ ...c, [key]: value }));
+  }
+
   private isValidEmail(email: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
   onSubmit(): void {
-    this.error = '';
-    this.success = false;
-    const name = this.contact.name.trim();
-    const email = this.contact.email.trim();
-    const message = this.contact.message.trim();
+    this.error.set('');
+    this.success.set(false);
+    const form = this.contact();
+    const name = form.name.trim();
+    const email = form.email.trim();
+    const message = form.message.trim();
     if (!name || !message) {
-      this.error = this.i18n.isFa ? 'نام و پیام الزامی است' : 'Name and message are required';
+      this.error.set(this.i18n.isFa ? 'نام و پیام الزامی است' : 'Name and message are required');
       return;
     }
     if (!this.isValidEmail(email)) {
-      this.error = this.i18n.isFa ? 'یک ایمیل معتبر وارد کنید' : 'Please enter a valid email';
+      this.error.set(this.i18n.isFa ? 'یک ایمیل معتبر وارد کنید' : 'Please enter a valid email');
       return;
     }
-    this.api.postContactMessage(this.contact).subscribe({
+    this.api.postContactMessage(form).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.success = true;
-        this.contact = { name: '', email: '', subject: '', message: '' };
+        this.success.set(true);
+        this.contact.set({ name: '', email: '', subject: '', message: '' });
       },
       error: () => {
-        this.error = this.i18n.isFa ? 'خطا در ارسال پیام' : 'Failed to send message';
+        this.error.set(this.i18n.isFa ? 'خطا در ارسال پیام' : 'Failed to send message');
       }
     });
   }
