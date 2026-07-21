@@ -86,6 +86,7 @@
 
   <!-- Deferred lower sections -->
   @defer (on viewport) {
+  <div appLazyInit (appLazyInit)="loadExperiences(); loadSkills()"></div>
   <!-- Latest Experience -->
   @if (latestExperience && siteSettings.visible('experiences')) {
     <section class="page-shell py-12 sm:py-16">
@@ -139,6 +140,7 @@
   }
 
   <!-- Testimonials -->
+  <div appLazyInit (appLazyInit)="loadTestimonials()"></div>
   @if (testimonials.length > 0 && siteSettings.visible('testimonials')) {
     <section class="page-shell py-12 sm:py-16">
       <div class="mb-8 flex items-end justify-between gap-4">

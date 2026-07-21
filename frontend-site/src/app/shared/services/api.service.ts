@@ -168,6 +168,9 @@ export class ApiService {
   private baseUrl = '/api';
   private aboutMe$?: Observable<AboutMe>;
   private settings$?: Observable<SiteSettings>;
+  private experiences$?: Observable<Experience[]>;
+  private skills$?: Observable<Skill[]>;
+  private testimonials$?: Observable<Testimonial[]>;
 
   constructor(private http: HttpClient) {}
 
@@ -179,7 +182,10 @@ export class ApiService {
   }
 
   getExperiences(): Observable<Experience[]> {
-    return this.http.get<Experience[]>(`${this.baseUrl}/experiences`);
+    if (!this.experiences$) {
+      this.experiences$ = this.http.get<Experience[]>(`${this.baseUrl}/experiences`).pipe(shareReplay(1));
+    }
+    return this.experiences$;
   }
 
   getEducations(): Observable<Education[]> {
@@ -187,7 +193,10 @@ export class ApiService {
   }
 
   getSkills(): Observable<Skill[]> {
-    return this.http.get<Skill[]>(`${this.baseUrl}/skills`);
+    if (!this.skills$) {
+      this.skills$ = this.http.get<Skill[]>(`${this.baseUrl}/skills`).pipe(shareReplay(1));
+    }
+    return this.skills$;
   }
 
   getSkillCategories(): Observable<SkillCategory[]> {
@@ -239,7 +248,10 @@ export class ApiService {
   }
 
   getTestimonials(): Observable<Testimonial[]> {
-    return this.http.get<Testimonial[]>(`${this.baseUrl}/testimonials`);
+    if (!this.testimonials$) {
+      this.testimonials$ = this.http.get<Testimonial[]>(`${this.baseUrl}/testimonials`).pipe(shareReplay(1));
+    }
+    return this.testimonials$;
   }
 
   postTestimonial(body: {
