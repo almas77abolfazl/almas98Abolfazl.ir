@@ -23,6 +23,9 @@ export class HomeComponent implements OnInit {
   skills: Skill[] = [];
   testimonials: Testimonial[] = [];
   isLoading = true;
+  isLoadingExperiences = false;
+  isLoadingSkills = false;
+  isLoadingTestimonials = false;
   newTestimonial = { authorName: '', companyRole: '', email: '', content: '', authorImageUrl: '' };
   testimonialSuccess = false;
   testimonialError = '';
@@ -55,19 +58,46 @@ export class HomeComponent implements OnInit {
 
   loadExperiences(): void {
     if (this.experiences.length === 0) {
-      this.api.getExperiences().subscribe(data => this.experiences = data);
+      this.isLoadingExperiences = true;
+      this.api.getExperiences().subscribe({
+        next: (data) => {
+          this.experiences = data;
+          this.isLoadingExperiences = false;
+        },
+        error: () => {
+          this.isLoadingExperiences = false;
+        }
+      });
     }
   }
 
   loadSkills(): void {
     if (this.skills.length === 0) {
-      this.api.getSkills().subscribe(data => this.skills = data);
+      this.isLoadingSkills = true;
+      this.api.getSkills().subscribe({
+        next: (data) => {
+          this.skills = data;
+          this.isLoadingSkills = false;
+        },
+        error: () => {
+          this.isLoadingSkills = false;
+        }
+      });
     }
   }
 
   loadTestimonials(): void {
     if (this.testimonials.length === 0) {
-      this.api.getTestimonials().subscribe(data => this.testimonials = data);
+      this.isLoadingTestimonials = true;
+      this.api.getTestimonials().subscribe({
+        next: (data) => {
+          this.testimonials = data;
+          this.isLoadingTestimonials = false;
+        },
+        error: () => {
+          this.isLoadingTestimonials = false;
+        }
+      });
     }
   }
 

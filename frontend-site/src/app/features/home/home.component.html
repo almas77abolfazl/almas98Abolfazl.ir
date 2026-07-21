@@ -12,18 +12,20 @@
       <div class="flex flex-col md:flex-row items-center gap-8 sm:gap-12">
 
         <!-- Avatar -->
-        @if (aboutMe?.avatarUrl) {
-          <div class="flex-shrink-0 animate-fade-up">
-            <div class="relative">
-              <div class="w-40 h-40 md:w-48 md:h-48 rounded-2xl overflow-hidden ring-4 ring-white dark:ring-slate-700 shadow-2xl">
+        <div class="flex-shrink-0 animate-fade-up w-40 h-40 md:w-48 md:h-48">
+          @if (aboutMe?.avatarUrl) {
+            <div class="relative w-full h-full">
+              <div class="w-full h-full rounded-2xl overflow-hidden ring-4 ring-white dark:ring-slate-700 shadow-2xl">
                 <img [src]="aboutMe!.avatarUrl" [alt]="i18n.isFa ? (aboutMe!.fullNameFa || aboutMe!.fullName) : aboutMe!.fullName"
-                  class="w-full h-full object-cover" width="320" height="320" fetchpriority="high" decoding="async">
+                  class="w-full h-full object-cover" style="aspect-ratio: 1 / 1;" width="320" height="320" fetchpriority="high" loading="eager" decoding="sync">
               </div>
               <!-- Online indicator -->
               <div class="absolute -bottom-2 -right-2 w-5 h-5 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900"></div>
             </div>
-          </div>
-        }
+          } @else {
+            <div class="w-full h-full rounded-2xl bg-slate-200 dark:bg-slate-700 animate-pulse ring-4 ring-white dark:ring-slate-700 shadow-2xl"></div>
+          }
+        </div>
 
         <!-- Text -->
         <div class="text-center md:text-start animate-fade-up delay-100 min-h-[220px]">
@@ -88,61 +90,93 @@
   @defer (on viewport) {
   <div appLazyInit (appLazyInit)="loadExperiences(); loadSkills()"></div>
   <!-- Latest Experience -->
-  @if (latestExperience && siteSettings.visible('experiences')) {
-    <section class="page-shell py-12 sm:py-16">
-      <div class="flex items-center justify-between mb-8">
-        <h2 class="section-title">{{ i18n.t('experiencesTitle') }}</h2>
-        <a routerLink="/about-me" [queryParams]="{ tab: 'experience' }" class="text-sm brand-text hover:underline font-medium">
-          {{ i18n.t('readMore') }} →
-        </a>
-      </div>
-      <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 card-hover">
-        <div class="flex items-start gap-4">
-          <div class="w-12 h-12 rounded-xl brand-soft brand-soft-dark flex items-center justify-center flex-shrink-0">
-            <svg class="w-6 h-6 brand-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
-              {{ i18n.isFa ? (latestExperience.roleFa || latestExperience.role) : latestExperience.role }}
-            </h3>
-            <p class="brand-text font-medium text-sm mt-0.5">
-              {{ i18n.isFa ? (latestExperience.companyFa || latestExperience.company) : latestExperience.company }}
-            </p>
-            <p class="text-slate-400 dark:text-slate-500 text-xs mt-1">
-              {{ latestExperience.startDate | date:'yyyy' }} —
-              {{ latestExperience.endDate ? (latestExperience.endDate | date:'yyyy') : i18n.t('present') }}
-            </p>
+  @if (siteSettings.visible('experiences')) {
+    <section class="page-shell py-12 sm:py-16 min-h-[220px]">
+      @if (isLoadingExperiences) {
+        <div class="flex items-center justify-between mb-8">
+          <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded w-48 animate-pulse"></div>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 h-28 animate-pulse"></div>
+      } @else if (latestExperience) {
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="section-title">{{ i18n.t('experiencesTitle') }}</h2>
+          <a routerLink="/about-me" [queryParams]="{ tab: 'experience' }" class="text-sm brand-text hover:underline font-medium">
+            {{ i18n.t('readMore') }} →
+          </a>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 card-hover">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-xl brand-soft brand-soft-dark flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6 brand-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
+                {{ i18n.isFa ? (latestExperience.roleFa || latestExperience.role) : latestExperience.role }}
+              </h3>
+              <p class="brand-text font-medium text-sm mt-0.5">
+                {{ i18n.isFa ? (latestExperience.companyFa || latestExperience.company) : latestExperience.company }}
+              </p>
+              <p class="text-slate-400 dark:text-slate-500 text-xs mt-1">
+                {{ latestExperience.startDate | date:'yyyy' }} —
+                {{ latestExperience.endDate ? (latestExperience.endDate | date:'yyyy') : i18n.t('present') }}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      }
     </section>
   }
 
   <!-- Top Skills -->
-  @if (topSkills.length > 0 && siteSettings.visible('skills')) {
-    <section class="page-shell pb-12 sm:pb-16">
-      <div class="flex items-center justify-between mb-8">
-        <h2 class="section-title">{{ i18n.t('skillsTitle') }}</h2>
-        <a routerLink="/about-me" [queryParams]="{ tab: 'skills' }" class="text-sm brand-text hover:underline font-medium">
-          {{ i18n.t('readMore') }} →
-        </a>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        @for (skill of topSkills; track skill.id) {
-          <span class="skill-tag px-4 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-medium cursor-default">
-            {{ i18n.isFa ? (skill.nameFa || skill.name) : skill.name }}
-          </span>
-        }
-      </div>
+  @if (siteSettings.visible('skills')) {
+    <section class="page-shell pb-12 sm:pb-16 min-h-[160px]">
+      @if (isLoadingSkills) {
+        <div class="flex items-center justify-between mb-8">
+          <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded w-32 animate-pulse"></div>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <div class="h-10 bg-slate-200 dark:bg-slate-700 rounded-xl w-24 animate-pulse"></div>
+          <div class="h-10 bg-slate-200 dark:bg-slate-700 rounded-xl w-32 animate-pulse"></div>
+          <div class="h-10 bg-slate-200 dark:bg-slate-700 rounded-xl w-28 animate-pulse"></div>
+          <div class="h-10 bg-slate-200 dark:bg-slate-700 rounded-xl w-20 animate-pulse"></div>
+        </div>
+      } @else if (topSkills.length > 0) {
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="section-title">{{ i18n.t('skillsTitle') }}</h2>
+          <a routerLink="/about-me" [queryParams]="{ tab: 'skills' }" class="text-sm brand-text hover:underline font-medium">
+            {{ i18n.t('readMore') }} →
+          </a>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          @for (skill of topSkills; track skill.id) {
+            <span class="skill-tag px-4 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-medium cursor-default">
+              {{ i18n.isFa ? (skill.nameFa || skill.name) : skill.name }}
+            </span>
+          }
+        </div>
+      }
     </section>
   }
 
   <!-- Testimonials -->
   <div appLazyInit (appLazyInit)="loadTestimonials()"></div>
-  @if (testimonials.length > 0 && siteSettings.visible('testimonials')) {
-    <section class="page-shell py-12 sm:py-16">
+  @if (siteSettings.visible('testimonials')) {
+    <section class="page-shell py-12 sm:py-16 min-h-[400px]">
+      @if (isLoadingTestimonials) {
+        <div class="mb-8 flex items-end justify-between gap-4">
+          <div>
+            <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded w-48 mb-2 animate-pulse"></div>
+            <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-64 animate-pulse"></div>
+          </div>
+        </div>
+        <div class="flex gap-5 overflow-hidden">
+          <div class="w-[300px] h-[240px] shrink-0 rounded-2xl bg-slate-200 dark:bg-slate-700 animate-pulse"></div>
+          <div class="w-[300px] h-[240px] shrink-0 rounded-2xl bg-slate-200 dark:bg-slate-700 animate-pulse hidden sm:block"></div>
+          <div class="w-[300px] h-[240px] shrink-0 rounded-2xl bg-slate-200 dark:bg-slate-700 animate-pulse hidden md:block"></div>
+        </div>
+      } @else if (testimonials.length > 0) {
       <div class="mb-8 flex items-end justify-between gap-4">
         <div>
           <h2 class="section-title">{{ i18n.t('testimonialsTitle') }}</h2>
@@ -206,6 +240,7 @@
           </button>
         }
       </div>
+      }
     </section>
   }
 

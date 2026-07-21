@@ -1,0 +1,12 @@
+# Abolfazl - Software Engineer
+
+Welcome to my portfolio! I am a full-stack developer experienced in building scalable applications.
+
+## Navigation
+
+* [About Me](/about-me)
+* [Experience](/about-me?tab=experience)
+* [Skills](/about-me?tab=skills)
+* [Blog & Articles](/blog)
+* [Projects](/projects)
+* [Videos](/videos)
