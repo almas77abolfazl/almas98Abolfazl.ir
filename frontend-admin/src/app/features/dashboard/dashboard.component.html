@@ -105,11 +105,16 @@
                   stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
               </svg>
 
-              @for (p of chartPoints; track p.date) {
-                <div class="group absolute z-10 -translate-x-1/2 -translate-y-1/2"
+              @for (p of chartPoints; track p.date; let isFirst = $first; let isLast = $last) {
+                <div class="group absolute z-10 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center"
                   [style.left.%]="p.pctX" [style.top.%]="100 - p.pctY">
                   <div class="h-2.5 w-2.5 rounded-full bg-indigo-500 ring-2 ring-white dark:ring-slate-900"></div>
-                  <div class="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 dark:bg-slate-700">
+                  <div
+                    class="pointer-events-none absolute bottom-8 whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 dark:bg-slate-700"
+                    [class.left-1/2]="(!isFirst && !isLast) || (isFirst && isLast)"
+                    [class.-translate-x-1/2]="(!isFirst && !isLast) || (isFirst && isLast)"
+                    [class.left-6]="isFirst && !isLast"
+                    [class.right-6]="isLast && !isFirst">
                     <span class="block font-medium">{{ p.date | date:'mediumDate' }}</span>
                     <span class="block text-indigo-300">{{ p.count }} {{ i18n.t('dash_views') }}</span>
                   </div>
