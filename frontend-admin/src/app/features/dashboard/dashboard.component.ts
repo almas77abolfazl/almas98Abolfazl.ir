@@ -18,6 +18,7 @@ interface ChartPoint {
   pctY: number;
   date: string;
   count: number;
+  tooltipAlign: 'start' | 'center' | 'end';
 }
 
 @Component({
@@ -81,12 +82,17 @@ export class DashboardComponent implements OnInit {
     const n = this.daily.length;
     if (!n) return [];
     const max = this.maxDaily;
-    return this.daily.map((d, i) => ({
-      pctX: n === 1 ? 50 : (i / (n - 1)) * 100,
-      pctY: (d.count / max) * 100,
-      date: d.date,
-      count: d.count,
-    }));
+    return this.daily.map((d, i) => {
+      const pctX = n === 1 ? 50 : (i / (n - 1)) * 100;
+      return {
+        pctX,
+        pctY: (d.count / max) * 100,
+        date: d.date,
+        count: d.count,
+        // Keep tooltips inside the chart for several points close to either edge.
+        tooltipAlign: pctX < 30 ? 'start' : pctX > 70 ? 'end' : 'center',
+      };
+    });
   }
 
   get linePath(): string {

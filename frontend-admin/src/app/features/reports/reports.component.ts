@@ -29,7 +29,12 @@ interface Reports {
   projects: {
     topViewed: { id: string; title: string; views: number }[];
   };
-  daily: { date: Date; count: number }[];
+  daily: DailyStat[];
+}
+
+interface DailyStat {
+  date: string;
+  count: number;
 }
 
 @Component({
@@ -75,6 +80,15 @@ export class ReportsComponent implements OnInit {
 
   maxValue(items: RankedItem[]): number {
     return items.reduce((max, item) => Math.max(max, item.value), 0);
+  }
+
+  activeDays(r: Reports): DailyStat[] {
+    return r.daily.filter((day) => day.count > 0);
+  }
+
+  peakDay(r: Reports): DailyStat | null {
+    if (!r.daily.length) return null;
+    return r.daily.reduce((peak, day) => (day.count > peak.count ? day : peak));
   }
 
   topPagesItems(r: Reports): RankedItem[] {

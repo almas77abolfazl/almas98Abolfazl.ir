@@ -8,7 +8,7 @@
         </div>
       } @else if (reports(); as r) {
         <!-- Summary cards -->
-        <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6 mb-6">
+        <div class="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-8 mb-6">
           <div class="admin-stat">
             <div class="admin-stat-icon">
               <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
@@ -68,10 +68,58 @@
               <p class="text-xl font-bold text-slate-900 dark:text-white">{{ r.totals.projectViews }}</p>
             </div>
           </div>
+
+          <div class="admin-stat">
+            <div class="admin-stat-icon">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M4 11h16M5 5h14a1 1 0 011 1v13a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z" /></svg>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('rep_activeDays') }}</p>
+              <p class="text-xl font-bold text-slate-900 dark:text-white">{{ activeDays(r).length }}</p>
+            </div>
+          </div>
+
+          <div class="admin-stat">
+            <div class="admin-stat-icon">
+              <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3v18h18M7 15l4-4 3 3 5-6" /></svg>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('rep_peakDay') }}</p>
+              <p class="text-xl font-bold text-slate-900 dark:text-white">{{ peakDay(r)?.count ?? 0 }}</p>
+            </div>
+          </div>
         </div>
 
         <!-- Report cards (each is self-contained and easy to extend) -->
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+          <!-- Daily activity details -->
+          <div class="admin-card lg:col-span-2">
+            <div class="mb-4 flex flex-wrap items-end justify-between gap-2">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ i18n.t('rep_activityDetails') }}</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400">{{ i18n.t('rep_activeDays') }}: {{ activeDays(r).length }}</p>
+              </div>
+              @if (peakDay(r); as peak) {
+                <div class="rounded-lg bg-indigo-50 px-3 py-2 text-sm text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
+                  <span class="font-semibold">{{ i18n.t('rep_peakDay') }}:</span>
+                  {{ peak.date | date:'mediumDate' }} · {{ peak.count }} {{ i18n.t('rep_views') }}
+                </div>
+              }
+            </div>
+            @if (activeDays(r).length) {
+              <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+                @for (day of activeDays(r); track day.date) {
+                  <div class="rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
+                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ day.date | date:'mediumDate' }}</p>
+                    <p class="mt-0.5 font-semibold text-slate-900 dark:text-white">{{ day.count }} {{ i18n.t('rep_views') }}</p>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="text-slate-500 dark:text-slate-400">{{ i18n.t('rep_noActiveDays') }}</div>
+            }
+          </div>
 
           <!-- Top Pages (site-wide) -->
           <div class="admin-card lg:col-span-2">

@@ -4,7 +4,7 @@
     [style.width.%]="progress()"></div>
 </div>
 
-<section class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pt-10 pb-16 sm:pt-12 sm:pb-20">
+<section class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pt-10 pb-16 sm:pt-12 sm:pb-20">
 
   <a routerLink="/blog"
     class="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 brand-text-hover mb-8 group transition-colors">
@@ -61,7 +61,7 @@
 
       <div class="divider mb-8"></div>
 
-      <div class="prose-measure article-content text-base"
+      <div class="article-content text-base"
         [dir]="art.language === 'fa' ? 'rtl' : 'ltr'"
         [innerHTML]="contentHtml()"></div>
 

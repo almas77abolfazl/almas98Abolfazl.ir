@@ -206,6 +206,16 @@
   background-clip: text;
 }
 
+/* Header and logo use the site colors selected in Admin > Settings. */
+.brand-header {
+  background-color: rgba(var(--brand-primary-rgb), 0.055);
+  border-color: rgba(var(--brand-primary-rgb), 0.18);
+}
+.dark .brand-header {
+  background-color: rgba(var(--brand-primary-rgb), 0.12);
+  border-color: rgba(var(--brand-primary-rgb), 0.26);
+}
+
 .brand-underline { background-image: linear-gradient(to right, var(--brand-primary), var(--brand-secondary)); }
 
 .brand-spinner {
@@ -397,6 +407,7 @@ input:focus, textarea:focus, select:focus {
   }
   .article-content > :first-child { margin-top: 0; }
   .article-content > :last-child { margin-bottom: 0; }
+  .article-content .article-spacer { height: 1.5rem; }
   .article-content p { @apply mb-5 leading-8; }
   .article-content h2 {
     @apply mt-10 mb-4 text-2xl font-bold tracking-tight text-slate-900 dark:text-white;

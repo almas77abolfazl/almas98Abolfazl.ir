@@ -23,7 +23,7 @@ export class ArticleDetailComponent implements OnInit {
   contentHtml = computed<string>(() => {
     const art = this.article();
     if (!art?.content) return '';
-    return marked.parse(art.content, { async: false }) as string;
+    return marked.parse(this.preserveExtraSpacing(art.content), { async: false }) as string;
   });
 
   constructor(public i18n: I18nService, private api: ApiService, private route: ActivatedRoute, private seo: SeoService, private config: SiteConfigService) {}
@@ -107,5 +107,14 @@ export class ArticleDetailComponent implements OnInit {
         },
       });
     }
+  }
+
+  /** Keeps intentional extra blank lines from the Markdown editor visible in the rendered article. */
+  private preserveExtraSpacing(markdown: string): string {
+    return markdown.replace(/(?:\r?\n){3,}/g, (lineBreaks) => {
+      const extraBlankLines = lineBreaks.split(/\r?\n/).length - 3;
+      const spacers = '<div class="article-spacer" aria-hidden="true"></div>'.repeat(extraBlankLines);
+      return `\n\n${spacers}\n\n`;
+    });
   }
 }

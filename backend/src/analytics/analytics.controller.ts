@@ -2,6 +2,16 @@ import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthGuard } from '../auth/auth.guard';
 
+interface PageCount {
+  url: string;
+  count: bigint;
+}
+
+interface DailyCount {
+  date: Date;
+  count: bigint;
+}
+
 @Controller('analytics')
 export class AnalyticsController {
   constructor(private readonly prisma: PrismaService) {}
@@ -9,7 +19,7 @@ export class AnalyticsController {
   @Post('track')
   track(@Body() body: { url: string }) {
     return this.prisma.pageView.create({
-      data: { url: body.url },
+      data: { url: this.normalizeUrl(body.url) },
     });
   }
 
@@ -18,31 +28,14 @@ export class AnalyticsController {
   async stats() {
     const total = await this.prisma.pageView.count();
 
-    const topPages = await this.prisma.pageView.groupBy({
-      by: ['url'],
-      _count: { url: true },
-      orderBy: { _count: { url: 'desc' } },
-      take: 10,
-    });
+    const topPages = await this.getTopPages();
 
-    const daily = await this.prisma.$queryRaw`
-      SELECT date_trunc('day', "createdAt") as date, count(*) as count
-      FROM "PageView"
-      GROUP BY date
-      ORDER BY date DESC
-      LIMIT 30
-    `;
+    const daily = await this.getDailyStats();
 
     return {
       total: Number(total),
-      topPages: topPages.map((p) => ({
-        url: p.url,
-        count: Number(p._count.url),
-      })),
-      daily: (daily as any[]).map((d) => ({
-        date: d.date,
-        count: Number(d.count),
-      })),
+      topPages,
+      daily,
     };
   }
 
@@ -70,14 +63,7 @@ export class AnalyticsController {
     });
     const totalLikes = Number(likesAgg._sum.likeCount ?? 0);
 
-    const topPages = (
-      await this.prisma.pageView.groupBy({
-        by: ['url'],
-        _count: { url: true },
-        orderBy: { _count: { url: 'desc' } },
-        take: 10,
-      })
-    ).map((p) => ({ url: p.url, count: Number(p._count.url) }));
+    const topPages = await this.getTopPages();
 
     const topLiked = await this.prisma.articles.findMany({
       where: { published: true },
@@ -87,8 +73,13 @@ export class AnalyticsController {
     });
 
     const rawArticleViews = await this.prisma.$queryRaw<{ url: string; views: bigint }[]>`
-      SELECT url, count(*)::bigint as views FROM "PageView"
-      WHERE url LIKE '/blog/%' GROUP BY url ORDER BY views DESC LIMIT 10
+      SELECT normalized_url as url, count(*)::bigint as views
+      FROM (
+        SELECT COALESCE(NULLIF(regexp_replace(split_part(url, '?', 1), '/+$', ''), ''), '/') as normalized_url
+        FROM "PageView"
+      ) as page_views
+      WHERE normalized_url LIKE '/blog/%'
+      GROUP BY normalized_url ORDER BY views DESC LIMIT 10
     `;
     const articleSlugs = rawArticleViews
       .map((v) => v.url.replace('/blog/', '').split('/')[0])
@@ -108,8 +99,13 @@ export class AnalyticsController {
     });
 
     const rawProjectViews = await this.prisma.$queryRaw<{ url: string; views: bigint }[]>`
-      SELECT url, count(*)::bigint as views FROM "PageView"
-      WHERE url LIKE '/projects/%' GROUP BY url ORDER BY views DESC LIMIT 10
+      SELECT normalized_url as url, count(*)::bigint as views
+      FROM (
+        SELECT COALESCE(NULLIF(regexp_replace(split_part(url, '?', 1), '/+$', ''), ''), '/') as normalized_url
+        FROM "PageView"
+      ) as page_views
+      WHERE normalized_url LIKE '/projects/%'
+      GROUP BY normalized_url ORDER BY views DESC LIMIT 10
     `;
     const projectIds = rawProjectViews
       .map((v) => v.url.replace('/projects/', '').split('/')[0])
@@ -129,10 +125,7 @@ export class AnalyticsController {
       };
     });
 
-    const daily = await this.prisma.$queryRaw<{ date: Date; count: bigint }[]>`
-      SELECT date_trunc('day', "createdAt") as date, count(*)::bigint as count
-      FROM "PageView" GROUP BY date ORDER BY date DESC LIMIT 30
-    `;
+    const daily = await this.getDailyStats();
 
     return {
       totals: {
@@ -146,7 +139,50 @@ export class AnalyticsController {
       topPages,
       articles: { topLiked, topViewed: topViewedArticles },
       projects: { topViewed: topViewedProjects },
-      daily: daily.map((d) => ({ date: d.date, count: Number(d.count) })),
+      daily,
     };
+  }
+
+  /** Groups historical and new page views by their canonical route, without query strings or trailing slashes. */
+  private async getTopPages(): Promise<{ url: string; count: number }[]> {
+    const pages = await this.prisma.$queryRaw<PageCount[]>`
+      SELECT
+        COALESCE(NULLIF(regexp_replace(split_part(url, '?', 1), '/+$', ''), ''), '/') as url,
+        count(*)::bigint as count
+      FROM "PageView"
+      GROUP BY 1
+      ORDER BY count DESC
+      LIMIT 10
+    `;
+    return pages.map((page) => ({ url: page.url, count: Number(page.count) }));
+  }
+
+  private normalizeUrl(url: string): string {
+    const path = (url || '/').split(/[?#]/)[0].replace(/\/+$/, '');
+    return path || '/';
+  }
+
+  /** Returns a complete 30-day series so charts retain days with zero page views. */
+  private async getDailyStats(): Promise<{ date: Date; count: number }[]> {
+    const daily = await this.prisma.$queryRaw<DailyCount[]>`
+      WITH days AS (
+        SELECT generate_series(
+          date_trunc('day', now()) - interval '29 days',
+          date_trunc('day', now()),
+          interval '1 day'
+        ) AS date
+      ),
+      page_views AS (
+        SELECT date_trunc('day', "createdAt") AS date, count(*)::bigint AS count
+        FROM "PageView"
+        WHERE "createdAt" >= date_trunc('day', now()) - interval '29 days'
+        GROUP BY date
+      )
+      SELECT days.date, COALESCE(page_views.count, 0)::bigint AS count
+      FROM days
+      LEFT JOIN page_views ON page_views.date = days.date
+      ORDER BY days.date ASC
+    `;
+    return daily.map((day) => ({ date: day.date, count: Number(day.count) }));
   }
 }
