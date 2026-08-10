@@ -3,13 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { ApiService, Article } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
+import { ArticleDatePipe } from '../../shared/pipes/article-date.pipe';
 import { SeoService } from '../../shared/services/seo.service';
 import { SiteConfigService } from '../../shared/services/site-config.service';
 import { MarkdownService } from '../../shared/services/markdown.service';
 
 @Component({
   selector: 'app-article-detail',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ArticleDatePipe],
   templateUrl: './article-detail.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService, Article } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
+import { ArticleDatePipe } from '../../shared/pipes/article-date.pipe';
 import { SeoService } from '../../shared/services/seo.service';
 
 @Component({
   selector: 'app-blog',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ArticleDatePipe],
   templateUrl: './blog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

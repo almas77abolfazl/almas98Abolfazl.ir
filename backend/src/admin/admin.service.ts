@@ -168,9 +168,11 @@ export class AdminService {
   }
 
   async createArticle(data: { title: string; slug: string; content: string; excerpt?: string; coverUrl?: string; language?: string; tags?: string[]; published?: boolean; publishedAt?: Date }) {
-    return this.prisma.articles.create({
-      data: { ...data, readingTime: this.calcReadingTime(data.content) },
-    });
+    const articleData: typeof data & { readingTime: number } = { ...data, readingTime: this.calcReadingTime(data.content) };
+    if (data.published === true && !data.publishedAt) {
+      articleData.publishedAt = new Date();
+    }
+    return this.prisma.articles.create({ data: articleData });
   }
 
   async findAllArticles() {
@@ -194,6 +196,12 @@ export class AdminService {
     const patch: typeof data & { readingTime?: number } = { ...data };
     if (data.content !== undefined) {
       patch.readingTime = this.calcReadingTime(data.content);
+    }
+    if (data.published === true && !data.publishedAt) {
+      const existing = await this.prisma.articles.findUnique({ where: { id }, select: { publishedAt: true } });
+      if (!existing?.publishedAt) {
+        patch.publishedAt = new Date();
+      }
     }
     return this.prisma.articles.update({ where: { id }, data: patch });
   }

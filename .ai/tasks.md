@@ -1,8 +1,8 @@
 # Tasks — Phase 16: Angular 22 Upgrade, Article Rendering, Editor, Long-form UX, Date, SSR/SEO, Daily Report
 
-> **Mode:** PLAN + EXECUTION (Phase 16.0 executed; 16.1–16.7 pending review).
+> **Mode:** PLAN + EXECUTION (Phase 16.0 executed; Phases 16.1 + 16.2 done as of 2026-08-11; 16.3–16.7 pending review).
 >
-> **Scope guard:** Phases 16.1–16.7 are NOT started. Only Phase 16.0 (Angular 22 upgrade) was executed and is reported below. Do not modify source for 16.1+ until explicitly requested.
+> **Scope guard:** Phases 16.3–16.7 are NOT started. Phases 16.0 (Angular 22 upgrade), 16.1 (RTL/LTR article content CSS + shared markdown helper), and 16.2 (publication date) are executed. Do not modify source for 16.3+ until explicitly requested.
 
 ---
 
@@ -153,7 +153,7 @@ Both frontend apps upgraded to Angular 22.1.1, build green, behavior preserved. 
 
 **Scope:** Ensure Persian article text is RTL while code, inline code, and technical blocks stay LTR. Add monospace font to code. Make admin preview WYSIWYG.
 
-- [ ] **1.1** Add `.article-content` direction rules in `frontend-site/src/styles.css` (inside the `@layer components` block ~L404):
+- [x] **1.1** Add `.article-content` direction rules in `frontend-site/src/styles.css` (inside the `@layer components` block ~L404):
   - `.article-content pre, .article-content code, .article-content pre code { direction: ltr; text-align: left; unicode-bidi: isolate; font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace; }`
   - Inline `code` keeps `unicode-bidi: isolate` but can stay `direction: ltr`.
   - Add `.dir-ltr { direction: ltr; unicode-bidi: isolate; }` and `.dir-rtl { direction: rtl; unicode-bidi: isolate; }` helpers.
@@ -161,17 +161,18 @@ Both frontend apps upgraded to Angular 22.1.1, build green, behavior preserved. 
   - *Risk:* none (additive CSS). Verify Persian paragraph text still RTL.
   - *Files:* `frontend-site/src/styles.css`.
 
-- [ ] **1.2** Render GitHub-style `:::ltr` / `:::rtl` container fences. Extract a **single** `renderMarkdown(md: string): string` helper (new `frontend-site/src/app/shared/services/markdown.service.ts`) used by `article-detail` and `project-detail` (and admin preview for parity). Keep `preserveExtraSpacing` logic inside it. Map `:::ltr`/`:::rtl` → `<div class="dir-ltr">`/`<div class="dir-rtl">`.
+- [x] **1.2** Render GitHub-style `:::ltr` / `:::rtl` container fences. Extract a **single** `renderMarkdown(md: string): string` helper (new `frontend-site/src/app/shared/services/markdown.service.ts`) used by `article-detail` and `project-detail` (and admin preview for parity). Keep `preserveExtraSpacing` logic inside it. Map `:::ltr`/`:::rtl` → `<div class="dir-ltr">`/`<div class="dir-rtl">`.
   - *Acceptance:* `:::ltr\nsome text\n:::` renders a left-aligned LTR block; nested code inherits LTR. Backward compatible.
   - *Risk:* low; keep `async:false`.
   - *Files:* new `markdown.service.ts`; `article-detail.component.ts:23-27`, `project-detail.component.ts:20-26`.
 
-- [ ] **1.3** Admin preview parity: add `.md-preview` styles in `frontend-admin/src/styles.css` mirroring `.article-content` (headings, lists, blockquote, `code`/`pre` LTR+monospace, `img`, `hr`, **and `table` styles**). Also apply `[dir]` + `font-fa` to the preview div (`markdown-editor.component.html:35`) so Persian previews are RTL in Vazirmatn.
-  - *Acceptance:* admin live preview ≈ public render (incl. code LTR, tables styled).
-  - *Risk:* none (additive).
-  - *Files:* `frontend-admin/src/styles.css`, `markdown-editor.component.html:35`.
+- [x] **1.3** Admin preview parity: add `.md-preview` styles in `frontend-admin/src/styles.css` mirroring `.article-content` (headings, lists, blockquote, `code`/`pre` LTR+monospace, `img`, `hr`, **and `table` styles**). Also apply `[dir]` + `font-fa` to the preview div (`markdown-editor.component.html:35`) so Persian previews are RTL in Vazirmatn.
+   - *Acceptance:* admin live preview ≈ public render (incl. code LTR, tables styled).
+   - *Risk:* none (additive).
+   - *Files:* `frontend-admin/src/styles.css`, `markdown-editor.component.html:35`.
+   - *NOTE (verified 2026-08-11):* CSS parity done, BUT admin preview (`markdown-editor.component.ts:47`) still calls `marked.parse` directly instead of `MarkdownService.renderMarkdown`. So `:::ltr/rtl` fences are NOT rendered in admin preview (WYSIWYG gap). Switch admin preview to `MarkdownService` — this is the 16.3.2 parity requirement.
 
-- [ ] **1.4** Add `.article-content table` styles (public) — `table`, `thead`, `th`, `td`, `tr`, `border-collapse`, zebra striping, `overflow-x:auto` wrapper, caption. Mirror into `.md-preview` (1.3).
+- [x] **1.4** Add `.article-content table` styles (public) — `table`, `thead`, `th`, `td`, `tr`, `border-collapse`, zebra striping, `overflow-x:auto` wrapper, caption. Mirror into `.md-preview` (1.3).
   - *Acceptance:* GFM tables render as styled, scrollable tables on both public + admin.
   - *Risk:* none.
   - *Files:* `frontend-site/src/styles.css`, `frontend-admin/src/styles.css`.
@@ -180,25 +181,27 @@ Both frontend apps upgraded to Angular 22.1.1, build green, behavior preserved. 
 
 **Scope:** Make `publishedAt` actually populate and display, locale-aware, with optional admin control.
 
-- [ ] **2.1** Backend: auto-set `publishedAt`. In `AdminService.createArticle`/`updateArticle` (`admin.service.ts:170,180`): when `published === true` and `publishedAt` not provided, set `publishedAt = new Date()`. On update, if `published` flips to true and `publishedAt` null, set it. Preserve explicit override.
+- [x] **2.1** Backend: auto-set `publishedAt`. In `AdminService.createArticle`/`updateArticle` (`admin.service.ts:170,180`): when `published === true` and `publishedAt` not provided, set `publishedAt = new Date()`. On update, if `published` flips to true and `publishedAt` null, set it. Preserve explicit override.
   - *Acceptance:* new published article has `publishedAt` ≈ now; draft→publish sets it; manual override respected.
   - *Risk:* low; no migration needed (column exists).
   - *Files:* `backend/src/admin/admin.service.ts`.
 
-- [ ] **2.2** Backend: order public articles by `publishedAt` desc (nulls last), fall back to `createdAt`. Update `ArticlesService.findPublished` (`articles.service.ts:9-13`).
+- [x] **2.2** Backend: order public articles by `publishedAt` desc (nulls last), fall back to `createdAt`. Update `ArticlesService.findPublished` (`articles.service.ts:9-13`).
   - *Acceptance:* blog list ordered by publish date.
   - *Risk:* low.
   - *Files:* `backend/src/articles/articles.service.ts`.
 
-- [ ] **2.3** Admin form: add optional "Publish date" datetime input bound to `model.publishedAt` (`articles.component.ts:23` already has the field; add UI + send it). Use existing `date-picker.component.ts` or native `datetime-local`. Show only when `published` is true.
+- [x] **2.3** Admin form: add optional "Publish date" datetime input bound to `model.publishedAt` (`articles.component.ts:23` already has the field; add UI + send it). Use existing `date-picker.component.ts` or native `datetime-local`. Show only when `published` is true.
   - *Acceptance:* owner can set/override publish date; round-trips through `GET/PUT /api/admin/articles`.
   - *Risk:* low.
   - *Files:* `frontend-admin/src/app/features/articles/articles.component.html`, `.ts`.
 
-- [ ] **2.4** Display locale-aware date. Article card (`blog.component.html:49`) and detail (`article-detail.component.html:36-38`) use `date:'mediumDate'`/`longDate` (default en-US). Create shared `formatDate(value, lang)` using `fa-IR` for Persian (`toLocaleDateString` like `about-me.component.ts:171`/`experiences.component.ts:39`). Respect `art.language === 'fa'` (content language), not UI toggle.
-  - *Acceptance:* FA articles show Persian (fa-IR) dates; EN show Gregorian.
-  - *Risk:* low.
-  - *Files:* `blog.component.html`, `article-detail.component.html`, new/existing date util.
+- [x] **2.4** Display locale-aware date. Article card (`blog.component.html:49`) and detail (`article-detail.component.html:36-38`) use `date:'mediumDate'`/`longDate` (default en-US). Create shared `formatDate(value, lang)` using `fa-IR` for Persian (`toLocaleDateString` like `about-me.component.ts:171`/`experiences.component.ts:39`). Respect `art.language === 'fa'` (content language), not UI toggle.
+   - *Acceptance:* FA articles show Persian (fa-IR) dates; EN show Gregorian.
+   - *Risk:* low.
+   - *Files:* `blog.component.html`, `article-detail.component.html`, new/existing date util.
+   - *NOTE (verified 2026-08-11):* Implemented as standalone `ArticleDatePipe` (`frontend-site/src/app/shared/pipes/article-date.pipe.ts`) taking the article's content `language` (not UI toggle) — `fa-IR` vs `en-US`. Used in `blog.component.html` (card) and `article-detail.component.html` (meta row). Admin form (`articles.component.html/.ts`) gained a `datetime-local` input shown only when `published`, bridged via `publishedAtLocal` getter/setter (ISO ↔ `YYYY-MM-DDTHH:mm`); server round-trips through `publishedAt`. Added i18n keys `art_publishedAt`/`art_publishedAtHint` (en+fa).
+   - *BUG FIX:* `frontend-site/src/app/features/blog/blog.component.ts` was missing its `ApiService, Article` import (uncommitted break from 16.1 work); restored so the app builds.
 
 ## Phase 16.3 — Article Editor Improvements (Admin)
 

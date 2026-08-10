@@ -13,7 +13,10 @@ export class ArticlesService {
         published: true,
         ...(language ? { language } : {}),
       },
-      orderBy: { createdAt: 'desc' },
+      orderBy: [
+        { publishedAt: { sort: 'desc', nulls: 'last' } },
+        { createdAt: 'desc' },
+      ],
     });
   }
 

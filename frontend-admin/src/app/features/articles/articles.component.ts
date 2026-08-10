@@ -86,6 +86,20 @@ export class ArticlesComponent implements OnInit {
       .filter((t) => t.length > 0);
   }
 
+  /** Two-way bridge between the ISO `model.publishedAt` and the `datetime-local` input value (`YYYY-MM-DDTHH:mm`). */
+  get publishedAtLocal(): string {
+    if (!this.model.publishedAt) return '';
+    const d = new Date(this.model.publishedAt);
+    if (isNaN(d.getTime())) return '';
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  set publishedAtLocal(value: string) {
+    this.model.publishedAt = value ? new Date(value).toISOString() : undefined;
+    this.markDirty();
+  }
+
   estimatedReadingTime(): number {
     const words = this.model.content?.trim() ? this.model.content.trim().split(/\s+/).length : 0;
     return words > 0 ? Math.ceil(words / 200) : 0;
