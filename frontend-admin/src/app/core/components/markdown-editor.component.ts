@@ -31,7 +31,20 @@ export class MarkdownEditorComponent implements ControlValueAccessor {
   disabled = false;
 
   preview = computed<SafeHtml>(() => {
-    const html = marked.parse(this.value() || '', { async: false }) as string;
+    let md = this.value() || '';
+
+    // Process :::ltr and :::rtl
+    md = md.replace(/^:::ltr\s*\n([\s\S]*?)\n:::/gm, '<div class="dir-ltr">\n\n$1\n\n</div>');
+    md = md.replace(/^:::rtl\s*\n([\s\S]*?)\n:::/gm, '<div class="dir-rtl">\n\n$1\n\n</div>');
+
+    // Preserve intentional extra blank lines
+    md = md.replace(/(?:\r?\n){3,}/g, (lineBreaks) => {
+      const extraBlankLines = lineBreaks.split(/\r?\n/).length - 3;
+      const spacers = '<div class="article-spacer" aria-hidden="true" style="height: 1.5rem"></div>'.repeat(extraBlankLines);
+      return `\n\n${spacers}\n\n`;
+    });
+
+    const html = marked.parse(md, { async: false }) as string;
     return this.sanitizer.bypassSecurityTrustHtml(html);
   });
 
@@ -107,6 +120,18 @@ export class MarkdownEditorComponent implements ControlValueAccessor {
   ul(): void { this.prefixLines('- '); }
   ol(): void { this.prefixLines('1. '); }
   quote(): void { this.prefixLines('> '); }
+  alignRtl(): void { this.surround(':::rtl\n', '\n:::\n', 'متن راست‌چین'); }
+  alignLtr(): void { this.surround(':::ltr\n', '\n:::\n', 'Left-aligned text'); }
+  table(): void {
+    const tableTemplate = `\n| Header 1 | Header 2 |\n| -------- | -------- |\n| Cell 1   | Cell 2   |\n| Cell 3   | Cell 4   |\n`;
+    const ta = this.taRef?.nativeElement;
+    if (!ta) return;
+    const start = ta.selectionStart;
+    const val = this.value();
+    const before = val.slice(0, start);
+    const after = val.slice(start);
+    this.apply(before + tableTemplate + after, start + tableTemplate.length, start + tableTemplate.length);
+  }
 
   openImagePicker(): void {
     this.fileInput?.nativeElement.click();

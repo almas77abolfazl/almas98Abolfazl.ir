@@ -1,11 +1,11 @@
 import { Component, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 
 import { RouterLink, ActivatedRoute } from '@angular/router';
-import { marked } from 'marked';
 import { ApiService, Project } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
 import { SiteConfigService } from '../../shared/services/site-config.service';
+import { MarkdownService } from '../../shared/services/markdown.service';
 
 @Component({
   selector: 'app-project-detail',
@@ -22,7 +22,7 @@ export class ProjectDetailComponent implements OnInit {
     if (!p) return '';
     const raw = this.i18n.isFa ? p.descriptionFa || p.description : p.description;
     if (!raw) return '';
-    return marked.parse(raw, { async: false }) as string;
+    return this.markdownService.renderMarkdown(raw);
   });
 
   constructor(
@@ -31,6 +31,7 @@ export class ProjectDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private seo: SeoService,
     private config: SiteConfigService,
+    private markdownService: MarkdownService
   ) {}
 
   ngOnInit(): void {

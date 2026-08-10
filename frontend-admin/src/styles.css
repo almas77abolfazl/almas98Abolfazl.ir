@@ -174,6 +174,75 @@ html[dir="rtl"] body {
   .admin-badge-danger { @apply bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300; }
   .admin-badge-warning { @apply bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300; }
   .admin-badge-info { @apply bg-indigo-100 text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-300; }
+
+  /* Admin Markdown Preview matching frontend-site .article-content */
+  .md-preview {
+    @apply text-slate-600 dark:text-slate-300 text-sm leading-7;
+  }
+  .md-preview > :first-child { margin-top: 0; }
+  .md-preview > :last-child { margin-bottom: 0; }
+  .md-preview p { @apply mb-4; }
+  .md-preview h2 {
+    @apply mt-6 mb-3 text-xl font-bold tracking-tight text-slate-900 dark:text-white;
+  }
+  .md-preview h3 {
+    @apply mt-5 mb-2 text-lg font-bold tracking-tight text-slate-900 dark:text-white;
+  }
+  .md-preview a {
+    color: var(--color-secondary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .md-preview ul { @apply mb-4 list-disc space-y-1 ps-5; }
+  .md-preview ol { @apply mb-4 list-decimal space-y-1 ps-5; }
+  .md-preview blockquote {
+    @apply my-4 ps-3 italic text-slate-500 dark:text-slate-400;
+    border-inline-start: 3px solid rgba(122, 92, 245, 0.5); /* var(--color-secondary) ~ */
+  }
+  .md-preview img { @apply my-4 w-full rounded-lg; }
+  .md-preview hr { @apply my-6 border-slate-200 dark:border-slate-700; }
+  .md-preview code {
+    @apply rounded px-1 py-0.5 text-xs font-medium dark:bg-slate-800;
+    color: var(--color-secondary);
+    background-color: rgba(122, 92, 245, 0.12);
+  }
+  .md-preview pre {
+    @apply my-4 overflow-x-auto rounded-lg bg-slate-900 p-3 text-xs leading-relaxed text-slate-100 dark:bg-black/40;
+  }
+  .md-preview pre code {
+    @apply bg-transparent p-0 text-slate-100 dark:text-slate-100;
+  }
+  .md-preview pre, .md-preview code, .md-preview pre code {
+    direction: ltr;
+    text-align: left;
+    unicode-bidi: isolate;
+    font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
+  }
+  .md-preview table {
+    @apply w-full mb-5 border-collapse text-xs text-left rtl:text-right;
+  }
+  .md-preview thead {
+    @apply bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300;
+  }
+  .md-preview th, .md-preview td {
+    @apply border border-slate-200 dark:border-slate-700 px-3 py-2;
+  }
+  .md-preview tr:nth-child(even) {
+    @apply bg-slate-50 dark:bg-slate-800/50;
+  }
+  .md-preview caption {
+    @apply text-slate-500 dark:text-slate-400 mt-2 text-xs italic;
+  }
+}
+
+.dir-ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.dir-rtl {
+  direction: rtl;
+  unicode-bidi: isolate;
 }
 
 /* RTL typography */
