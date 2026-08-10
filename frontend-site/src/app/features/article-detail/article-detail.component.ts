@@ -1,11 +1,11 @@
 import { Component, OnInit, signal, computed, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
-import { marked } from 'marked';
 import { ApiService, Article } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
 import { SiteConfigService } from '../../shared/services/site-config.service';
+import { MarkdownService } from '../../shared/services/markdown.service';
 
 @Component({
   selector: 'app-article-detail',
@@ -23,10 +23,17 @@ export class ArticleDetailComponent implements OnInit {
   contentHtml = computed<string>(() => {
     const art = this.article();
     if (!art?.content) return '';
-    return marked.parse(this.preserveExtraSpacing(art.content), { async: false }) as string;
+    return this.markdownService.renderMarkdown(art.content);
   });
 
-  constructor(public i18n: I18nService, private api: ApiService, private route: ActivatedRoute, private seo: SeoService, private config: SiteConfigService) {}
+  constructor(
+    public i18n: I18nService,
+    private api: ApiService,
+    private route: ActivatedRoute,
+    private seo: SeoService,
+    private config: SiteConfigService,
+    private markdownService: MarkdownService
+  ) {}
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug') || '';
@@ -107,14 +114,5 @@ export class ArticleDetailComponent implements OnInit {
         },
       });
     }
-  }
-
-  /** Keeps intentional extra blank lines from the Markdown editor visible in the rendered article. */
-  private preserveExtraSpacing(markdown: string): string {
-    return markdown.replace(/(?:\r?\n){3,}/g, (lineBreaks) => {
-      const extraBlankLines = lineBreaks.split(/\r?\n/).length - 3;
-      const spacers = '<div class="article-spacer" aria-hidden="true"></div>'.repeat(extraBlankLines);
-      return `\n\n${spacers}\n\n`;
-    });
   }
 }
