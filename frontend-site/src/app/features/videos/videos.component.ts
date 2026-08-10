@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService, Video } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
@@ -12,7 +12,7 @@ interface VideoView extends Video {
 
 @Component({
   selector: 'app-videos',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './videos.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

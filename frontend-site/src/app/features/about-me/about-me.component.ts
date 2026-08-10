@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, DestroyRef, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ApiService, AboutMe, Experience, Education, Skill, SkillCategory } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
@@ -27,7 +27,7 @@ interface TabDef {
 @Component({
   selector: 'app-about-me',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './about-me.component.html',
   styleUrl: './about-me.component.scss'
 })

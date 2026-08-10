@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { marked } from 'marked';
 import { ApiService, Project } from '../../shared/services/api.service';
@@ -9,7 +9,7 @@ import { SiteConfigService } from '../../shared/services/site-config.service';
 
 @Component({
   selector: 'app-project-detail',
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   templateUrl: './project-detail.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

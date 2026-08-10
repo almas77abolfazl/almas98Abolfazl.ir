@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ApiService } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
 import { SeoService } from '../../shared/services/seo.service';
@@ -8,7 +8,7 @@ import { Experience } from '../../shared/services/api.service';
 @Component({
   selector: 'app-experiences',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './experiences.component.html',
   styleUrl: './experiences.component.scss'
 })
