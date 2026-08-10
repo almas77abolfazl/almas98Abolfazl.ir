@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -17,6 +17,7 @@ interface SkillCategory {
   selector: 'app-skill-categories',
   imports: [CommonModule, FormsModule],
   templateUrl: './skill-categories.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })
 export class SkillCategoriesComponent implements OnInit {

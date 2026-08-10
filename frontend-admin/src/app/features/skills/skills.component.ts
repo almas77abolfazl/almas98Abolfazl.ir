@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -27,6 +27,7 @@ type SortCol = 'name' | 'category' | 'proficiency' | null;
   selector: 'app-skills',
   imports: [CommonModule, FormsModule, DragDropModule, RouterLink],
   templateUrl: './skills.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })
 export class SkillsComponent implements OnInit {

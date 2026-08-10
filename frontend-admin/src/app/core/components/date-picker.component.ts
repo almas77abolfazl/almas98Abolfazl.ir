@@ -1,4 +1,4 @@
-import { Component, ElementRef, forwardRef, inject, Input, signal } from '@angular/core';
+import { Component, ElementRef, forwardRef, inject, Input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -23,6 +23,7 @@ interface Cell {
       multi: true,
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './date-picker.component.html',
 })
 export class DatePickerComponent implements ControlValueAccessor {

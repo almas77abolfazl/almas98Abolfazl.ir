@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
@@ -24,6 +24,7 @@ type Filter = 'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED';
   selector: 'app-testimonials',
   imports: [CommonModule],
   templateUrl: './testimonials.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [],
 })
 export class TestimonialsComponent implements OnInit {

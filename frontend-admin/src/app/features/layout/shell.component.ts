@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
@@ -21,6 +21,7 @@ interface NavItem {
   selector: 'app-shell',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, ToastContainerComponent, ConfirmDialogComponent],
   templateUrl: './shell.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [],
 })
 export class ShellComponent {

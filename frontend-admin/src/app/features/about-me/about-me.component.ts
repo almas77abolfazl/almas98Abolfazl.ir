@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -29,6 +29,7 @@ interface AboutMe {
   selector: 'app-about-me',
   imports: [CommonModule, FormsModule, ImageUploadComponent, FileUploadComponent],
   templateUrl: './about-me.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`
     .font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }
   `],

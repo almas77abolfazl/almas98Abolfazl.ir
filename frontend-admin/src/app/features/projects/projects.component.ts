@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -26,6 +26,7 @@ type SortCol = 'title' | 'order' | null;
   selector: 'app-projects',
   imports: [CommonModule, FormsModule, DragDropModule, ImageUploadComponent, MarkdownEditorComponent],
   templateUrl: './projects.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })
 export class ProjectsComponent implements OnInit {

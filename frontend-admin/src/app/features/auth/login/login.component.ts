@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { AdminI18nService } from '../../../core/services/admin-i18n.service';
   selector: 'app-login',
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [],
 })
 export class LoginComponent {

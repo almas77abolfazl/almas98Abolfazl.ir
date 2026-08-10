@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -23,6 +23,7 @@ type SortCol = 'title' | 'platform' | 'order' | null;
   selector: 'app-videos',
   imports: [CommonModule, FormsModule, ImageUploadComponent],
   templateUrl: './videos.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })
 export class VideosComponent implements OnInit {

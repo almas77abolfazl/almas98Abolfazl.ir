@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -40,6 +40,7 @@ interface DailyStat {
 @Component({
   selector: 'app-reports',
   imports: [CommonModule, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './reports.component.html',
 })
 export class ReportsComponent implements OnInit {

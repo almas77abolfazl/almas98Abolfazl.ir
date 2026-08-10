@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -29,6 +29,7 @@ type SortCol = 'title' | 'language' | 'readingTime' | 'likeCount' | 'published' 
   selector: 'app-articles',
   imports: [CommonModule, FormsModule, MarkdownEditorComponent, ImageUploadComponent],
   templateUrl: './articles.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [`.font-fa { font-family: 'Vazirmatn', system-ui, sans-serif; }`],
 })
 export class ArticlesComponent implements OnInit {

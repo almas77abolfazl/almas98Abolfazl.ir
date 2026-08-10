@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
@@ -19,6 +19,7 @@ interface ContactMessage {
   selector: 'app-contact-messages',
   imports: [CommonModule],
   templateUrl: './contact-messages.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [],
 })
 export class ContactMessagesComponent implements OnInit {

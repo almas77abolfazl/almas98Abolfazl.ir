@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ShellComponent } from './features/layout/shell.component';
 
@@ -7,6 +7,7 @@ import { ShellComponent } from './features/layout/shell.component';
   standalone: true,
   imports: [ShellComponent],
   template: '<app-shell></app-shell>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [],
 })
 export class App {}

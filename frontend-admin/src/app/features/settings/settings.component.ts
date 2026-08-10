@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -39,6 +39,7 @@ interface ThemePreset {
 @Component({
   selector: 'app-settings',
   imports: [CommonModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './settings.component.html',
 })
 export class SettingsComponent implements OnInit {
