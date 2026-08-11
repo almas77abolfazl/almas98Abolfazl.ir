@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
@@ -29,61 +29,61 @@ interface ChartPoint {
   styles: [],
 })
 export class DashboardComponent implements OnInit {
-  messageCount = 0;
-  pendingCount = 0;
-  articleCount = 0;
-  totalViews = 0;
-  topPages: TopPage[] = [];
-  daily: DailyStat[] = [];
+  messageCount = signal(0);
+  pendingCount = signal(0);
+  articleCount = signal(0);
+  totalViews = signal(0);
+  topPages = signal<TopPage[]>([]);
+  daily = signal<DailyStat[]>([]);
 
   constructor(private http: HttpClient, public i18n: AdminI18nService) {}
 
   ngOnInit(): void {
     this.http.get<any[]>('/api/admin/contact-messages').subscribe({
-      next: (data) => (this.messageCount = data.length),
+      next: (data) => this.messageCount.set(data.length),
     });
     this.http.get<any[]>('/api/admin/testimonials').subscribe({
-      next: (data) => (this.pendingCount = data.filter((t) => t.status === 'PENDING').length),
+      next: (data) => this.pendingCount.set(data.filter((t) => t.status === 'PENDING').length),
     });
     this.http.get<any[]>('/api/admin/articles').subscribe({
-      next: (data) => (this.articleCount = data.length),
+      next: (data) => this.articleCount.set(data.length),
     });
     this.http.get<any>('/api/analytics/stats').subscribe({
       next: (data) => {
-        this.totalViews = data.total;
-        this.topPages = data.topPages;
-        this.daily = data.daily;
+        this.totalViews.set(data.total);
+        this.topPages.set(data.topPages);
+        this.daily.set(data.daily);
       },
     });
   }
 
   get maxDaily(): number {
-    return this.daily.length ? Math.max(...this.daily.map((d) => d.count), 1) : 1;
+    return this.daily().length ? Math.max(...this.daily().map((d) => d.count), 1) : 1;
   }
 
   get maxTop(): number {
-    return this.topPages.length ? Math.max(...this.topPages.map((p) => p.count), 1) : 1;
+    return this.topPages().length ? Math.max(...this.topPages().map((p) => p.count), 1) : 1;
   }
 
   get totalDaily(): number {
-    return this.daily.reduce((sum, d) => sum + d.count, 0);
+    return this.daily().reduce((sum, d) => sum + d.count, 0);
   }
 
   get avgDaily(): number {
-    return this.daily.length ? Math.round(this.totalDaily / this.daily.length) : 0;
+    return this.daily().length ? Math.round(this.totalDaily / this.daily().length) : 0;
   }
 
   get peakDay(): DailyStat | null {
-    if (!this.daily.length) return null;
-    return this.daily.reduce((a, b) => (b.count > a.count ? b : a));
+    if (!this.daily().length) return null;
+    return this.daily().reduce((a, b) => (b.count > a.count ? b : a));
   }
 
   /** Normalised points for an SVG area chart (viewBox 0..100, y grows downward). */
   get chartPoints(): ChartPoint[] {
-    const n = this.daily.length;
+    const n = this.daily().length;
     if (!n) return [];
     const max = this.maxDaily;
-    return this.daily.map((d, i) => {
+    return this.daily().map((d, i) => {
       const pctX = n === 1 ? 50 : (i / (n - 1)) * 100;
       return {
         pctX,
@@ -133,14 +133,14 @@ export class DashboardComponent implements OnInit {
   }
 
   axisLabels(): DailyStat[] {
-    if (!this.daily.length) return [];
-    const step = Math.max(1, Math.ceil(this.daily.length / 6));
+    if (!this.daily().length) return [];
+    const step = Math.max(1, Math.ceil(this.daily().length / 6));
     const labels: DailyStat[] = [];
-    for (let i = 0; i < this.daily.length; i += step) {
-      labels.push(this.daily[i]);
+    for (let i = 0; i < this.daily().length; i += step) {
+      labels.push(this.daily()[i]);
     }
-    if (labels[labels.length - 1] !== this.daily[this.daily.length - 1]) {
-      labels.push(this.daily[this.daily.length - 1]);
+    if (labels[labels.length - 1] !== this.daily()[this.daily().length - 1]) {
+      labels.push(this.daily()[this.daily().length - 1]);
     }
     return labels;
   }

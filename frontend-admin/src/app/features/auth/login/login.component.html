@@ -51,15 +51,15 @@
           class="admin-input"
         />
       </div>
-      @if (error) {
-        <div class="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-300">{{ error }}</div>
+      @if (error()) {
+        <div class="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-600 dark:bg-rose-500/10 dark:text-rose-300">{{ error() }}</div>
       }
       <button
         type="submit"
-        [disabled]="loading"
+        [disabled]="loading()"
         class="admin-btn admin-btn-primary w-full disabled:opacity-60"
       >
-        {{ loading ? i18n.t('signingIn') : i18n.t('signIn') }}
+        {{ loading() ? i18n.t('signingIn') : i18n.t('signIn') }}
       </button>
     </form>
   </div>

@@ -132,7 +132,7 @@
 | @angular/cdk | — | 22.1.1 |
 | typescript | 6.0.3 | 6.0.3 |
 | rxjs | 7.8.2 | 7.8.2 |
-| zone.js | 0.15.1 | 0.15.1 |
+| zone.js | 0.15.1 | 0.15.1 | *(removed 2026-08-11 — both apps are now zoneless)* |
 | marked | 18.0.6 | 18.0.6 |
 | tailwindcss / @tailwindcss/postcss | 4.3.1 / 4.1.13 | 4.3.1 / 4.1.13 |
 | Node.js / npm | 26.4.0 / 11.17.0 | 26.4.0 / 11.17.0 |
@@ -356,3 +356,25 @@ console.log(x);
 5. Phase 16.6 (daily report — independent, quick win)
 6. Phase 16.5 (prerender/SSR — highest risk, do after services are stable)
 7. Phase 16.7 (additional, as capacity allows)
+
+---
+
+## Cross-cutting fix — Zoneless / Signal-based Change Detection (done 2026-08-11)
+
+**Problem:** After the Angular 22 upgrade (16.0) pages exhibited "data appears only after an extra click". Root cause: `zone.js` was not driving ChangeDetection ticks for async completions, so views only refreshed on a user event. Decision (user-approved): remove `zone.js` entirely from both apps and go fully signal-based, per Angular 22's recommended `provideZonelessChangeDetection()`.
+
+**Infra changes (both `frontend-site` & `frontend-admin`):**
+- `src/app/app.config.ts`: replaced `provideZoneChangeDetection(...)` with `provideZonelessChangeDetection()` (admin had none → added).
+- `angular.json`: removed `"zone.js"` from build `polyfills` AND from the `test` target polyfills (no `zone.js`/`zone.js/testing` references remain anywhere).
+- `package.json` + `node_modules`: uninstalled the `zone.js` dependency in both projects (`npm uninstall zone.js`).
+- No `NgZone`/`runOutsideAngular` usage existed; `setTimeout`/`setInterval` updating displayed state: none found.
+
+**Component migration:** Every async-loaded, template-displayed property was converted to a `signal` (writes via `.set()`/`.update()`; reads via `()` in templates). `strictTemplates` is enabled in both `tsconfig.json`, so unconverted template references fail the build — both apps build green.
+- Site changed: `home`, `experiences`, `footer` (+already-signal: about-me, projects, project-detail, article-detail, blog, videos, skills, header, not-found).
+- Admin changed: `testimonials`, `contact-messages`, `dashboard`, `about-me`, `login`, `date-picker` (core `writeValue` async). Others (`videos`, `skills`, `skill-categories`, `educations`, `articles`, `settings`, `reports`, `experiences`, `projects`, `shell` via `toSignal`, `toast-container`, `confirm-dialog`, `image-upload`, `file-upload`, `markdown-editor`) were already signal/CVA-driven.
+
+**Forms note:** `ngModel`/reactive form *model* objects were left as plain objects (Angular 22 forms trigger their own zoneless CD for the bound controls). Only async-set, template-*displayed* values were lifted to signals (e.g. home's `testimonialImageUrl`).
+
+**Verification:** `npm run build` succeeds for both; no `zone.js`/`provideZoneChangeDetection` references remain in `src`. Runtime CD now fires on signal writes, eliminating the "click to refresh" bug.
+
+**Caveat for Phase 16.5 (prerender):** zoneless is compatible with `prerender`; `afterNextRender`/`isPlatformBrowser` guards still apply as planned.

@@ -15,9 +15,9 @@
 
 ### Component rules
 - **Always use standalone components** — no NgModules
-- **Angular 20+ control flow syntax**: `@if`, `@else`, `@for`, `@switch` — never `*ngIf`, `*ngFor`, `*ngSwitch`
-- Use `OnPush` change detection where possible
-- Use Angular Signals (`signal()`, `computed()`, `effect()`) for reactive state
+- **Angular 22+ control flow syntax**: `@if`, `@else`, `@for`, `@switch` — never `*ngIf`, `*ngFor`, `*ngSwitch`
+- **Zoneless + signal-based change detection** (no `zone.js`): both apps use `provideZonelessChangeDetection()`. A view only refreshes when a `signal` it reads changes. **Rule:** any state that is loaded asynchronously (HTTP subscribe, router params, promises) AND displayed in a template MUST be a `signal` (`.set()`/`.update()` to write, `()` to read in templates). Never assign async results to a plain property that the template reads.
+- Use Angular Signals (`signal()`, `computed()`, `effect()`) for reactive state; `computed()` for derived values.
 - Lazy-load route components via `loadComponent` in route definitions
 - Never use `any` type — define proper interfaces
 
@@ -100,6 +100,8 @@ docs: update .ai context files
 ## What NOT to do
 
 - Do not use `*ngIf` / `*ngFor` — use `@if` / `@for`
+- Do not reintroduce `zone.js` — the apps are intentionally zoneless; keep all reactive UI state in `signal`s
+- Do not read a `signal` in a template without calling it (`aboutMe` → `aboutMe()`); `strictTemplates` will fail the build otherwise
 - Do not use `ngModel` with template-driven forms in new components — prefer signals-based reactive approach
 - Do not use `bg-gradient-to-*` in Tailwind classes — use `bg-linear-to-*`
 - Do not return `BigInt` in JSON responses — wrap `$queryRaw` counts with `Number()`

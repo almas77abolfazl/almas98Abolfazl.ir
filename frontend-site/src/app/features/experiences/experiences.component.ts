@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 
 import { ApiService } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
@@ -13,8 +13,8 @@ import { Experience } from '../../shared/services/api.service';
   styleUrl: './experiences.component.scss'
 })
 export class ExperiencesComponent implements OnInit {
-  experiences: Experience[] = [];
-  isLoading = true;
+  experiences = signal<Experience[]>([]);
+  isLoading = signal(true);
 
   constructor(
     public i18n: I18nService,
@@ -30,8 +30,8 @@ export class ExperiencesComponent implements OnInit {
     });
 
     this.api.getExperiences().subscribe({
-      next: data => this.experiences = data,
-      complete: () => this.isLoading = false
+      next: data => this.experiences.set(data),
+      complete: () => this.isLoading.set(false)
     });
   }
 

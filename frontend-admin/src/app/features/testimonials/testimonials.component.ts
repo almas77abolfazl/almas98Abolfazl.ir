@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
@@ -28,9 +28,9 @@ type Filter = 'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED';
   styles: [],
 })
 export class TestimonialsComponent implements OnInit {
-  items: Testimonial[] = [];
+  items = signal<Testimonial[]>([]);
   filters: Filter[] = ['ALL', 'PENDING', 'APPROVED', 'REJECTED'];
-  filter: Filter = 'ALL';
+  filter = signal<Filter>('ALL');
 
   constructor(private http: HttpClient, public i18n: AdminI18nService, private toast: ToastService) {}
 
@@ -38,21 +38,22 @@ export class TestimonialsComponent implements OnInit {
     this.load();
   }
 
-  get view(): Testimonial[] {
-    if (this.filter === 'ALL') return this.items;
-    return this.items.filter((t) => t.status === this.filter);
-  }
+  view = computed<Testimonial[]>(() => {
+    const f = this.filter();
+    if (f === 'ALL') return this.items();
+    return this.items().filter((t) => t.status === f);
+  });
 
   load(): void {
-    this.http.get<Testimonial[]>('/api/admin/testimonials').subscribe((data) => (this.items = data));
+    this.http.get<Testimonial[]>('/api/admin/testimonials').subscribe((data) => this.items.set(data));
   }
 
   setFilter(f: Filter): void {
-    this.filter = f;
+    this.filter.set(f);
   }
 
   count(f: Filter): number {
-    return this.items.filter((t) => t.status === f).length;
+    return this.items().filter((t) => t.status === f).length;
   }
 
   setStatus(id: string, status: string): void {

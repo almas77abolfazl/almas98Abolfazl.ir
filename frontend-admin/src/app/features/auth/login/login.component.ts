@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,8 +14,8 @@ import { AdminI18nService } from '../../../core/services/admin-i18n.service';
 export class LoginComponent {
   username = '';
   password = '';
-  loading = false;
-  error = '';
+  loading = signal(false);
+  error = signal('');
 
   constructor(private router: Router, public i18n: AdminI18nService) {}
 
@@ -40,8 +40,8 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    this.loading = true;
-    this.error = '';
+    this.loading.set(true);
+    this.error.set('');
 
     fetch('/api/auth/login', {
       method: 'POST',
@@ -61,10 +61,10 @@ export class LoginComponent {
         this.router.navigate(['/dashboard']);
       })
       .catch((err) => {
-        this.error = err.message || 'An error occurred';
+        this.error.set(err.message || 'An error occurred');
       })
       .finally(() => {
-        this.loading = false;
+        this.loading.set(false);
       });
   }
 }

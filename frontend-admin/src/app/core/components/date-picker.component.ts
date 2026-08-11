@@ -29,7 +29,7 @@ interface Cell {
 export class DatePickerComponent implements ControlValueAccessor {
   @Input() placeholder = '';
 
-  private _value = '';
+  private _value = signal('');
   open = signal(false);
   viewYear = signal(new Date().getFullYear());
   viewMonth = signal(new Date().getMonth());
@@ -46,8 +46,8 @@ export class DatePickerComponent implements ControlValueAccessor {
   readonly weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
   display = (): string => {
-    if (!this._value) return '';
-    const [y, m, d] = this._value.split('-');
+    if (!this._value()) return '';
+    const [y, m, d] = this._value().split('-');
     return `${y}/${m}/${d}`;
   };
 
@@ -75,13 +75,13 @@ export class DatePickerComponent implements ControlValueAccessor {
   };
 
   isSelected(dateStr: string | null): boolean {
-    return !!dateStr && dateStr === this._value;
+    return !!dateStr && dateStr === this._value();
   }
 
   writeValue(value: any): void {
-    this._value = typeof value === 'string' && value ? value.slice(0, 10) : '';
-    if (this._value) {
-      const [y, m] = this._value.split('-').map(Number);
+    this._value.set(typeof value === 'string' && value ? value.slice(0, 10) : '');
+    if (this._value()) {
+      const [y, m] = this._value().split('-').map(Number);
       if (y && m) {
         this.viewYear.set(y);
         this.viewMonth.set(m - 1);
@@ -112,7 +112,7 @@ export class DatePickerComponent implements ControlValueAccessor {
   }
 
   private syncView(): void {
-    const base = this._value || new Date().toISOString().slice(0, 10);
+    const base = this._value() || new Date().toISOString().slice(0, 10);
     const [y, m] = base.split('-').map(Number);
     this.viewYear.set(y);
     this.viewMonth.set(m - 1);
@@ -143,14 +143,14 @@ export class DatePickerComponent implements ControlValueAccessor {
 
   select(dateStr: string | null): void {
     if (!dateStr) return;
-    this._value = dateStr;
+    this._value.set(dateStr);
     this.onChange(dateStr);
     this.open.set(false);
     this.elRef.nativeElement.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   clear(): void {
-    this._value = '';
+    this._value.set('');
     this.onChange('');
     this.elRef.nativeElement.dispatchEvent(new Event('change', { bubbles: true }));
   }

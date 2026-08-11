@@ -5,8 +5,8 @@
 ```
 almas98abolfazl.ir/
 ├── backend/                   NestJS API
-├── frontend-site/             Angular 20 — public portfolio site
-├── frontend-admin/            Angular 20 — admin panel (SPA)
+├── frontend-site/             Angular 22 — public portfolio site (zoneless, signal-based)
+├── frontend-admin/            Angular 22 — admin panel (SPA, zoneless, signal-based)
 ├── nginx/                     Nginx config files
 ├── docker-compose.yml         Production (all services)
 ├── docker-compose.dev.yml     Development (postgres only)
@@ -93,7 +93,7 @@ src/
 
 ---
 
-## Frontend-Site Architecture (Angular 20)
+## Frontend-Site Architecture (Angular 22, zoneless)
 
 ### Key services
 | Service | Responsibility |
@@ -125,7 +125,7 @@ src/
 
 ---
 
-## Frontend-Admin Architecture (Angular 20)
+## Frontend-Admin Architecture (Angular 22, zoneless)
 
 ### Auth flow
 1. Login page POSTs to `POST /api/auth/login` → receives `{ access_token: string }`

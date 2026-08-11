@@ -7,11 +7,11 @@
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Full Name</label>
-            <input [(ngModel)]="model.fullName" name="fullName" required class="admin-input" />
+            <input [(ngModel)]="model().fullName" name="fullName" required class="admin-input" />
           </div>
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> نام کامل</label>
-            <input [(ngModel)]="model.fullNameFa" name="fullNameFa" dir="rtl" class="admin-input font-fa" />
+            <input [(ngModel)]="model().fullNameFa" name="fullNameFa" dir="rtl" class="admin-input font-fa" />
           </div>
         </div>
 
@@ -19,11 +19,11 @@
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Title</label>
-            <input [(ngModel)]="model.title" name="title" required class="admin-input" />
+            <input [(ngModel)]="model().title" name="title" required class="admin-input" />
           </div>
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> عنوان</label>
-            <input [(ngModel)]="model.titleFa" name="titleFa" dir="rtl" class="admin-input font-fa" />
+            <input [(ngModel)]="model().titleFa" name="titleFa" dir="rtl" class="admin-input font-fa" />
           </div>
         </div>
 
@@ -31,11 +31,11 @@
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-en">EN</span> Bio</label>
-            <textarea [(ngModel)]="model.bio" name="bio" rows="5" class="admin-input"></textarea>
+            <textarea [(ngModel)]="model().bio" name="bio" rows="5" class="admin-input"></textarea>
           </div>
           <div>
             <label class="admin-field-label"><span class="admin-lang admin-lang-fa">FA</span> بیوگرافی</label>
-            <textarea [(ngModel)]="model.bioFa" name="bioFa" rows="5" dir="rtl" class="admin-input font-fa"></textarea>
+            <textarea [(ngModel)]="model().bioFa" name="bioFa" rows="5" dir="rtl" class="admin-input font-fa"></textarea>
           </div>
         </div>
 
@@ -43,17 +43,17 @@
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <app-image-upload
-              [url]="model.avatarUrl"
-              (urlChange)="model.avatarUrl = $event; markDirty()"
+              [url]="model().avatarUrl"
+              (urlChange)="model().avatarUrl = $event; markDirty()"
               [label]="i18n.t('about_avatarUrl')"
               shape="avatar"></app-image-upload>
           </div>
           <div>
             <app-file-upload
-              [url]="model.resumeUrl"
-              [originalName]="model.resumeName"
-              (urlChange)="model.resumeUrl = $event; markDirty()"
-              (nameChange)="model.resumeName = $event; markDirty()"
+              [url]="model().resumeUrl"
+              [originalName]="model().resumeName"
+              (urlChange)="model().resumeUrl = $event; markDirty()"
+              (nameChange)="model().resumeName = $event; markDirty()"
               [label]="i18n.t('about_resumeUrl')"
               [hint]="i18n.t('about_resumeHint')"></app-file-upload>
           </div>
@@ -63,35 +63,35 @@
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <label class="admin-field-label">{{ i18n.t('about_email') }}</label>
-            <input [(ngModel)]="model.email" name="email" type="email" class="admin-input" [placeholder]="i18n.t('about_email')" />
+            <input [(ngModel)]="model().email" name="email" type="email" class="admin-input" [placeholder]="i18n.t('about_email')" />
           </div>
           <div>
             <label class="admin-field-label">{{ i18n.t('about_phone') }}</label>
-            <input [(ngModel)]="model.phone" name="phone" dir="ltr" class="admin-input" [placeholder]="i18n.t('about_phone')" />
+            <input [(ngModel)]="model().phone" name="phone" dir="ltr" class="admin-input" [placeholder]="i18n.t('about_phone')" />
           </div>
           <div class="sm:col-span-2">
             <label class="admin-field-label">{{ i18n.t('about_location') }}</label>
-            <input [(ngModel)]="model.location" name="location" class="admin-input" [placeholder]="i18n.t('about_location')" />
+            <input [(ngModel)]="model().location" name="location" class="admin-input" [placeholder]="i18n.t('about_location')" />
           </div>
           <div>
             <label class="admin-field-label">{{ i18n.t('about_linkedin') }}</label>
-            <input [(ngModel)]="model.linkedinUrl" name="linkedinUrl" dir="ltr" class="admin-input" [placeholder]="'linkedin.com/in/...'" />
+            <input [(ngModel)]="model().linkedinUrl" name="linkedinUrl" dir="ltr" class="admin-input" [placeholder]="'linkedin.com/in/...'" />
           </div>
           <div>
             <label class="admin-field-label">{{ i18n.t('about_github') }}</label>
-            <input [(ngModel)]="model.githubUrl" name="githubUrl" dir="ltr" class="admin-input" [placeholder]="'github.com/...'" />
+            <input [(ngModel)]="model().githubUrl" name="githubUrl" dir="ltr" class="admin-input" [placeholder]="'github.com/...'" />
           </div>
           <div>
             <label class="admin-field-label">{{ i18n.t('about_youtube') }}</label>
-            <input [(ngModel)]="model.youtubeUrl" name="youtubeUrl" dir="ltr" class="admin-input" [placeholder]="'youtube.com/...'" />
+            <input [(ngModel)]="model().youtubeUrl" name="youtubeUrl" dir="ltr" class="admin-input" [placeholder]="'youtube.com/...'" />
           </div>
           <div>
             <label class="admin-field-label">{{ i18n.t('about_twitter') }}</label>
-            <input [(ngModel)]="model.twitterUrl" name="twitterUrl" dir="ltr" class="admin-input" [placeholder]="'x.com/...'" />
+            <input [(ngModel)]="model().twitterUrl" name="twitterUrl" dir="ltr" class="admin-input" [placeholder]="'x.com/...'" />
           </div>
           <div class="sm:col-span-2">
             <label class="admin-field-label">{{ i18n.t('about_instagram') }}</label>
-            <input [(ngModel)]="model.instagramUrl" name="instagramUrl" dir="ltr" class="admin-input" [placeholder]="'instagram.com/...'" />
+            <input [(ngModel)]="model().instagramUrl" name="instagramUrl" dir="ltr" class="admin-input" [placeholder]="'instagram.com/...'" />
           </div>
         </div>
 

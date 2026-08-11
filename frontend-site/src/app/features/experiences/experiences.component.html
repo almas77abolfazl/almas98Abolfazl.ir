@@ -7,7 +7,7 @@
     <div class="title-underline"></div>
   </header>
 
-  @if (isLoading) {
+  @if (isLoading()) {
     <div class="flex items-center justify-center py-20">
       <div class="w-8 h-8 border-2 brand-border border-t-transparent rounded-full animate-spin"></div>
     </div>
@@ -18,7 +18,7 @@
       <div class="absolute inset-s-6 top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-700 ms-px"></div>
 
       <div class="space-y-8">
-        @for (exp of experiences; track exp.id) {
+        @for (exp of experiences(); track exp.id) {
           <div class="relative flex gap-6 animate-fade-up">
             <!-- Dot -->
             <div class="relative z-10 shrink-0 w-12 h-12 flex items-center justify-center rounded-xl bg-white dark:bg-slate-800 border-2 brand-border-strong shadow-sm">

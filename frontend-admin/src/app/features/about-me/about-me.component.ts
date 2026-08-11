@@ -35,7 +35,7 @@ interface AboutMe {
   `],
 })
 export class AboutMeComponent implements OnInit {
-  model: AboutMe = { fullName: '', title: '' };
+  model = signal<AboutMe>({ fullName: '', title: '' });
 
   dirty = signal(false);
 
@@ -51,12 +51,12 @@ export class AboutMeComponent implements OnInit {
 
   ngOnInit(): void {
     this.http.get<AboutMe>('/api/admin/about-me').subscribe({
-      next: (data) => { if (data) this.model = data; },
+      next: (data) => { if (data) this.model.set(data); },
     });
   }
 
   onSubmit(): void {
-    this.http.post('/api/admin/about-me', this.model).subscribe({
+    this.http.post('/api/admin/about-me', this.model()).subscribe({
       next: () => {
         this.toast.success(this.i18n.t('toast_saved'));
         this.dirty.set(false);

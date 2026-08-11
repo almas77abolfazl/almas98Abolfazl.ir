@@ -12,7 +12,7 @@
           </div>
           <div>
             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('dash_messages') }}</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ messageCount }}</p>
+            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ messageCount() }}</p>
           </div>
         </div>
 
@@ -24,7 +24,7 @@
           </div>
           <div>
             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('dash_pending') }}</p>
-            <p class="text-2xl font-bold text-amber-600 dark:text-amber-400">{{ pendingCount }}</p>
+            <p class="text-2xl font-bold text-amber-600 dark:text-amber-400">{{ pendingCount() }}</p>
           </div>
         </div>
 
@@ -36,7 +36,7 @@
           </div>
           <div>
             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('dash_articles') }}</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ articleCount }}</p>
+            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ articleCount() }}</p>
           </div>
         </div>
 
@@ -49,7 +49,7 @@
           </div>
           <div>
             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ i18n.t('dash_views') }}</p>
-            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ totalViews }}</p>
+            <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ totalViews() }}</p>
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@
         <div class="admin-card">
           <h2 class="mb-4 text-lg font-bold text-slate-900 dark:text-white">{{ i18n.t('dash_topPages') }}</h2>
           <div class="space-y-3">
-            @for (page of topPages; track page.url) {
+            @for (page of topPages(); track page.url) {
               <div>
                 <div class="mb-1 flex items-center justify-between text-sm">
                   <span class="truncate text-slate-700 dark:text-slate-300" [title]="page.url">{{ pageLabel(page.url) }}</span>
@@ -70,7 +70,7 @@
                 </div>
               </div>
             }
-            @if (!topPages.length) {
+            @if (!topPages().length) {
               <div class="text-slate-500 dark:text-slate-400">{{ i18n.t('noData') }}</div>
             }
           </div>
@@ -91,7 +91,7 @@
             </div>
           </div>
 
-          @if (daily.length) {
+          @if (daily().length) {
             <div class="relative h-56 w-full overflow-x-clip">
               <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="absolute inset-0 h-full w-full">
                 <defs>

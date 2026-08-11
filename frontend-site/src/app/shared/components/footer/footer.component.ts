@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { I18nService } from '../../services/i18n.service';
 import { ApiService, AboutMe } from '../../services/api.service';
 import { SiteConfigService } from '../../services/site-config.service';
@@ -10,16 +10,17 @@ import { SiteConfigService } from '../../services/site-config.service';
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent implements OnInit {
-  aboutMe?: AboutMe;
+  aboutMe = signal<AboutMe | undefined>(undefined);
 
   constructor(public i18n: I18nService, private api: ApiService, public config: SiteConfigService) {}
 
   ngOnInit(): void {
-    this.api.getAboutMe().subscribe(data => this.aboutMe = data);
+    this.api.getAboutMe().subscribe(data => this.aboutMe.set(data));
   }
 
   get socials(): { key: string; url: string; label: string }[] {
-    if (!this.aboutMe) return [];
+    const about = this.aboutMe();
+    if (!about) return [];
     const map: [keyof AboutMe, string][] = [
       ['linkedinUrl', 'LinkedIn'],
       ['githubUrl', 'GitHub'],
@@ -28,8 +29,8 @@ export class FooterComponent implements OnInit {
       ['instagramUrl', 'Instagram'],
     ];
     return map
-      .filter(([k]) => !!this.aboutMe?.[k])
-      .map(([k, label]) => ({ key: k as string, url: this.aboutMe![k] as string, label }));
+      .filter(([k]) => !!about[k])
+      .map(([k, label]) => ({ key: k as string, url: about[k] as string, label }));
   }
 
   get currentYear(): number {

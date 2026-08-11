@@ -11,8 +11,8 @@ A full-stack bilingual (Persian/English) portfolio platform with a public-facing
 | Layer | Technology |
 |---|---|
 | Backend | NestJS 11 + Prisma 7 + PostgreSQL 17 |
-| Frontend (public) | Angular 20 (standalone, signals) + Tailwind CSS v4 |
-| Frontend (admin) | Angular 20 (standalone, lazy loading) + Tailwind CSS v4 |
+| Frontend (public) | Angular 22 (standalone, signals, **zoneless** — no zone.js) + Tailwind CSS v4 |
+| Frontend (admin) | Angular 22 (standalone, lazy loading, **zoneless** — no zone.js) + Tailwind CSS v4 |
 | Web Server | Nginx Alpine (reverse proxy + static serving) |
 | Containerization | Docker Compose |
 | Deployment Target | Ubuntu 24 VPS — 2 CPU, 2 GB RAM, 40 GB SSD |
@@ -78,7 +78,7 @@ almas98abolfazl.ir/
 
 1. **Bilingual data strategy**: All translatable fields have a `*Fa` variant in the database (e.g., `fullName` + `fullNameFa`). The frontend shows the FA field if available, falls back to EN. Exception: Articles use a `language` field (not bilingual per article) — see roadmap.
 
-2. **Auth**: JWT stored in `localStorage` by `AuthService`. `AuthInterceptor` attaches `Bearer` token to all `/api/admin/*` requests. Uses `withInterceptorsFromDi()` for class-based interceptors in Angular 20.
+2. **Auth**: JWT stored in `localStorage` by `AuthService`. `AuthInterceptor` attaches `Bearer` token to all `/api/admin/*` requests. Uses `withInterceptorsFromDi()` for class-based interceptors in Angular 22.
 
 3. **Prisma driver**: Uses `@prisma/adapter-pg` (pool-based, lazy connection). `DATABASE_URL` is loaded via `import 'dotenv/config'` at the top of `main.ts`.
 
@@ -102,3 +102,4 @@ almas98abolfazl.ir/
 - Image uploads implemented: generic `POST /api/admin/media/upload` endpoint, files served at `/api/uploads`, reusable `ImageUploadComponent` for article cover, video thumbnail, and about-me avatar
 - Drag-and-drop reordering (8.7 ✅): Angular CDK reorder of experiences/educations/skills via `PATCH /api/admin/{entity}/reorder` (bulk `$transaction`)
 - Site settings (8.11 ✅): `SiteSettings` singleton model with `skillsCardView` toggle — public `GET /api/settings`, admin `GET/PUT /api/admin/settings`; public Skills page renders either proficiency bars or pill cards based on the setting
+- **Angular 22 upgrade + zoneless (2026-08-11)**: Both frontends upgraded to Angular 22.1.1 (TypeScript 6.0.3). `zone.js` fully removed; apps use `provideZonelessChangeDetection()` and are **signal-based** — all async-loaded, template-displayed state lives in `signal`s. `strictTemplates` is enabled, so template signal reads must use `()`.

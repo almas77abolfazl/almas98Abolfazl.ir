@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
@@ -23,7 +23,7 @@ interface ContactMessage {
   styles: [],
 })
 export class ContactMessagesComponent implements OnInit {
-  items: ContactMessage[] = [];
+  items = signal<ContactMessage[]>([]);
 
   constructor(private http: HttpClient, public i18n: AdminI18nService, private toast: ToastService, private confirm: ConfirmService) {}
 
@@ -32,7 +32,7 @@ export class ContactMessagesComponent implements OnInit {
   }
 
   load(): void {
-    this.http.get<ContactMessage[]>('/api/admin/contact-messages').subscribe((data) => (this.items = data));
+    this.http.get<ContactMessage[]>('/api/admin/contact-messages').subscribe((data) => this.items.set(data));
   }
 
   markRead(id: string): void {

@@ -7,13 +7,13 @@
       <button
         (click)="setFilter(f)"
         class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border"
-        [class.bg-indigo-600]="filter === f"
-        [class.text-white]="filter === f"
-        [class.border-indigo-600]="filter === f"
-        [class.text-slate-600]="filter !== f"
-        [class.dark:text-slate-300]="filter !== f"
-        [class.border-slate-200]="filter !== f"
-        [class.dark:border-slate-700]="filter !== f">
+        [class.bg-indigo-600]="filter() === f"
+        [class.text-white]="filter() === f"
+        [class.border-indigo-600]="filter() === f"
+        [class.text-slate-600]="filter() !== f"
+        [class.dark:text-slate-300]="filter() !== f"
+        [class.border-slate-200]="filter() !== f"
+        [class.dark:border-slate-700]="filter() !== f">
         {{ f === 'ALL' ? i18n.t('filter_all') : f === 'PENDING' ? i18n.t('test_pending') : f === 'APPROVED' ? i18n.t('test_approved') : i18n.t('test_rejected') }}
         @if (f !== 'ALL') {
           <span class="ms-1.5 text-xs opacity-70">{{ count(f) }}</span>
@@ -23,7 +23,7 @@
   </div>
 
   <div class="space-y-4">
-    @for (item of view; track item.id) {
+    @for (item of view(); track item.id) {
       <div class="admin-card">
         <div class="flex items-start gap-4">
           <!-- Avatar -->

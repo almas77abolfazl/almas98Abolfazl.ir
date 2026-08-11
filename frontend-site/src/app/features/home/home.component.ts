@@ -18,18 +18,19 @@ import { LazyInitDirective } from '../../shared/directives/lazy-init.directive';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
-  aboutMe?: AboutMe;
-  experiences: Experience[] = [];
-  skills: Skill[] = [];
-  testimonials: Testimonial[] = [];
-  isLoading = true;
-  isLoadingExperiences = false;
-  isLoadingSkills = false;
-  isLoadingTestimonials = false;
+  aboutMe = signal<AboutMe | undefined>(undefined);
+  experiences = signal<Experience[]>([]);
+  skills = signal<Skill[]>([]);
+  testimonials = signal<Testimonial[]>([]);
+  isLoading = signal(true);
+  isLoadingExperiences = signal(false);
+  isLoadingSkills = signal(false);
+  isLoadingTestimonials = signal(false);
   newTestimonial = { authorName: '', companyRole: '', email: '', content: '', authorImageUrl: '' };
-  testimonialSuccess = false;
-  testimonialError = '';
-  uploadingImage = false;
+  testimonialImageUrl = signal('');
+  testimonialSuccess = signal(false);
+  testimonialError = signal('');
+  uploadingImage = signal(false);
   selectedTestimonial = signal<Testimonial | null>(null);
 
   constructor(
@@ -49,7 +50,7 @@ export class HomeComponent implements OnInit {
     });
 
     this.api.getAboutMe().subscribe(data => {
-      this.aboutMe = data;
+      this.aboutMe.set(data);
       const ownerName = this.i18n.isFa && data.fullNameFa ? data.fullNameFa : data.fullName;
       this.seo.setTitle(ownerName);
       this.applyPersonJsonLd(data);
@@ -57,45 +58,45 @@ export class HomeComponent implements OnInit {
   }
 
   loadExperiences(): void {
-    if (this.experiences.length === 0) {
-      this.isLoadingExperiences = true;
+    if (this.experiences().length === 0) {
+      this.isLoadingExperiences.set(true);
       this.api.getExperiences().subscribe({
         next: (data) => {
-          this.experiences = data;
-          this.isLoadingExperiences = false;
+          this.experiences.set(data);
+          this.isLoadingExperiences.set(false);
         },
         error: () => {
-          this.isLoadingExperiences = false;
+          this.isLoadingExperiences.set(false);
         }
       });
     }
   }
 
   loadSkills(): void {
-    if (this.skills.length === 0) {
-      this.isLoadingSkills = true;
+    if (this.skills().length === 0) {
+      this.isLoadingSkills.set(true);
       this.api.getSkills().subscribe({
         next: (data) => {
-          this.skills = data;
-          this.isLoadingSkills = false;
+          this.skills.set(data);
+          this.isLoadingSkills.set(false);
         },
         error: () => {
-          this.isLoadingSkills = false;
+          this.isLoadingSkills.set(false);
         }
       });
     }
   }
 
   loadTestimonials(): void {
-    if (this.testimonials.length === 0) {
-      this.isLoadingTestimonials = true;
+    if (this.testimonials().length === 0) {
+      this.isLoadingTestimonials.set(true);
       this.api.getTestimonials().subscribe({
         next: (data) => {
-          this.testimonials = data;
-          this.isLoadingTestimonials = false;
+          this.testimonials.set(data);
+          this.isLoadingTestimonials.set(false);
         },
         error: () => {
-          this.isLoadingTestimonials = false;
+          this.isLoadingTestimonials.set(false);
         }
       });
     }
@@ -129,17 +130,17 @@ export class HomeComponent implements OnInit {
   }
 
   get latestExperience(): Experience | undefined {
-    return this.experiences[0];
+    return this.experiences()[0];
   }
 
   get resumeHref(): string | undefined {
-    const url = this.aboutMe?.resumeUrl;
+    const url = this.aboutMe()?.resumeUrl;
     if (!url) return undefined;
     return this.config.assetUrl(url);
   }
 
   get topSkills(): Skill[] {
-    return this.skills.slice(0, 6);
+    return this.skills().slice(0, 6);
   }
 
   private isValidEmail(email: string): boolean {
@@ -147,18 +148,18 @@ export class HomeComponent implements OnInit {
   }
 
   submitTestimonial(): void {
-    this.testimonialError = '';
-    this.testimonialSuccess = false;
+    this.testimonialError.set('');
+    this.testimonialSuccess.set(false);
     const name = this.newTestimonial.authorName.trim();
     const role = this.newTestimonial.companyRole.trim();
     const content = this.newTestimonial.content.trim();
     const email = this.newTestimonial.email.trim();
     if (!name || !content) {
-      this.testimonialError = this.i18n.isFa ? 'نام و پیام الزامی است' : 'Name and message are required';
+      this.testimonialError.set(this.i18n.isFa ? 'نام و پیام الزامی است' : 'Name and message are required');
       return;
     }
     if (!this.isValidEmail(email)) {
-      this.testimonialError = this.i18n.isFa ? 'یک ایمیل معتبر وارد کنید' : 'Please enter a valid email';
+      this.testimonialError.set(this.i18n.isFa ? 'یک ایمیل معتبر وارد کنید' : 'Please enter a valid email');
       return;
     }
     const payload: any = {
@@ -170,16 +171,17 @@ export class HomeComponent implements OnInit {
       content: content,
       contentFa: content,
     };
-    if (this.newTestimonial.authorImageUrl.trim()) {
-      payload.authorImageUrl = this.newTestimonial.authorImageUrl.trim();
+    if (this.testimonialImageUrl().trim()) {
+      payload.authorImageUrl = this.testimonialImageUrl().trim();
     }
     this.api.postTestimonial(payload).subscribe({
       next: () => {
-        this.testimonialSuccess = true;
+        this.testimonialSuccess.set(true);
         this.newTestimonial = { authorName: '', companyRole: '', email: '', content: '', authorImageUrl: '' };
+        this.testimonialImageUrl.set('');
       },
       error: () => {
-        this.testimonialError = this.i18n.isFa ? 'خطا در ارسال نظر' : 'Failed to submit testimonial';
+        this.testimonialError.set(this.i18n.isFa ? 'خطا در ارسال نظر' : 'Failed to submit testimonial');
       }
     });
   }
@@ -206,22 +208,22 @@ export class HomeComponent implements OnInit {
   }
 
   private uploadImage(file: File): void {
-    this.testimonialError = '';
-    this.uploadingImage = true;
+    this.testimonialError.set('');
+    this.uploadingImage.set(true);
     this.api.uploadTestimonialImage(file).subscribe({
       next: (res) => {
-        this.uploadingImage = false;
-        this.newTestimonial.authorImageUrl = res.url;
+        this.uploadingImage.set(false);
+        this.testimonialImageUrl.set(res.url);
       },
       error: () => {
-        this.uploadingImage = false;
-        this.testimonialError = this.i18n.isFa ? 'بارگذاری عکس ناموفق بود' : 'Image upload failed';
+        this.uploadingImage.set(false);
+        this.testimonialError.set(this.i18n.isFa ? 'بارگذاری عکس ناموفق بود' : 'Image upload failed');
       },
     });
   }
 
   removeImage(): void {
-    this.newTestimonial.authorImageUrl = '';
+    this.testimonialImageUrl.set('');
   }
 
   testimonialInitial(name: string): string {

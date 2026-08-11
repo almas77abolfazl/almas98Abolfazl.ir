@@ -13,10 +13,10 @@
 
         <!-- Avatar -->
         <div class="flex-shrink-0 animate-fade-up w-40 h-40 md:w-48 md:h-48">
-          @if (aboutMe?.avatarUrl) {
+          @if (aboutMe()?.avatarUrl) {
             <div class="relative w-full h-full">
               <div class="w-full h-full rounded-2xl overflow-hidden ring-4 ring-white dark:ring-slate-700 shadow-2xl">
-                <img [src]="aboutMe!.avatarUrl" [alt]="i18n.isFa ? (aboutMe!.fullNameFa || aboutMe!.fullName) : aboutMe!.fullName"
+                <img [src]="aboutMe()!.avatarUrl" [alt]="i18n.isFa ? (aboutMe()!.fullNameFa || aboutMe()!.fullName) : aboutMe()!.fullName"
                   class="w-full h-full object-cover" style="aspect-ratio: 1 / 1;" width="320" height="320" fetchpriority="high" loading="eager" decoding="sync">
               </div>
               <!-- Online indicator -->
@@ -34,18 +34,18 @@
           </p>
           <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-slate-900 dark:text-white mb-4 leading-tight">
             @if (i18n.isFa) {
-              <span class="gradient-text">{{ aboutMe?.fullNameFa || aboutMe?.fullName }}</span>
+              <span class="gradient-text">{{ aboutMe()?.fullNameFa || aboutMe()?.fullName }}</span>
               <span class="text-slate-900 dark:text-white"> هستم</span>
             } @else {
               <span class="text-slate-900 dark:text-white">Hi, I'm </span>
-              <span class="gradient-text">{{ aboutMe?.fullName }}</span>
+              <span class="gradient-text">{{ aboutMe()?.fullName }}</span>
             }
           </h1>
           <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 font-medium mb-4">
-            {{ i18n.isFa ? (aboutMe?.titleFa || aboutMe?.title) : aboutMe?.title }}
+            {{ i18n.isFa ? (aboutMe()?.titleFa || aboutMe()?.title) : aboutMe()?.title }}
           </p>
           <p class="prose-measure mx-auto line-clamp-3 md:mx-0 mb-8">
-            {{ i18n.isFa ? (aboutMe?.bioFa || aboutMe?.bio) : aboutMe?.bio }}
+            {{ i18n.isFa ? (aboutMe()?.bioFa || aboutMe()?.bio) : aboutMe()?.bio }}
           </p>
 
           <!-- CTAs -->
@@ -56,7 +56,7 @@
                 {{ i18n.isFa ? 'بیشتر بدانید' : 'About Me' }}
               </a>
             }
-            @if (aboutMe?.resumeUrl) {
+            @if (aboutMe()?.resumeUrl) {
               <a [href]="resumeHref" download rel="noopener"
                 class="px-6 py-3 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-medium brand-border-hover transition-all">
                 {{ i18n.isFa ? 'رزومه' : 'Resume' }}
@@ -71,15 +71,15 @@
   <!-- Quick Stats -->
   <section class="page-shell -mt-8">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      @if (experiences.length > 0 && siteSettings.visible('experiences')) {
+      @if (experiences().length > 0 && siteSettings.visible('experiences')) {
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-700 text-center card-hover animate-fade-up delay-200">
-          <p class="text-3xl font-bold gradient-text">{{ experiences.length }}+</p>
+          <p class="text-3xl font-bold gradient-text">{{ experiences().length }}+</p>
           <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">{{ i18n.isFa ? 'تجربه کاری' : 'Experiences' }}</p>
         </div>
       }
-      @if (skills.length > 0 && siteSettings.visible('skills')) {
+      @if (skills().length > 0 && siteSettings.visible('skills')) {
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-100 dark:border-slate-700 text-center card-hover animate-fade-up delay-300">
-          <p class="text-3xl font-bold gradient-text">{{ skills.length }}+</p>
+          <p class="text-3xl font-bold gradient-text">{{ skills().length }}+</p>
           <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">{{ i18n.isFa ? 'مهارت' : 'Skills' }}</p>
         </div>
       }
@@ -92,7 +92,7 @@
   <!-- Latest Experience -->
   @if (siteSettings.visible('experiences')) {
     <section class="page-shell py-12 sm:py-16 min-h-[220px]">
-      @if (isLoadingExperiences) {
+      @if (isLoadingExperiences()) {
         <div class="flex items-center justify-between mb-8">
           <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded w-48 animate-pulse"></div>
         </div>
@@ -132,7 +132,7 @@
   <!-- Top Skills -->
   @if (siteSettings.visible('skills')) {
     <section class="page-shell pb-12 sm:pb-16 min-h-[160px]">
-      @if (isLoadingSkills) {
+      @if (isLoadingSkills()) {
         <div class="flex items-center justify-between mb-8">
           <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded w-32 animate-pulse"></div>
         </div>
@@ -164,7 +164,7 @@
   <div appLazyInit (appLazyInit)="loadTestimonials()"></div>
   @if (siteSettings.visible('testimonials')) {
     <section class="page-shell py-12 sm:py-16 min-h-[400px]">
-      @if (isLoadingTestimonials) {
+      @if (isLoadingTestimonials()) {
         <div class="mb-8 flex items-end justify-between gap-4">
           <div>
             <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded w-48 mb-2 animate-pulse"></div>
@@ -176,7 +176,7 @@
           <div class="w-[300px] h-[240px] shrink-0 rounded-2xl bg-slate-200 dark:bg-slate-700 animate-pulse hidden sm:block"></div>
           <div class="w-[300px] h-[240px] shrink-0 rounded-2xl bg-slate-200 dark:bg-slate-700 animate-pulse hidden md:block"></div>
         </div>
-      } @else if (testimonials.length > 0) {
+      } @else if (testimonials().length > 0) {
       <div class="mb-8 flex items-end justify-between gap-4">
         <div>
           <h2 class="section-title">{{ i18n.t('testimonialsTitle') }}</h2>
@@ -205,7 +205,7 @@
         (mouseup)="onTestiUp(testiScroll)"
         (mouseleave)="onTestiUp(testiScroll)"
         class="flex cursor-grab select-none gap-5 overflow-x-auto pb-4 snap-x snap-mandatory horizontal-scroll active:cursor-grabbing">
-        @for (t of testimonials; track t.id) {
+        @for (t of testimonials(); track t.id) {
           <button type="button" (click)="openTestimonial(t)"
             class="group flex w-[300px] shrink-0 snap-start flex-col rounded-2xl border border-slate-100 bg-white p-6 text-start shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg dark:border-slate-700 dark:bg-slate-800">
             <svg class="h-8 w-8 brand-soft mb-3" fill="currentColor" viewBox="0 0 24 24">
@@ -278,8 +278,8 @@
           <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">{{ i18n.t('testimonialImage') }}</label>
           <div class="flex items-center gap-4">
             <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-dashed border-slate-300 bg-slate-50 text-slate-400 dark:border-slate-600 dark:bg-slate-800/50 dark:text-slate-500">
-              @if (newTestimonial.authorImageUrl) {
-                 <img [src]="newTestimonial.authorImageUrl" alt="" class="h-full w-full object-cover" loading="lazy" decoding="async" />
+              @if (testimonialImageUrl()) {
+                 <img [src]="testimonialImageUrl()" alt="" class="h-full w-full object-cover" loading="lazy" decoding="async" />
               } @else {
                 <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
@@ -291,7 +291,7 @@
                 (click)="fileInput.click()"
                 (dragover)="onDragOver($event)"
                 (drop)="onDrop($event)">
-                @if (uploadingImage) {
+                @if (uploadingImage()) {
                   <span class="inline-flex items-center gap-2">
                     <span class="h-4 w-4 animate-spin rounded-full border-2 brand-spinner"></span>
                     {{ i18n.t('testimonialUploading') }}
@@ -301,12 +301,12 @@
                 }
               </div>
               <div class="flex items-center gap-2">
-                <button type="button" (click)="fileInput.click()" [disabled]="uploadingImage"
+                <button type="button" (click)="fileInput.click()" [disabled]="uploadingImage()"
                   class="px-3 py-1.5 text-sm rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 brand-border-hover transition-colors">
-                  {{ newTestimonial.authorImageUrl ? i18n.t('testimonialReplace') : i18n.t('testimonialChoose') }}
+                  {{ testimonialImageUrl() ? i18n.t('testimonialReplace') : i18n.t('testimonialChoose') }}
                 </button>
-                @if (newTestimonial.authorImageUrl) {
-                  <button type="button" (click)="removeImage()" [disabled]="uploadingImage"
+                @if (testimonialImageUrl()) {
+                  <button type="button" (click)="removeImage()" [disabled]="uploadingImage()"
                     class="px-3 py-1.5 text-sm rounded-lg text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-500/10 transition-colors">
                     {{ i18n.t('testimonialRemove') }}
                   </button>
@@ -323,7 +323,7 @@
             [placeholder]="i18n.t('testimonialContent')"></textarea>
         </div>
 
-        @if (testimonialSuccess) {
+        @if (testimonialSuccess()) {
           <div class="flex items-center gap-2 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-sm">
             <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
@@ -331,8 +331,8 @@
             {{ i18n.t('testimonialSuccess') }}
           </div>
         }
-        @if (testimonialError) {
-          <div class="p-3 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm">{{ testimonialError }}</div>
+        @if (testimonialError()) {
+          <div class="p-3 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-sm">{{ testimonialError() }}</div>
         }
 
         <button type="submit"
