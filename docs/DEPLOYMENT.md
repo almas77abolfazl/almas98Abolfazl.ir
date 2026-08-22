@@ -72,7 +72,10 @@ Create `A` records pointing to the VPS public IP:
 
 ```bash
 cd /portfolio/almas98Abolfazl.ir
-docker compose up -d --build
+# Start the API first: frontend-site prerender uses it over app-network.
+docker compose up -d --wait backend
+docker compose build frontend-admin frontend-site
+docker compose up -d --no-deps frontend-admin frontend-site
 docker compose ps            # all healthy/running
 docker compose logs -f backend   # confirm "db push" / migrations applied
 ```
@@ -170,18 +173,19 @@ After `git pull` brings new code:
 
 ```bash
 cd /portfolio/almas98Abolfazl.ir
-export PRERENDER_API_BASE_URL=https://almas98abolfazl.ir/api
+# The backend must already be healthy: prerender uses the private Compose network.
+docker compose up -d --wait backend
 docker compose build frontend-site
 docker compose up -d --no-deps frontend-site
 docker image prune -f          # clean up old dangling images
 ```
 
-`frontend-site` prerendering fetches public content during its image build. Building it first
-keeps the currently running site available when the API is unavailable or prerendering fails:
-the replacement container is created only after a successful image build. The default value in
-`docker-compose.yml` is the production API URL, so exporting the variable is only needed to
-override it. Build and recreate the backend/admin separately when those services change. The
-host Nginx and TLS certificates are untouched by stack updates.
+`frontend-site` prerendering fetches public content during its image build. It uses
+`http://backend:3000/api` on the private Compose network, rather than the public domain, so
+Cloudflare/WAF behavior cannot block prerendering. Building the frontend image before its
+container is recreated keeps the currently running site available if the build fails. Build and
+recreate the backend/admin separately when those services change. The host Nginx and TLS
+certificates are untouched by stack updates.
 
 ## 9. Troubleshooting
 

@@ -1,12 +1,25 @@
-# Abolfazl - Software Engineer
+# Abolfazl Nasiri Almas — Software Engineer Portfolio
 
-Welcome to my portfolio! I am a full-stack developer experienced in building scalable applications.
+Canonical site: https://almas98abolfazl.ir
 
-## Navigation
+This is the public portfolio and technical writing site of Abolfazl Nasiri Almas, a full-stack software engineer. The site provides portfolio information, project case studies, articles, videos, and contact details. It supports Persian (RTL) and English (LTR) presentation.
 
-* [About Me](/about-me)
-* [Experience](/about-me?tab=experience)
-* [Skills](/about-me?tab=skills)
-* [Blog & Articles](/blog)
-* [Projects](/projects)
-* [Videos](/videos)
+## Public routes
+
+- [Home](https://almas98abolfazl.ir/): introduction, selected experience, skills, and testimonials.
+- [About me](https://almas98abolfazl.ir/about-me): biography, experience, education, skills, and contact information. The sections are available through the page tabs, including `?tab=experience`, `?tab=education`, `?tab=skills`, and `?tab=contact`.
+- [Blog](https://almas98abolfazl.ir/blog): published technical articles. Individual articles use `https://almas98abolfazl.ir/blog/{slug}`.
+- [Projects](https://almas98abolfazl.ir/projects): public portfolio projects. Individual project pages use `https://almas98abolfazl.ir/projects/{id}`.
+- [Videos](https://almas98abolfazl.ir/videos): published video content.
+
+## Content notes
+
+- Only published articles are public; drafts are not part of the public site.
+- Article pages can contain Markdown content, images, code blocks, tables, lists, quotations, and Persian/English mixed text.
+- Existing legacy URLs `/experiences` and `/skills` redirect to `/about-me`; use the About me route above as the canonical source.
+
+## Crawling guidance
+
+- Prefer the canonical URLs above.
+- Public static pages, published article pages, and public project pages are prerendered at build time when available.
+- The admin panel and API endpoints are not public content routes.

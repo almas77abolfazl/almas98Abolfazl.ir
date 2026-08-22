@@ -76,9 +76,7 @@ export class ProjectDetailComponent implements OnInit {
       description,
       author: { '@type': 'Person', name: this.config.displayName() },
     };
-    if (project.coverUrl) {
-      schema['image'] = project.coverUrl;
-    }
+    schema['image'] = this.config.resolveImage(project.coverUrl);
     if (project.liveUrl) {
       schema['url'] = project.liveUrl;
     }

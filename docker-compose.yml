@@ -55,8 +55,11 @@ services:
     build:
       context: ./frontend-site
       dockerfile: Dockerfile
+      # Prerender fetches public content through the private Compose network,
+      # avoiding the public CDN/WAF during image builds.
+      network: app-network
       args:
-        PRERENDER_API_BASE_URL: ${PRERENDER_API_BASE_URL:-https://almas98abolfazl.ir/api}
+        PRERENDER_API_BASE_URL: http://backend:3000/api
     restart: unless-stopped
     ports:
       - "3001:80"

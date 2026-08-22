@@ -107,9 +107,7 @@ export class ArticleDetailComponent implements OnInit {
     if (article.publishedAt) {
       schema['datePublished'] = article.publishedAt;
     }
-    if (article.coverUrl) {
-      schema['image'] = article.coverUrl;
-    }
+    schema['image'] = this.config.resolveImage(article.coverUrl);
     this.seo.setJsonLd(schema);
   }
 

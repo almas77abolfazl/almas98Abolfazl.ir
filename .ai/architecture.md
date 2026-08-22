@@ -34,7 +34,9 @@ almas98abolfazl.ir/
 - `prisma db push` runs as an entrypoint step before the app starts
 
 ### `frontend-site`
-- Built to static files in multi-stage Docker build
+- Built as an Angular static-prerender output in a multi-stage Docker build
+- Uses `PRERENDER_API_BASE_URL` only during the builder stage; browser calls remain relative to `/api`
+- Prerenders public static pages, published article details, and public/current project details
 - Served by Nginx on port `80`
 
 ### `frontend-admin`
@@ -46,7 +48,7 @@ almas98abolfazl.ir/
 - Routes `/api/*` → `backend:3000`
 - Routes `/admin/*` → `frontend-admin` static files
 - Routes `/*` → `frontend-site` static files
-- Handles SPA fallback (`try_files $uri $uri/ /index.html`)
+- Serves route-specific prerendered HTML when present and uses `index.csr.html` as the CSR fallback for new dynamic and invalid routes
 
 ---
 
@@ -103,15 +105,20 @@ src/
 | `ThemeService` | Dark/light toggle, `html.classList.add('dark')`, `isDark` signal, persisted to localStorage |
 | `AnalyticsService` | Tracks page views on every router `NavigationEnd` |
 
+During server/prerender rendering, browser-only behavior is guarded and analytics does not record page views.
+
 ### Routing
 ```
 '' → HomeComponent
 '/about-me' → AboutMeComponent
-'/experiences' → ExperiencesComponent
-'/skills' → SkillsComponent
+'/experiences' → redirect to '/about-me'
+'/skills' → redirect to '/about-me'
 '/blog' → BlogComponent
 '/blog/:slug' → ArticleDetailComponent
-'**' → redirect to ''
+'/videos' → VideosComponent
+'/projects' → ProjectsComponent
+'/projects/:id' → ProjectDetailComponent
+'**' → NotFoundComponent
 ```
 
 ### i18n strategy

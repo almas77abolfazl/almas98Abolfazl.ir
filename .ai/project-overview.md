@@ -68,7 +68,7 @@ almas98abolfazl.ir/
 
 - Clean Architecture — feature-based modules, separation of concerns
 - Bilingual — Persian (RTL, Vazirmatn font) and English (LTR, Inter font)
-- SEO Friendly — Angular SSR or meta tags, Open Graph, structured data
+- SEO Friendly — Angular static prerender, meta tags, Open Graph, and structured data
 - Production Ready — Docker, Nginx, health checks, resource limits
 - Mobile First — responsive Tailwind layouts
 
@@ -103,3 +103,4 @@ almas98abolfazl.ir/
 - Drag-and-drop reordering (8.7 ✅): Angular CDK reorder of experiences/educations/skills via `PATCH /api/admin/{entity}/reorder` (bulk `$transaction`)
 - Site settings (8.11 ✅): `SiteSettings` singleton model with `skillsCardView` toggle — public `GET /api/settings`, admin `GET/PUT /api/admin/settings`; public Skills page renders either proficiency bars or pill cards based on the setting
 - **Angular 22 upgrade + zoneless (2026-08-11)**: Both frontends upgraded to Angular 22.1.1 (TypeScript 6.0.3). `zone.js` fully removed; apps use `provideZonelessChangeDetection()` and are **signal-based** — all async-loaded, template-displayed state lives in `signal`s. `strictTemplates` is enabled, so template signal reads must use `()`.
+- **Static prerender + SEO (Phase 16.5)**: The public site prerenders its static pages, published articles, and public/current project details. The build requires `PRERENDER_API_BASE_URL`; the browser continues to call relative `/api` URLs. Nginx serves prerendered HTML and uses `index.csr.html` only as the fallback for routes not generated at build time.

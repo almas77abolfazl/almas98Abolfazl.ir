@@ -117,9 +117,7 @@ export class HomeComponent implements OnInit {
     if (aboutMe?.title) {
       schema['jobTitle'] = aboutMe.title;
     }
-    if (aboutMe?.avatarUrl) {
-      schema['image'] = aboutMe.avatarUrl;
-    }
+    schema['image'] = this.config.resolveImage(aboutMe?.avatarUrl);
     const socials = aboutMe
       ? [aboutMe.linkedinUrl, aboutMe.githubUrl, aboutMe.youtubeUrl, aboutMe.twitterUrl, aboutMe.instagramUrl]
           .filter((u): u is string => !!u)

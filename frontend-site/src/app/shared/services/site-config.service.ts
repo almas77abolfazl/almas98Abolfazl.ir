@@ -33,7 +33,7 @@ export class SiteConfigService {
       next: (s) => {
         if (s.siteUrl) this.siteUrl.set(cleanUrl(s.siteUrl));
         if (s.siteName) this.siteName.set(s.siteName);
-        this.ogImage.set(`${this.siteUrl()}/og-default.png`);
+        this.ogImage.set(`${this.siteUrl()}/og-default.jpg`);
       },
       error: () => {},
     });
