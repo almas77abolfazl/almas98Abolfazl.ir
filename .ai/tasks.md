@@ -207,12 +207,12 @@ Both frontend apps upgraded to Angular 22.1.1, build green, behavior preserved. 
 
 **Scope:** align/rtl-ltr toolbar, table insert, keep Markdown + backward compat.
 
-- [ ] **3.1** Add toolbar buttons to `MarkdownEditorComponent`: `alignRtl()`/`alignLtr()` wrapping selection in `:::rtl`/`:::ltr` fences (reuse `surround` pattern, `markdown-editor.component.ts:63`). Add `table()` inserting a GFM table template. Update `markdown-editor.component.html:1-25` toolbar.
+- [x] **3.1** Add toolbar buttons to `MarkdownEditorComponent`: `alignRtl()`/`alignLtr()` wrapping selection in `:::rtl`/`:::ltr` fences (reuse `surround` pattern, `markdown-editor.component.ts:63`). Add `table()` inserting a GFM table template. Update `markdown-editor.component.html:1-25` toolbar.
   - *Acceptance:* LTR click → `:::ltr\n<sel>\n:::`; Table click → 2×2 GFM stub.
   - *Risk:* low; pure editor UX.
   - *Files:* `markdown-editor.component.ts`, `.html`.
 
-- [ ] **3.2** (Depends on 1.2/1.3) Verify editor preview renders `:::ltr/rtl` and tables identically to public. No new parser — relies on shared `renderMarkdown`.
+- [x] **3.2** (Depends on 1.2/1.3) Verify editor preview renders `:::ltr/rtl` and tables identically to public. No new parser — relies on shared `renderMarkdown`.
   - *Acceptance:* WYSIWYG for direction + tables.
   - *Risk:* none.
   - *Files:* covered by 1.2/1.3.
@@ -241,27 +241,27 @@ console.log(x);
 
 **Scope:** improve readability of long articles without hiding/paginating content.
 
-- [ ] **4.1** Constrain content width: add `max-width` (e.g. `prose-measure` 65ch or `.article-body`) to `.article-content`. Keep `article-detail.component.html:64` container.
+- [x] **4.1** Constrain content width: add `max-width` (e.g. `prose-measure` 65ch or `.article-body`) to `.article-content`. Keep `article-detail.component.html:64` container.
   - *Acceptance:* article body capped ~65-72ch, centered, comfortable leading.
   - *Risk:* low.
   - *Files:* `frontend-site/src/styles.css`, `article-detail.component.html`.
 
-- [ ] **4.2** Table of Contents: generate from `h2`/`h3` in rendered HTML, assign `id`s, render sticky TOC sidebar (desktop) + collapsible on mobile. `IntersectionObserver` for active-section highlight. Hide when <2 headings.
+- [x] **4.2** Table of Contents: generate from `h2`/`h3` in rendered HTML, assign `id`s, render sticky TOC sidebar (desktop) + collapsible on mobile. `IntersectionObserver` for active-section highlight. Hide when <2 headings.
   - *Acceptance:* TOC lists H2/H3, click scrolls, active highlighted. Guard for prerender (`afterNextRender`/`isPlatformBrowser`).
   - *Risk:* medium (DOM parsing + observers).
   - *Files:* `article-detail.component.ts`, `.html`, `styles.css`.
 
-- [ ] **4.3** Back-to-top button (past ~600px) + reuse reading-progress bar. Hidden appropriately in print/small screens.
+- [x] **4.3** Back-to-top button (past ~600px) + reuse reading-progress bar. Hidden appropriately in print/small screens.
   - *Acceptance:* button appears past threshold, smooth-scrolls to top.
   - *Risk:* low.
   - *Files:* `article-detail.component.html/ts`, `styles.css`.
 
-- [ ] **4.4** Code-block UX: "Copy" button overlay on `pre` (via `afterNextRender`/directive) + `max-height` + scroll for long blocks.
+- [x] **4.4** Code-block UX: "Copy" button overlay on `pre` (via `afterNextRender`/directive) + `max-height` + scroll for long blocks.
   - *Acceptance:* each `pre` has copy button; long blocks scroll internally.
   - *Risk:* low–medium (DOM post-processing).
   - *Files:* `article-detail.component.ts/html`, `styles.css`.
 
-- [ ] **4.5** Mobile behavior pass: TOC collapses, code blocks scroll, progress bar visible, no horizontal overflow from tables/`pre`.
+- [x] **4.5** Mobile behavior pass: TOC collapses, code blocks scroll, progress bar visible, no horizontal overflow from tables/`pre`.
   - *Acceptance:* no horizontal page scroll on mobile for any article.
   - *Risk:* low.
   - *Files:* `styles.css`, `article-detail.component.html`.

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, HostListener, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, signal, computed, HostListener, ChangeDetectionStrategy, afterNextRender, ViewChild, ElementRef, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { ApiService, Article } from '../../shared/services/api.service';
@@ -20,6 +20,10 @@ export class ArticleDetailComponent implements OnInit {
   liked = signal(false);
   likeCount = signal(0);
   progress = signal(0);
+  toc = signal<{ id: string; text: string; level: 2 | 3 }[]>([]);
+  activeId = signal<string>('');
+
+  showBackToTop = computed(() => this.progress() > 12);
 
   contentHtml = computed<string>(() => {
     const art = this.article();
@@ -27,14 +31,34 @@ export class ArticleDetailComponent implements OnInit {
     return this.markdownService.renderMarkdown(art.content);
   });
 
+  @ViewChild('content') contentRef?: ElementRef<HTMLElement>;
+
+  private tocObserver?: IntersectionObserver;
+  private lastSlug?: string;
+
   constructor(
     public i18n: I18nService,
     private api: ApiService,
     private route: ActivatedRoute,
     private seo: SeoService,
     private config: SiteConfigService,
-    private markdownService: MarkdownService
-  ) {}
+    private markdownService: MarkdownService,
+    destroyRef: DestroyRef = inject(DestroyRef)
+  ) {
+    afterNextRender(() => {
+      const art = this.article();
+      if (!art) {
+        return;
+      }
+      if (this.lastSlug === art.slug) {
+        return;
+      }
+      this.lastSlug = art.slug;
+      this.buildToc();
+    });
+
+    destroyRef.onDestroy(() => this.tocObserver?.disconnect());
+  }
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug') || '';
@@ -115,5 +139,129 @@ export class ArticleDetailComponent implements OnInit {
         },
       });
     }
+  }
+
+  copyTocClick(id: string): void {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  scrollTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  private buildToc(): void {
+    const host = this.contentRef?.nativeElement;
+    if (!host) {
+      return;
+    }
+
+    this.enhanceCodeBlocks(host);
+
+    const headings = Array.from(host.querySelectorAll('h2, h3')) as HTMLElement[];
+    if (headings.length < 2) {
+      this.toc.set([]);
+      this.activeId.set('');
+      this.tocObserver?.disconnect();
+      this.tocObserver = undefined;
+      return;
+    }
+
+    const seen = new Map<string, number>();
+    const items: { id: string; text: string; level: 2 | 3 }[] = [];
+    for (const el of headings) {
+      const text = (el.textContent ?? '').trim();
+      const base = this.slugify(text) || 'section';
+      let id = base;
+      let n = seen.get(base) ?? 0;
+      while (seen.has(id)) {
+        n++;
+        id = `${base}-${n}`;
+      }
+      seen.set(base, n + 1);
+      seen.set(id, 1);
+      el.id = id;
+      items.push({ id, text, level: el.tagName === 'H2' ? 2 : 3 });
+    }
+    this.toc.set(items);
+    this.activeId.set(items[0].id);
+
+    this.tocObserver?.disconnect();
+    const visible = new Set<string>();
+    this.tocObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const id = (entry.target as HTMLElement).id;
+          if (entry.isIntersecting) {
+            visible.add(id);
+          } else {
+            visible.delete(id);
+          }
+        }
+        let topId = '';
+        let topY = Infinity;
+        if (visible.size) {
+          for (const id of visible) {
+            const el = document.getElementById(id);
+            if (!el) {
+              continue;
+            }
+            const y = el.getBoundingClientRect().top;
+            if (y < topY) {
+              topY = y;
+              topId = id;
+            }
+          }
+        }
+        if (!topId) {
+          let lastAbove = '';
+          for (const item of items) {
+            const el = document.getElementById(item.id);
+            if (el && el.getBoundingClientRect().top < 120) {
+              lastAbove = item.id;
+            }
+          }
+          topId = lastAbove || items[0].id;
+        }
+        this.activeId.set(topId);
+      },
+      { rootMargin: '0px 0px -65% 0px', threshold: 0 }
+    );
+    for (const el of headings) {
+      this.tocObserver.observe(el);
+    }
+  }
+
+  private enhanceCodeBlocks(host: HTMLElement): void {
+    const pres = Array.from(host.querySelectorAll('pre')) as HTMLElement[];
+    for (const pre of pres) {
+      if (pre.getAttribute('data-copy') === '1') {
+        continue;
+      }
+      pre.setAttribute('data-copy', '1');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'copy-btn';
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', () => {
+        const code = pre.querySelector('code');
+        const text = (code?.textContent ?? pre.textContent ?? '').trim();
+        navigator.clipboard?.writeText(text).then(() => {
+          btn.textContent = 'Copied';
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+          }, 1500);
+        });
+      });
+      pre.appendChild(btn);
+    }
+  }
+
+  private slugify(text: string): string {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/[^\p{L}\p{N}\s-]/gu, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
   }
 }

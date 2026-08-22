@@ -4,7 +4,18 @@
     [style.width.%]="progress()"></div>
 </div>
 
-<section class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 pt-10 pb-16 sm:pt-12 sm:pb-20">
+<!-- Back to top -->
+@if (showBackToTop()) {
+  <button type="button" (click)="scrollTop()"
+    aria-label="Back to top"
+    class="hidden sm:flex fixed bottom-6 end-6 z-50 items-center justify-center w-11 h-11 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-200 shadow-lg ring-1 ring-slate-200 dark:ring-slate-700 hover:text-brand-primary dark:hover:text-brand-primary-light transition-colors print:hidden">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+    </svg>
+  </button>
+}
+
+<section class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-10 pb-16 sm:pt-12 sm:pb-20">
 
   <a routerLink="/blog"
     class="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 brand-text-hover mb-8 group transition-colors">
@@ -19,70 +30,113 @@
       <div class="w-8 h-8 border-2 brand-border border-t-transparent rounded-full animate-spin"></div>
     </div>
   } @else if (article(); as art) {
-    <article>
-      @if (art.coverUrl) {
-        <div class="w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
-          <img [src]="art.coverUrl" [alt]="art.title" loading="lazy" decoding="async" class="w-full h-full object-cover">
-        </div>
+    <div class="lg:flex lg:gap-10">
+
+      <!-- Mobile TOC -->
+      @if (toc().length >= 2) {
+        <details class="lg:hidden mb-6 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40">
+          <summary class="cursor-pointer select-none px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-200">
+            {{ i18n.t('tableOfContents') }}
+          </summary>
+          <nav class="article-toc px-3 pb-3">
+            @for (item of toc(); track item.id) {
+              <a class="toc-link"
+                [class.lvl-3]="item.level === 3"
+                [class.active]="activeId() === item.id"
+                [href]="'#' + item.id"
+                (click)="copyTocClick(item.id)">{{ item.text }}</a>
+            }
+          </nav>
+        </details>
       }
 
-      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-4 leading-tight"
-        [dir]="art.language === 'fa' ? 'rtl' : 'ltr'">
-        {{ art.title }}
-      </h1>
-
-      <!-- Meta row: date, language badge, reading time -->
-      <div class="flex flex-wrap items-center gap-4 text-sm text-slate-400 dark:text-slate-500 mb-6">
-        @if (art.publishedAt) {
-          <span>{{ art.publishedAt | articleDate:art.language }}</span>
+      <article class="lg:flex-1 min-w-0">
+        @if (art.coverUrl) {
+          <div class="w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8">
+            <img [src]="art.coverUrl" [alt]="art.title" loading="lazy" decoding="async" class="w-full h-full object-cover">
+          </div>
         }
-        <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 uppercase">
-          {{ art.language === 'fa' ? 'FA' : 'EN' }}
-        </span>
-        @if (art.readingTime) {
-          <span class="inline-flex items-center gap-1">
+
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 dark:text-white mb-4 leading-tight"
+          [dir]="art.language === 'fa' ? 'rtl' : 'ltr'">
+          {{ art.title }}
+        </h1>
+
+        <!-- Meta row: date, language badge, reading time -->
+        <div class="flex flex-wrap items-center gap-4 text-sm text-slate-400 dark:text-slate-500 mb-6">
+          <span class="inline-flex items-center gap-1.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            {{ art.readingTime }} {{ i18n.t('minRead') }}
+            {{ (art.publishedAt ?? art.createdAt) | articleDate:art.language }}
           </span>
-        }
-      </div>
-
-      @if (art.tags.length) {
-        <div class="flex flex-wrap gap-2 mb-6">
-          @for (tag of art.tags; track tag) {
-            <span class="px-2.5 py-0.5 text-xs font-medium rounded-full brand-soft brand-text">
-              {{ tag }}
+          <span class="px-2 py-0.5 text-xs font-semibold rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 uppercase">
+            {{ art.language === 'fa' ? 'FA' : 'EN' }}
+          </span>
+          @if (art.readingTime) {
+            <span class="inline-flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {{ art.readingTime }} {{ i18n.t('minRead') }}
             </span>
           }
         </div>
+
+        @if (art.tags.length) {
+          <div class="flex flex-wrap gap-2 mb-6">
+            @for (tag of art.tags; track tag) {
+              <span class="px-2.5 py-0.5 text-xs font-medium rounded-full brand-soft brand-text">
+                {{ tag }}
+              </span>
+            }
+          </div>
+        }
+
+        <div class="divider mb-8"></div>
+
+        <div #content class="article-content text-base"
+          [dir]="art.language === 'fa' ? 'rtl' : 'ltr'"
+          [innerHTML]="contentHtml()"></div>
+
+        <!-- Like / Unlike button -->
+        <div class="mt-12 flex items-center justify-center">
+          <button type="button" (click)="toggleLike()"
+            [title]="liked() ? i18n.t('unlike') : i18n.t('like')"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border text-sm font-semibold transition-colors"
+            [class]="liked()
+              ? 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-400'
+              : 'bg-white border-slate-200 text-slate-600 hover:border-rose-300 hover:text-rose-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:text-rose-400'">
+            <svg class="w-5 h-5" [attr.fill]="liked() ? 'currentColor' : 'none'" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <span>{{ liked() ? i18n.t('unlike') : i18n.t('like') }}</span>
+            <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 text-xs">
+              {{ likeCount() }}
+            </span>
+          </button>
+        </div>
+      </article>
+
+      <!-- Desktop TOC -->
+      @if (toc().length >= 2) {
+        <aside class="hidden lg:block lg:w-60 lg:sticky lg:top-24 lg:self-start">
+          <p class="mb-3 px-2 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+            {{ i18n.t('tableOfContents') }}
+          </p>
+          <nav class="article-toc">
+            @for (item of toc(); track item.id) {
+              <a class="toc-link"
+                [class.lvl-3]="item.level === 3"
+                [class.active]="activeId() === item.id"
+                [href]="'#' + item.id"
+                (click)="copyTocClick(item.id)">{{ item.text }}</a>
+            }
+          </nav>
+        </aside>
       }
 
-      <div class="divider mb-8"></div>
-
-      <div class="article-content text-base"
-        [dir]="art.language === 'fa' ? 'rtl' : 'ltr'"
-        [innerHTML]="contentHtml()"></div>
-
-      <!-- Like / Unlike button -->
-      <div class="mt-12 flex items-center justify-center">
-        <button type="button" (click)="toggleLike()"
-          [title]="liked() ? i18n.t('unlike') : i18n.t('like')"
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border text-sm font-semibold transition-colors"
-          [class]="liked()
-            ? 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-400'
-            : 'bg-white border-slate-200 text-slate-600 hover:border-rose-300 hover:text-rose-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:text-rose-400'">
-          <svg class="w-5 h-5" [attr.fill]="liked() ? 'currentColor' : 'none'" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-          </svg>
-          <span>{{ liked() ? i18n.t('unlike') : i18n.t('like') }}</span>
-          <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 text-xs">
-            {{ likeCount() }}
-          </span>
-        </button>
-      </div>
-    </article>
+    </div>
   } @else {
     <div class="text-center py-20">
       <p class="text-slate-400 dark:text-slate-500">{{ i18n.t('articleNotFound') }}</p>
