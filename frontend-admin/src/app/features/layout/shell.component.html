@@ -53,7 +53,7 @@
 
       <!-- Mobile sidebar drawer -->
       @if (menuOpen()) {
-        <div class="fixed inset-0 z-50 lg:hidden" (click)="closeMenu()">
+        <div class="fixed inset-0 z-50 cursor-pointer lg:hidden" (click)="closeMenu()">
           <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"></div>
         </div>
       }

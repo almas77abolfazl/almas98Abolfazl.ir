@@ -103,21 +103,54 @@
               @if (peakDay(r); as peak) {
                 <div class="rounded-lg bg-indigo-50 px-3 py-2 text-sm text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300">
                   <span class="font-semibold">{{ i18n.t('rep_peakDay') }}:</span>
-                  {{ peak.date | date:'mediumDate' }} · {{ peak.count }} {{ i18n.t('rep_views') }}
+                  {{ formatDailyDate(peak.date) }} · {{ peak.count }} {{ i18n.t('rep_views') }}
                 </div>
               }
             </div>
+            <div class="mb-4 flex flex-wrap items-center gap-2">
+              @for (days of [7, 30, 90]; track days) {
+                <button type="button" (click)="selectDailyRange($any(days))"
+                  class="rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors"
+                  [class]="selectedDays() === days
+                    ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-500/25'
+                    : 'border border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800'">
+                  {{ days }} {{ i18n.t('rep_days') }}
+                </button>
+              }
+            </div>
             @if (activeDays(r).length) {
-              <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
-                @for (day of activeDays(r); track day.date) {
-                  <div class="rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 dark:border-slate-700 dark:bg-slate-800">
-                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ day.date | date:'mediumDate' }}</p>
-                    <p class="mt-0.5 font-semibold text-slate-900 dark:text-white">{{ day.count }} {{ i18n.t('rep_views') }}</p>
-                  </div>
-                }
+              <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+                <table class="min-w-full">
+                  <thead>
+                    <tr class="border-b border-slate-200 dark:border-slate-700">
+                      <th class="admin-th">{{ i18n.t('rep_date') }}</th>
+                      <th class="admin-th text-end">{{ i18n.t('rep_views') }}</th>
+                      <th class="admin-th w-2/5">{{ i18n.t('rep_activity') }}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 dark:divide-slate-700/70">
+                    @for (day of dailyRows(r); track day.date) {
+                      <tr class="admin-row">
+                        <td class="admin-td whitespace-nowrap">{{ formatDailyDate(day.date) }}</td>
+                        <td class="admin-td text-end tabular-nums">{{ day.count }}</td>
+                        <td class="admin-td">
+                          <div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                            <div class="h-full rounded-full bg-linear-to-r from-indigo-500 to-violet-400"
+                              [style.width.%]="(day.count / dailyMax(r)) * 100"></div>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
               </div>
+              @if (hasMoreDailyRows(r)) {
+                <button type="button" (click)="showMoreDailyRows()" class="admin-btn admin-btn-ghost mt-4">
+                  {{ i18n.t('rep_showMore') }}
+                </button>
+              }
             } @else {
-              <div class="text-slate-500 dark:text-slate-400">{{ i18n.t('rep_noActiveDays') }}</div>
+              <div class="text-slate-500 dark:text-slate-400">{{ i18n.t('rep_noActiveDays', { days: selectedDays() }) }}</div>
             }
           </div>
 

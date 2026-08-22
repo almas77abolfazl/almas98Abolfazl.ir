@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Post, Get, Body, Query, UseGuards } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthGuard } from '../auth/auth.guard';
 
@@ -41,7 +41,11 @@ export class AnalyticsController {
 
   @Get('reports')
   @UseGuards(AuthGuard)
-  async reports() {
+  async reports(
+    @Query('days') days?: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+  ) {
     const totalPageViews = await this.prisma.pageView.count();
 
     const articleViewsAgg = await this.prisma.$queryRaw<{ c: bigint }[]>`
@@ -125,7 +129,7 @@ export class AnalyticsController {
       };
     });
 
-    const daily = await this.getDailyStats();
+    const daily = await this.getDailyStats(days, from, to);
 
     return {
       totals: {
@@ -162,20 +166,22 @@ export class AnalyticsController {
     return path || '/';
   }
 
-  /** Returns a complete 30-day series so charts retain days with zero page views. */
-  private async getDailyStats(): Promise<{ date: Date; count: number }[]> {
+  /** Returns a zero-filled date series for the requested report period. */
+  private async getDailyStats(days?: string, from?: string, to?: string): Promise<{ date: Date; count: number }[]> {
+    const { start, end } = this.resolveDailyRange(days, from, to);
     const daily = await this.prisma.$queryRaw<DailyCount[]>`
-      WITH days AS (
-        SELECT generate_series(
-          date_trunc('day', now()) - interval '29 days',
-          date_trunc('day', now()),
-          interval '1 day'
-        ) AS date
+      WITH bounds AS (
+        SELECT date_trunc('day', ${start}::timestamp) AS start_date,
+               date_trunc('day', ${end}::timestamp) AS end_date
+      ), days AS (
+        SELECT generate_series(bounds.start_date, bounds.end_date, interval '1 day') AS date
+        FROM bounds
       ),
       page_views AS (
         SELECT date_trunc('day', "createdAt") AS date, count(*)::bigint AS count
-        FROM "PageView"
-        WHERE "createdAt" >= date_trunc('day', now()) - interval '29 days'
+        FROM "PageView", bounds
+        WHERE "createdAt" >= bounds.start_date
+          AND "createdAt" < bounds.end_date + interval '1 day'
         GROUP BY date
       )
       SELECT days.date, COALESCE(page_views.count, 0)::bigint AS count
@@ -184,5 +190,45 @@ export class AnalyticsController {
       ORDER BY days.date ASC
     `;
     return daily.map((day) => ({ date: day.date, count: Number(day.count) }));
+  }
+
+  /** Supports `days` or an explicit inclusive `from` / `to` date range (maximum 365 days). */
+  private resolveDailyRange(days?: string, from?: string, to?: string): { start: Date; end: Date } {
+    if (from || to) {
+      if (!from || !to) {
+        throw new BadRequestException('Both from and to query parameters are required together.');
+      }
+      const start = this.parseReportDate(from, 'from');
+      const end = this.parseReportDate(to, 'to');
+      if (start > end) {
+        throw new BadRequestException('from must not be after to.');
+      }
+      const duration = Math.floor((end.getTime() - start.getTime()) / 86_400_000) + 1;
+      if (duration > 365) {
+        throw new BadRequestException('The report range cannot exceed 365 days.');
+      }
+      return { start, end };
+    }
+
+    const requestedDays = days === undefined ? 30 : Number(days);
+    if (!Number.isInteger(requestedDays) || requestedDays < 1 || requestedDays > 365) {
+      throw new BadRequestException('days must be an integer between 1 and 365.');
+    }
+    const end = new Date();
+    end.setUTCHours(0, 0, 0, 0);
+    const start = new Date(end);
+    start.setUTCDate(start.getUTCDate() - requestedDays + 1);
+    return { start, end };
+  }
+
+  private parseReportDate(value: string, name: string): Date {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      throw new BadRequestException(`${name} must use YYYY-MM-DD format.`);
+    }
+    const date = new Date(`${value}T00:00:00.000Z`);
+    if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value) {
+      throw new BadRequestException(`${name} must be a valid date.`);
+    }
+    return date;
   }
 }

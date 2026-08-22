@@ -1,7 +1,7 @@
 
     @if (confirm.state(); as opts) {
       <div class="fixed inset-0 z-[80] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" (click)="confirm.decline()"></div>
+        <div class="absolute inset-0 cursor-pointer bg-slate-900/50 backdrop-blur-sm" (click)="confirm.decline()"></div>
         <div class="admin-card relative w-full max-w-sm !p-5">
           <h3 class="text-lg font-semibold text-slate-900 dark:text-white">{{ opts.title }}</h3>
           <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ opts.message }}</p>

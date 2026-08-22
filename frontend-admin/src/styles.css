@@ -103,6 +103,68 @@ html[dir="rtl"] body {
   font-family: var(--font-fa);
 }
 
+/* Every native or router-driven action communicates clickability consistently. */
+button:not(:disabled),
+a[href],
+a[routerLink],
+[role="button"],
+label,
+summary,
+select:not(:disabled),
+input[type="checkbox"]:not(:disabled),
+input[type="radio"]:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled,
+select:disabled,
+input[type="checkbox"]:disabled,
+input[type="radio"]:disabled {
+  cursor: not-allowed;
+}
+
+/* Admin-only scrollbar treatment: applies to the page, panels, tables and editors. */
+html,
+body,
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #b8b8c9 transparent;
+}
+
+.dark html,
+.dark body,
+.dark * {
+  scrollbar-color: #4b4b60 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #b8b8c9;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #9292aa;
+}
+
+.dark *::-webkit-scrollbar-thumb {
+  background-color: #4b4b60;
+}
+
+.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: #6a6a80;
+}
+
 /* ---- Shared components: minimal, modern admin UI ---- */
 @layer components {
   .admin-card {

@@ -208,12 +208,15 @@
 
 /* Header and logo use the site colors selected in Admin > Settings. */
 .brand-header {
-  background-color: rgba(var(--brand-primary-rgb), 0.055);
+  /* An opaque surface keeps navigation readable over article covers and media. */
+  background-color: color-mix(in srgb, var(--color-background) 94%, var(--brand-primary) 6%);
   border-color: rgba(var(--brand-primary-rgb), 0.18);
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
 }
 .dark .brand-header {
-  background-color: rgba(var(--brand-primary-rgb), 0.12);
+  background-color: color-mix(in srgb, var(--color-background) 90%, var(--brand-primary) 10%);
   border-color: rgba(var(--brand-primary-rgb), 0.26);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
 }
 
 .brand-underline { background-image: linear-gradient(to right, var(--brand-primary), var(--brand-secondary)); }
@@ -238,6 +241,26 @@ body {
 
 html[dir="rtl"] body {
   font-family: var(--font-fa);
+}
+
+/* Keep click affordances consistent across navigation, forms, and custom controls. */
+button:not(:disabled),
+a[href],
+a[routerLink],
+[role="button"],
+label,
+summary,
+select:not(:disabled),
+input[type="checkbox"]:not(:disabled),
+input[type="radio"]:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled,
+select:disabled,
+input[type="checkbox"]:disabled,
+input[type="radio"]:disabled {
+  cursor: not-allowed;
 }
 
 /* Smooth scroll */

@@ -46,11 +46,13 @@ interface DailyStat {
 export class ReportsComponent implements OnInit {
   reports = signal<Reports | null>(null);
   loading = signal(true);
+  selectedDays = signal<7 | 30 | 90>(30);
+  visibleDailyRows = signal(10);
 
   constructor(private http: HttpClient, public i18n: AdminI18nService) {}
 
   ngOnInit(): void {
-    this.http.get<Reports>('/api/analytics/reports').subscribe({
+    this.http.get<Reports>('/api/analytics/reports?days=30').subscribe({
       next: (data) => {
         this.reports.set(data);
         this.loading.set(false);
@@ -85,6 +87,42 @@ export class ReportsComponent implements OnInit {
 
   activeDays(r: Reports): DailyStat[] {
     return r.daily.filter((day) => day.count > 0);
+  }
+
+  /** Most recent active days first; zero-view days remain available in the API response. */
+  dailyRows(r: Reports): DailyStat[] {
+    return this.activeDays(r)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, this.visibleDailyRows());
+  }
+
+  hasMoreDailyRows(r: Reports): boolean {
+    return this.activeDays(r).length > this.visibleDailyRows();
+  }
+
+  dailyMax(r: Reports): number {
+    return Math.max(...this.activeDays(r).map((day) => day.count), 1);
+  }
+
+  selectDailyRange(days: 7 | 30 | 90): void {
+    if (days === this.selectedDays()) return;
+    this.selectedDays.set(days);
+    this.visibleDailyRows.set(10);
+    this.http.get<Reports>(`/api/analytics/reports?days=${days}`).subscribe({
+      next: (data) => {
+        this.reports.update((current) => current ? { ...current, daily: data.daily } : data);
+      },
+    });
+  }
+
+  showMoreDailyRows(): void {
+    this.visibleDailyRows.update((count) => count + 10);
+  }
+
+  formatDailyDate(value: string): string {
+    return new Intl.DateTimeFormat(this.i18n.isFa ? 'fa-IR' : 'en-US', {
+      year: 'numeric', month: 'short', day: 'numeric',
+    }).format(new Date(value));
   }
 
   peakDay(r: Reports): DailyStat | null {
