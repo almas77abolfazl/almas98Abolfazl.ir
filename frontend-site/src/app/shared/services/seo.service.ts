@@ -31,9 +31,9 @@ export class SeoService {
     private readonly config: SiteConfigService,
   ) {}
 
-  /** Sets the document title as `Page | Site Name`. */
+  /** Sets the document title as `Page | Site Name`, without duplicating the home/site title. */
   setTitle(pageTitle: string): void {
-    this.title.setTitle(`${pageTitle} | ${this.config.siteName()}`);
+    this.title.setTitle(this.fullTitle(pageTitle));
   }
 
   /** Applies the full set of SEO meta tags (title, description, Open Graph, Twitter, canonical). */
@@ -48,7 +48,7 @@ export class SeoService {
     const locale = this.i18n.currentLang() === 'fa' ? 'fa_IR' : 'en_US';
 
     this.setTitle(data.title);
-    const fullTitle = `${data.title} | ${this.config.siteName()}`;
+    const fullTitle = this.fullTitle(data.title);
 
     this.setTag('description', description);
     this.setTag('author', this.config.displayName());
@@ -99,6 +99,13 @@ export class SeoService {
       this.document.head.appendChild(link);
     }
     link.setAttribute('href', url);
+  }
+
+  private fullTitle(pageTitle: string): string {
+    const siteName = this.config.siteName();
+    return pageTitle.trim() === siteName.trim()
+      ? siteName
+      : `${pageTitle} | ${siteName}`;
   }
 
   private setTag(name: string, content: string): void {

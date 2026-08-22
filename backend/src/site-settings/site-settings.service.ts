@@ -17,6 +17,7 @@ export class SiteSettingsService {
     themePrimary?: string;
     themeSecondary?: string;
     siteName?: string;
+    siteNameFa?: string;
     siteUrl?: string;
     showAbout?: boolean;
     showExperiences?: boolean;

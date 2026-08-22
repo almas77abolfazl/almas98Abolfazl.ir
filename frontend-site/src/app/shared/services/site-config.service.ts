@@ -19,7 +19,8 @@ export class SiteConfigService {
   private readonly i18n = inject(I18nService);
 
   readonly siteUrl = signal(cleanUrl(SITE_URL));
-  readonly siteName = signal(SITE_NAME);
+  readonly siteNameEn = signal(SITE_NAME);
+  readonly siteNameFa = signal('');
   readonly authorName = signal(AUTHOR_NAME);
   readonly authorNameFa = signal(AUTHOR_NAME_FA);
   readonly ogImage = signal(DEFAULT_OG_IMAGE);
@@ -32,7 +33,8 @@ export class SiteConfigService {
     this.api.getSettings().subscribe({
       next: (s) => {
         if (s.siteUrl) this.siteUrl.set(cleanUrl(s.siteUrl));
-        if (s.siteName) this.siteName.set(s.siteName);
+        if (s.siteName) this.siteNameEn.set(s.siteName);
+        if (s.siteNameFa) this.siteNameFa.set(s.siteNameFa);
         this.ogImage.set(`${this.siteUrl()}/og-default.jpg`);
       },
       error: () => {},
@@ -50,6 +52,11 @@ export class SiteConfigService {
   /** Owner name appropriate for the active UI language (FA falls back to EN). */
   displayName(): string {
     return this.i18n.isFa && this.authorNameFa() ? this.authorNameFa() : this.authorName();
+  }
+
+  /** Public site name appropriate for the active UI language. */
+  siteName(): string {
+    return this.i18n.isFa && this.siteNameFa() ? this.siteNameFa() : this.siteNameEn();
   }
 
   /** First letter of the site/brand mark, used for the logo glyph. */

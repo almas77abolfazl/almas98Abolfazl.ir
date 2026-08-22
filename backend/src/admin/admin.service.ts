@@ -366,7 +366,7 @@ export class AdminService {
     return this.siteSettings.getSettings();
   }
 
-  async updateSettings(data: { skillsCardView?: boolean; themeMode?: string; themePrimary?: string; themeSecondary?: string; siteName?: string; siteUrl?: string }) {
+  async updateSettings(data: { skillsCardView?: boolean; themeMode?: string; themePrimary?: string; themeSecondary?: string; siteName?: string; siteNameFa?: string; siteUrl?: string }) {
     return this.siteSettings.updateSettings(data);
   }
 

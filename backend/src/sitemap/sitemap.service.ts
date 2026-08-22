@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 /** Public static routes of the frontend site that should always appear in the sitemap. */
-const STATIC_PATHS = ['', '/about-me', '/experiences', '/skills', '/blog', '/videos', '/projects'];
+const STATIC_PATHS = ['', '/about-me', '/blog', '/videos', '/projects'];
 
 interface SitemapUrl {
   loc: string;

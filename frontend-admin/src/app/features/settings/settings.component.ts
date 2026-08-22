@@ -11,6 +11,7 @@ interface AdminSettings {
   themePrimary?: string | null;
   themeSecondary?: string | null;
   siteName?: string | null;
+  siteNameFa?: string | null;
   siteUrl?: string | null;
   showAbout?: boolean;
   showExperiences?: boolean;
@@ -46,6 +47,7 @@ export class SettingsComponent implements OnInit {
   settings = signal<AdminSettings>({ skillsCardView: false });
 
   siteName = signal<string>('');
+  siteNameFa = signal<string>('');
   siteUrl = signal<string>('');
 
   themePresets: ThemePreset[] = [
@@ -83,6 +85,7 @@ export class SettingsComponent implements OnInit {
       next: (s) => {
         this.settings.set(s);
         this.siteName.set(s.siteName ?? '');
+        this.siteNameFa.set(s.siteNameFa ?? '');
         this.siteUrl.set(s.siteUrl ?? '');
         const sec: Record<string, boolean> = {};
         for (const d of this.sectionToggles) {
@@ -110,7 +113,11 @@ export class SettingsComponent implements OnInit {
   }
 
   saveSite(): void {
-    const body = { siteName: this.siteName().trim() || null, siteUrl: this.siteUrl().trim() || null };
+    const body = {
+      siteName: this.siteName().trim() || null,
+      siteNameFa: this.siteNameFa().trim() || null,
+      siteUrl: this.siteUrl().trim() || null,
+    };
     this.http.put('/api/admin/settings', body).subscribe({
       next: () => this.toast.success(this.i18n.t('toast_saved')),
       error: () => this.toast.error(this.i18n.t('save_failed')),

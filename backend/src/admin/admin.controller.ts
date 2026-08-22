@@ -460,6 +460,7 @@ export class AdminController {
       themePrimary?: string;
       themeSecondary?: string;
       siteName?: string;
+      siteNameFa?: string;
       siteUrl?: string;
       showAbout?: boolean;
       showExperiences?: boolean;

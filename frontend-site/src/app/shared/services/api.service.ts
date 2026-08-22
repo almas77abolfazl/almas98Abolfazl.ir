@@ -136,6 +136,7 @@ export interface SiteSettings {
   themePrimary?: string | null;
   themeSecondary?: string | null;
   siteName?: string | null;
+  siteNameFa?: string | null;
   siteUrl?: string | null;
   showAbout?: boolean;
   showExperiences?: boolean;

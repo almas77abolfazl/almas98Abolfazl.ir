@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.seo.update({
-      title: this.config.displayName(),
+      title: this.config.siteName(),
       description: this.i18n.t('seoHomeDesc'),
       path: '/',
       type: 'profile',
@@ -52,8 +52,7 @@ export class HomeComponent implements OnInit {
 
     this.api.getAboutMe().subscribe(data => {
       this.aboutMe.set(data);
-      const ownerName = this.i18n.isFa && data.fullNameFa ? data.fullNameFa : data.fullName;
-      this.seo.setTitle(ownerName);
+      this.seo.setTitle(this.config.siteName());
       this.applyPersonJsonLd(data);
     });
   }
@@ -104,14 +103,12 @@ export class HomeComponent implements OnInit {
   }
 
   private applyPersonJsonLd(aboutMe?: AboutMe): void {
-    const ownerName =
-      aboutMe && this.i18n.isFa && aboutMe.fullNameFa
-        ? aboutMe.fullNameFa
-        : aboutMe?.fullName || this.config.displayName();
     const schema: Record<string, unknown> = {
       '@context': 'https://schema.org',
       '@type': 'Person',
-      name: ownerName,
+      '@id': `${this.config.siteUrl()}/#person`,
+      name: this.config.siteNameEn(),
+      alternateName: this.config.siteNameFa() || undefined,
       url: this.config.siteUrl(),
     };
     if (aboutMe?.title) {
@@ -119,8 +116,10 @@ export class HomeComponent implements OnInit {
     }
     schema['image'] = this.config.resolveImage(aboutMe?.avatarUrl);
     const socials = aboutMe
-      ? [aboutMe.linkedinUrl, aboutMe.githubUrl, aboutMe.youtubeUrl, aboutMe.twitterUrl, aboutMe.instagramUrl]
-          .filter((u): u is string => !!u)
+      ? [...new Set(
+          [aboutMe.linkedinUrl, aboutMe.githubUrl, aboutMe.youtubeUrl, aboutMe.twitterUrl, aboutMe.instagramUrl]
+            .filter((u): u is string => !!u),
+        )]
       : [];
     if (socials.length) {
       schema['sameAs'] = socials;
