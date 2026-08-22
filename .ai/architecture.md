@@ -28,7 +28,7 @@ almas98abolfazl.ir/
 
 ### `backend`
 - Multi-stage build from `backend/Dockerfile`
-- Runs on port `3000` (internal)
+- Runs on port `3000`; production Compose binds it to VPS loopback only for frontend prerender builds
 - `main.ts` starts with `import 'dotenv/config'` to load `.env`
 - `app.setGlobalPrefix('api')` — all routes are under `/api`
 - `prisma db push` runs as an entrypoint step before the app starts

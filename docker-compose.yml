@@ -26,6 +26,9 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     restart: unless-stopped
+    # Build-time prerender reaches this via the VPS loopback only; it is not public.
+    ports:
+      - "127.0.0.1:3000:3000"
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-almas98abolfazl}?schema=public
       PORT: 3000
@@ -55,11 +58,11 @@ services:
     build:
       context: ./frontend-site
       dockerfile: Dockerfile
-      # Prerender fetches public content through the private Compose network,
-      # avoiding the public CDN/WAF during image builds.
-      network: app-network
+      # BuildKit supports host/default/none, not the Compose bridge network.
+      # The backend is published on the VPS loopback only for this build step.
+      network: host
       args:
-        PRERENDER_API_BASE_URL: http://backend:3000/api
+        PRERENDER_API_BASE_URL: http://127.0.0.1:3000/api
     restart: unless-stopped
     ports:
       - "3001:80"

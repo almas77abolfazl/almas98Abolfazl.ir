@@ -56,7 +56,7 @@ No active feature work is currently scheduled.
 ### Deployment safety
 
 - The frontend-site Docker build receives `PRERENDER_API_BASE_URL` only in the builder stage; it is absent from the final Nginx image.
-- Production Docker prerender reaches the already-running backend through the private Compose network (`http://backend:3000/api`), avoiding the public CDN/WAF during the build.
+- Production Docker prerender reaches the already-running backend through VPS loopback (`http://127.0.0.1:3000/api`) with BuildKit host networking, avoiding the public CDN/WAF during the build.
 - Repository Nginx serves existing prerendered HTML and falls back to `index.csr.html`; prerender HTML uses revalidation/no-cache headers while hashed assets keep long cache lifetimes.
 - Safe deployment sequence: build the `frontend-site` image first, then recreate only that service after a successful build. A failed build leaves the running version available.
 - Host Nginx on the VPS has been reviewed but intentionally remains unchanged.
