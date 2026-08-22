@@ -22,7 +22,8 @@ export class MarkdownService {
     // Preserve intentional extra blank lines
     processedMd = this.preserveExtraSpacing(processedMd);
 
-    return marked.parse(processedMd, { async: false }) as string;
+    const html = marked.parse(processedMd, { async: false }) as string;
+    return this.wrapTables(html);
   }
 
   /** Keeps intentional extra blank lines from the Markdown editor visible in the rendered article. */
@@ -32,5 +33,10 @@ export class MarkdownService {
       const spacers = '<div class="article-spacer" aria-hidden="true"></div>'.repeat(extraBlankLines);
       return `\n\n${spacers}\n\n`;
     });
+  }
+
+  /** Gives wide tables a scroll/clipping boundary without changing table semantics. */
+  private wrapTables(html: string): string {
+    return html.replace(/<table>([\s\S]*?)<\/table>/g, '<div class="article-table-wrap"><table>$1</table></div>');
   }
 }

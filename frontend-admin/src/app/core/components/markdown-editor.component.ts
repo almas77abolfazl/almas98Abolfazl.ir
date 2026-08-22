@@ -1,7 +1,6 @@
 import { Component, ViewChild, ElementRef, computed, signal, inject, Input, ChangeDetectionStrategy, forwardRef } from '@angular/core';
 import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
 import { ToastService } from '../../core/services/toast.service';
@@ -21,7 +20,6 @@ export class MarkdownEditorComponent implements ControlValueAccessor {
   @Input() dir: 'ltr' | 'rtl' = 'ltr';
   @Input() isFa = false;
 
-  private sanitizer = inject(DomSanitizer);
   private http = inject(HttpClient);
   private i18n = inject(AdminI18nService);
   private toast = inject(ToastService);
@@ -30,7 +28,8 @@ export class MarkdownEditorComponent implements ControlValueAccessor {
   uploading = signal(false);
   disabled = false;
 
-  preview = computed<SafeHtml>(() => {
+  /** Mirrors the frontend-site MarkdownService without creating a cross-app dependency. */
+  preview = computed<string>(() => {
     let md = this.value() || '';
 
     // Process :::ltr and :::rtl
@@ -45,7 +44,7 @@ export class MarkdownEditorComponent implements ControlValueAccessor {
     });
 
     const html = marked.parse(md, { async: false }) as string;
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    return this.wrapTables(html);
   });
 
   private onChange: (v: string) => void = () => {};
@@ -53,6 +52,7 @@ export class MarkdownEditorComponent implements ControlValueAccessor {
 
   writeValue(val: string): void {
     this.value.set(val ?? '');
+    requestAnimationFrame(() => this.resizeTextarea());
   }
 
   registerOnChange(fn: (v: string) => void): void {
@@ -71,6 +71,15 @@ export class MarkdownEditorComponent implements ControlValueAccessor {
     this.value.set(val);
     this.onChange(val);
     this.onTouched();
+    this.resizeTextarea();
+  }
+
+  /** Keeps long-document scrolling on the page rather than inside the textarea. */
+  resizeTextarea(): void {
+    const ta = this.taRef?.nativeElement;
+    if (!ta) return;
+    ta.style.height = 'auto';
+    ta.style.height = `${Math.max(512, ta.scrollHeight)}px`;
   }
 
   private surround(before: string, after = before, placeholder = ''): void {
@@ -176,5 +185,9 @@ export class MarkdownEditorComponent implements ControlValueAccessor {
     const text = `${padBefore}${snippet}${padAfter}`;
     const next = before + text + after;
     this.apply(next, before.length + text.length, before.length + text.length);
+  }
+
+  private wrapTables(html: string): string {
+    return html.replace(/<table>([\s\S]*?)<\/table>/g, '<div class="article-table-wrap"><table>$1</table></div>');
   }
 }

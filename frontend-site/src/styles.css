@@ -476,19 +476,49 @@ input:focus, textarea:focus, select:focus {
     unicode-bidi: isolate;
     font-family: ui-monospace, "JetBrains Mono", "Fira Code", monospace;
   }
-  .article-content table {
-    @apply w-full mb-6 border-collapse text-sm text-left rtl:text-right;
-    display: block;
-    width: 100%;
+  .article-content .article-table-wrap {
+    @apply my-6 w-full overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+  .dark .article-content .article-table-wrap {
+    scrollbar-color: #475569 transparent;
+  }
+  .article-content .article-table-wrap::-webkit-scrollbar {
+    height: 8px;
+  }
+  .article-content .article-table-wrap::-webkit-scrollbar-track {
+    margin: 0 0.75rem;
+    background: transparent;
+  }
+  .article-content .article-table-wrap::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border: 2px solid transparent;
+    border-radius: 9999px;
+    background-clip: padding-box;
+  }
+  .article-content .article-table-wrap::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+  }
+  .dark .article-content .article-table-wrap::-webkit-scrollbar-thumb {
+    background-color: #475569;
+  }
+  .dark .article-content .article-table-wrap::-webkit-scrollbar-thumb:hover {
+    background-color: #64748b;
+  }
+  .article-content table {
+    @apply m-0 w-full min-w-max border-collapse text-sm text-left rtl:text-right;
   }
   .article-content thead {
     @apply bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300;
   }
   .article-content th, .article-content td {
-    @apply border border-slate-200 dark:border-slate-700 px-4 py-2;
+    @apply border-e border-b border-slate-200 px-4 py-3 align-top dark:border-slate-700;
   }
+  .article-content th:last-child, .article-content td:last-child { border-inline-end: 0; }
+  .article-content tbody tr:last-child td { border-bottom: 0; }
   .article-content tr:nth-child(even) {
     @apply bg-slate-50 dark:bg-slate-800/50;
   }
