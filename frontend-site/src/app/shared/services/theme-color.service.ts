@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ApiService } from './api.service';
 import { SiteSettings } from './api.service';
 
@@ -59,10 +60,14 @@ function lighten(hex: string, ratio: number): string {
 @Injectable({ providedIn: 'root' })
 export class ThemeColorService {
   private readonly storageKey = 'site_theme';
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   constructor(private api: ApiService) {}
 
   loadAndApply(): void {
+    if (!this.isBrowser) {
+      return;
+    }
     this.api.getSettings().subscribe({
       next: (s) => this.applyFromSettings(s),
       error: () => {},
@@ -78,6 +83,9 @@ export class ThemeColorService {
   }
 
   apply(primary: string, secondary: string): void {
+    if (!this.isBrowser) {
+      return;
+    }
     const primaryLight = lighten(primary, 0.25);
     const secondaryLight = lighten(secondary, 0.25);
     const root = document.documentElement.style;
@@ -104,6 +112,9 @@ export class ThemeColorService {
   }
 
   clear(): void {
+    if (!this.isBrowser) {
+      return;
+    }
     const root = document.documentElement.style;
     THEME_VARS.forEach((v) => root.removeProperty(v));
     try {

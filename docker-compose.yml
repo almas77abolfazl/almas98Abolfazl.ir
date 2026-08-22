@@ -55,6 +55,8 @@ services:
     build:
       context: ./frontend-site
       dockerfile: Dockerfile
+      args:
+        PRERENDER_API_BASE_URL: ${PRERENDER_API_BASE_URL:-https://almas98abolfazl.ir/api}
     restart: unless-stopped
     ports:
       - "3001:80"

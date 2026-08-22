@@ -75,8 +75,12 @@
       "type": "shell",
       "command": "npm run start",
       "options": {
-        "cwd": "${workspaceFolder}/frontend-site"
+        "cwd": "${workspaceFolder}/frontend-site",
+        "env": {
+          "PRERENDER_API_BASE_URL": "http://localhost:3000/api"
+        }
       },
+      "dependsOn": ["backend:debug"],
       "isBackground": true,
       "problemMatcher": {
         "owner": "angular-site",
@@ -109,6 +113,7 @@
       "options": {
         "cwd": "${workspaceFolder}/frontend-admin"
       },
+      "dependsOn": ["backend:debug"],
       "isBackground": true,
       "problemMatcher": {
         "owner": "angular-admin",

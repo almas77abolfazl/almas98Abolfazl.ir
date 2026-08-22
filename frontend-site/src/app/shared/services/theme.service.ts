@@ -1,13 +1,20 @@
-import { Injectable, signal, effect } from '@angular/core';
+import { Injectable, signal, effect, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly storageKey = 'app_theme';
-  private readonly media = window.matchMedia('(prefers-color-scheme: dark)');
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private media?: MediaQueryList;
 
   isDark = signal<boolean>(false);
 
   constructor() {
+    if (!this.isBrowser) {
+      return;
+    }
+
+    this.media = window.matchMedia('(prefers-color-scheme: dark)');
     const stored = localStorage.getItem(this.storageKey);
     this.isDark.set(stored ? stored === 'dark' : this.media.matches);
     this.applyTheme(this.isDark());
@@ -22,11 +29,17 @@ export class ThemeService {
   }
 
   toggle(): void {
+    if (!this.isBrowser) {
+      return;
+    }
     this.isDark.update(v => !v);
     localStorage.setItem(this.storageKey, this.isDark() ? 'dark' : 'light');
   }
 
   private applyTheme(dark: boolean): void {
+    if (!this.isBrowser) {
+      return;
+    }
     const html = document.documentElement;
     html.classList.toggle('dark', dark);
 

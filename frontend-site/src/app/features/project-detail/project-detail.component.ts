@@ -20,7 +20,9 @@ export class ProjectDetailComponent implements OnInit {
   descriptionHtml = computed<string>(() => {
     const p = this.project();
     if (!p) return '';
-    const raw = this.i18n.isFa ? p.descriptionFa || p.description : p.description;
+    const raw = this.i18n.isFa
+      ? p.descriptionFa || p.description
+      : p.description || p.descriptionFa;
     if (!raw) return '';
     return this.markdownService.renderMarkdown(raw);
   });
@@ -54,11 +56,13 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   private applySeo(project: Project): void {
-    const description = (this.i18n.isFa ? project.descriptionFa : project.description)?.trim()
-      || project.description?.slice(0, 160) || '';
+    const title = this.title(project);
+    const description = (this.i18n.isFa
+      ? project.descriptionFa || project.description
+      : project.description || project.descriptionFa)?.trim() || '';
     const path = `/projects/${project.id}`;
     this.seo.update({
-      title: this.i18n.isFa ? (project.titleFa || project.title) : project.title,
+      title,
       description,
       image: project.coverUrl,
       path,
@@ -68,7 +72,7 @@ export class ProjectDetailComponent implements OnInit {
     const schema: Record<string, unknown> = {
       '@context': 'https://schema.org',
       '@type': 'CreativeWork',
-      name: this.i18n.isFa ? (project.titleFa || project.title) : project.title,
+      name: title,
       description,
       author: { '@type': 'Person', name: this.config.displayName() },
     };
@@ -82,6 +86,8 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   title(project: Project): string {
-    return this.i18n.isFa ? (project.titleFa || project.title) : project.title;
+    return this.i18n.isFa
+      ? project.titleFa || project.title || ''
+      : project.title || project.titleFa || '';
   }
 }

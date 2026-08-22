@@ -198,8 +198,13 @@ export class AdminService {
       patch.readingTime = this.calcReadingTime(data.content);
     }
     if (data.published === true && !data.publishedAt) {
-      const existing = await this.prisma.articles.findUnique({ where: { id }, select: { publishedAt: true } });
-      if (!existing?.publishedAt) {
+      const existing = await this.prisma.articles.findUnique({
+        where: { id },
+        select: { published: true, publishedAt: true },
+      });
+      // Timestamp only the real draft-to-published transition. Historical
+      // published rows with no date remain untouched until intentionally fixed.
+      if (existing && !existing.published && !existing.publishedAt) {
         patch.publishedAt = new Date();
       }
     }

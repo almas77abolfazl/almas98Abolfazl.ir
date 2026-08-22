@@ -222,7 +222,7 @@ Both frontend apps upgraded to Angular 22.1.1, build green, behavior preserved. 
 ```markdown
 | Feature | Status | Notes |
 | ------- | ------ | ----- |
-| SSR     | Planned| Phase 16.5 |
+| SSR     | Done   | Phase 16.5 static prerender |
 | RTL     | Done   | Phase 16.1 |
 ```
 
@@ -266,33 +266,42 @@ console.log(x);
   - *Risk:* low.
   - *Files:* `styles.css`, `article-detail.component.html`.
 
-## Phase 16.5 — SSR/SEO via Prerendering (Frontend-Site Infra)
+## Phase 16.5 — SSR/SEO via Prerendering (Frontend-Site Infra)  [DONE ✅]
 
 **Scope:** make article/blog/static routes crawlable with real HTML. Prefer **prerender** over persistent SSR.
 
-- [ ] **5.1** Make browser-API usages SSR-safe (prereq for prerender). In `frontend-site`:
+- [x] **5.1** Made browser-API usages SSR-safe for prerender. In `frontend-site`:
   - `ThemeService` (`theme.service.ts:6`): move `window.matchMedia` into constructor with `isPlatformBrowser`; guard `localStorage`/`document`.
   - `I18nService` (`i18n.service.ts:186,205,209`): guard `localStorage`/`document`; apply `dir`/`lang` only in browser/`afterNextRender`.
   - `SiteConfigService`/`ThemeColorService` (`theme-color.service.ts:100,110`): guard `localStorage`.
   - `ArticleDetailComponent` likes (`article-detail.component.ts:37,98,106`): guard `localStorage` with `isPlatformBrowser`.
-  - *Acceptance:* `frontend-site` builds with `prerender`; prerendered `/`, `/blog`, `/blog/:slug`, `/about-me`, `/projects`, `/videos` contain real content (no `localStorage is not defined`).
+  - *Acceptance:* `frontend-site` prerender build succeeds with real public content and no browser-only API failure; analytics does not record page views during prerender.
   - *Risk:* medium — touches core services; keep SPA behavior identical in browser.
   - *Files:* `theme.service.ts`, `i18n.service.ts`, `theme-color.service.ts`, `site-config.service.ts`, `article-detail.component.ts`, `app.config.ts`.
 
-- [ ] **5.2** Enable Angular prerendering for public routes: add `prerender` to `angular.json` build (`@angular/build:application` supports `prerender` + `routes`/`routesFile`); create `routes.txt` + route generator for `/blog/:slug` (fetch slugs from API). Admin app untouched.
-  - *Acceptance:* build emits prerendered HTML per public route; Nginx still serves static files (no Node process).
-  - *Risk:* medium — build pipeline change; verify Docker `Dockerfile` copies `dist/frontend-site/browser` and Nginx `try_files` picks up nested `index.html`.
-  - *Files:* `frontend-site/angular.json`, new `routes.txt`/generator, `frontend-site/Dockerfile` (verify only).
+- [x] **5.2** Enabled Angular 22 static prerendering: `outputMode: static`, server routes for public static pages, and `getPrerenderParams` for published `/blog/:slug` plus public `/projects/:id`.
+  - *Acceptance:* build emits nested HTML for all generated routes while keeping a static Nginx runtime; Admin remains untouched.
+  - *Risk:* medium — build pipeline change; validated with a production-like Docker image.
+  - *Files:* `frontend-site/angular.json`, `app.routes.server.ts`, `app.config.server.ts`, API-base token/service, `frontend-site/Dockerfile`.
 
-- [ ] **5.3** Verify/extend SEO for prerendered articles: ensure `SeoService` runs during prerender (uses `DOCUMENT` → safe) so OG/JSON-LD are in static HTML. Add `hreflang` alternates if feasible. Confirm `sitemap.xml` includes all published slugs.
-  - *Acceptance:* prerendered `/blog/my-post/index.html` contains OG title, canonical, `Article` JSON-LD.
+- [x] **5.3** Verified SEO rendering during prerender: route HTML contains title, description, canonical, Open Graph, Twitter metadata and existing Article/CreativeWork JSON-LD where applicable. `hreflang` remains explicitly deferred to Phase 16.7 locale routes.
+  - *Acceptance:* prerendered article/project HTML contains real content and its applicable SEO metadata.
   - *Risk:* low.
   - *Files:* `seo.service.ts` (verify), `article-detail.component.ts`.
 
-- [ ] **5.4** Nginx/Docker verification: prerendered nested `index.html` served (Nginx `try_files $uri $uri/ /index.html` already handles). No infra rewrite.
-  - *Acceptance:* `curl /blog/<slug>/` returns prerendered HTML with article text.
+- [x] **5.4** Updated and validated Nginx/Docker serving: prerendered route directories serve their own HTML; missing dynamic/invalid routes return `index.csr.html` for Angular CSR/404; HTML revalidates while hashed assets keep their long cache.
+  - *Acceptance:* production-like Docker build and `nginx -t` pass; Home, About, article and project routes return prerendered content; new dynamic and invalid routes return the CSR fallback.
   - *Risk:* low.
-  - *Files:* `frontend-site/nginx.conf` (verify only), `docker-compose.yml` (no change).
+  - *Files:* `frontend-site/nginx.conf`, `frontend-site/Dockerfile`, `docker-compose.yml`, `docs/DEPLOYMENT.md`.
+
+### Final architecture decision (Phase 16.5)
+
+- Angular runs as **static prerender**, not a persistent SSR server. Static public routes plus published article slugs and public project IDs are generated at build time.
+- Server/prerender HTTP uses the required build-time `PRERENDER_API_BASE_URL`; browser requests keep using relative `/api`.
+- Nginx serves prerendered nested `index.html` files and falls back to `index.csr.html` for content created after a build and for invalid routes; canonical no-trailing-slash URLs are served directly.
+- Deploy safely: build `frontend-site` first against the existing public API; only after success run `docker compose up -d --no-deps frontend-site`, keeping the previous site available on build failure.
+- Host Nginx on the VPS remains unchanged: it preserves the request URI and proxies it to the frontend-site container. No host-level cache rule was added.
+- Validation completed: local Angular build prerendered 9 routes; production-like Docker image built with a build-time API URL; `nginx -t` passed; prerendered Home/About/article/project HTML and CSR fallback routes returned the expected content with `Cache-Control: no-cache, must-revalidate`.
 
 ## Phase 16.6 — Admin Daily Activity Report (Backend + Admin)  [DONE ✅]
 

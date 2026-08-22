@@ -1,5 +1,5 @@
-import { Component, OnInit, HostListener, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, HostListener, signal, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../shared/services/api.service';
@@ -18,6 +18,7 @@ import { LazyInitDirective } from '../../shared/directives/lazy-init.directive';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   aboutMe = signal<AboutMe | undefined>(undefined);
   experiences = signal<Experience[]>([]);
   skills = signal<Skill[]>([]);
@@ -263,6 +264,9 @@ export class HomeComponent implements OnInit {
   }
 
   openTestimonial(t: Testimonial): void {
+    if (!this.isBrowser) {
+      return;
+    }
     if (this.testiDragged) {
       this.testiDragged = false;
       return;
@@ -272,6 +276,9 @@ export class HomeComponent implements OnInit {
   }
 
   closeTestimonial(): void {
+    if (!this.isBrowser) {
+      return;
+    }
     this.selectedTestimonial.set(null);
     document.body.classList.remove('overflow-hidden');
   }

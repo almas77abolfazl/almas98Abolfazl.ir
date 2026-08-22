@@ -1,5 +1,5 @@
-import { Component, OnInit, signal, computed, HostListener, ChangeDetectionStrategy, afterNextRender, ViewChild, ElementRef, DestroyRef, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, signal, computed, HostListener, ChangeDetectionStrategy, afterNextRender, ViewChild, ElementRef, DestroyRef, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { ApiService, Article } from '../../shared/services/api.service';
 import { I18nService } from '../../shared/services/i18n.service';
@@ -35,6 +35,7 @@ export class ArticleDetailComponent implements OnInit {
 
   private tocObserver?: IntersectionObserver;
   private lastSlug?: string;
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   constructor(
     public i18n: I18nService,
@@ -66,7 +67,9 @@ export class ArticleDetailComponent implements OnInit {
       next: (data) => {
         this.article.set(data);
         this.likeCount.set(data.likeCount);
-        this.liked.set(localStorage.getItem(`liked_${slug}`) === '1');
+        if (this.isBrowser) {
+          this.liked.set(localStorage.getItem(`liked_${slug}`) === '1');
+        }
         this.loading.set(false);
         this.applySeo(data);
       },
@@ -112,6 +115,9 @@ export class ArticleDetailComponent implements OnInit {
 
   @HostListener('window:scroll')
   onScroll(): void {
+    if (!this.isBrowser) {
+      return;
+    }
     const el = document.documentElement;
     const height = el.scrollHeight - el.clientHeight;
     this.progress.set(height > 0 ? Math.min(100, (el.scrollTop / height) * 100) : 0);
@@ -127,7 +133,9 @@ export class ArticleDetailComponent implements OnInit {
         next: (res) => {
           this.likeCount.set(res.likeCount);
           this.liked.set(false);
-          localStorage.removeItem(`liked_${art.slug}`);
+          if (this.isBrowser) {
+            localStorage.removeItem(`liked_${art.slug}`);
+          }
         },
       });
     } else {
@@ -135,21 +143,32 @@ export class ArticleDetailComponent implements OnInit {
         next: (res) => {
           this.likeCount.set(res.likeCount);
           this.liked.set(true);
-          localStorage.setItem(`liked_${art.slug}`, '1');
+          if (this.isBrowser) {
+            localStorage.setItem(`liked_${art.slug}`, '1');
+          }
         },
       });
     }
   }
 
   copyTocClick(id: string): void {
+    if (!this.isBrowser) {
+      return;
+    }
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   scrollTop(): void {
+    if (!this.isBrowser) {
+      return;
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   private buildToc(): void {
+    if (!this.isBrowser) {
+      return;
+    }
     const host = this.contentRef?.nativeElement;
     if (!host) {
       return;

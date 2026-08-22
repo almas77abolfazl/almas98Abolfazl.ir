@@ -1,4 +1,5 @@
-import { Injectable, signal, effect } from '@angular/core';
+import { Injectable, signal, effect, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 
 export type Language = 'en' | 'fa';
@@ -181,10 +182,15 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
 @Injectable({ providedIn: 'root' })
 export class I18nService {
   private readonly storageKey = 'app_lang';
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   currentLang = signal<Language>('en');
 
   constructor(private router: Router) {
+    if (!this.isBrowser) {
+      return;
+    }
+
     const stored = localStorage.getItem(this.storageKey) as Language | null;
     if (stored) {
       this.currentLang.set(stored);
@@ -202,12 +208,18 @@ export class I18nService {
   }
 
   toggleLang(): void {
+    if (!this.isBrowser) {
+      return;
+    }
     const next: Language = this.currentLang() === 'en' ? 'fa' : 'en';
     this.currentLang.set(next);
     localStorage.setItem(this.storageKey, next);
   }
 
   private applyLang(lang: Language): void {
+    if (!this.isBrowser) {
+      return;
+    }
     const html = document.documentElement;
     html.lang = lang;
     html.dir = lang === 'fa' ? 'rtl' : 'ltr';
