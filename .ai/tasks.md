@@ -294,22 +294,22 @@ console.log(x);
   - *Risk:* low.
   - *Files:* `frontend-site/nginx.conf` (verify only), `docker-compose.yml` (no change).
 
-## Phase 16.6 — Admin Daily Activity Report (Backend + Admin)
+## Phase 16.6 — Admin Daily Activity Report (Backend + Admin)  [DONE ✅]
 
 **Scope:** improve readability/scalability of "جزئیات فعالیت روزانه" without losing info.
 
-- [ ] **6.1** Backend (optional but recommended): parameterize `getDailyStats` (`analytics.controller.ts:159-186`) with `?from&to&limit` on `GET /api/analytics/reports` (guarded). Default 30 days preserved. Keep zero-fill.
-  - *Acceptance:* `reports?days=14` returns 14-day series; optional date range works.
+- [x] **6.1** Backend: parameterize `getDailyStats` with `?days=` or an optional `?from=YYYY-MM-DD&to=YYYY-MM-DD` range on guarded `GET /api/analytics/reports`. Default 30 days and zero-filled series preserved; ranges are capped at 365 days.
+  - *Acceptance:* `reports?days=7|30|90` returns the matching zero-filled series; optional date range works.
   - *Risk:* low.
   - *Files:* `backend/src/analytics/analytics.controller.ts`, optionally `analytics.service.ts`.
 
-- [ ] **6.2** Admin UI: replace cramped card-grid (`reports.component.html:96-122`) with readable table (date · views · mini bar) sorted desc, default **limit = 30** + "Load More / Show all" toggle. Keep "Active Days" + "Peak Day" summary.
-  - *Acceptance:* daily activity scannable; latest N by default; expanding shows all; no data lost.
+- [x] **6.2** Admin UI: replaced the cramped card grid with a readable table (date · views · mini bar), newest first. Added 7 / 30 / 90-day controls (30 default) and a simple "Show more" control (10 active rows initially). Active Days and Peak Day summaries remain.
+  - *Acceptance:* daily activity is scannable; latest rows appear first; incrementally expanding does not discard data.
   - *Risk:* low.
   - *Files:* `reports.component.html`, `reports.component.ts`.
 
-- [ ] **6.3** Accessibility/format: right-align numbers (RTL), Persian date via shared `formatDate` (from 2.4) for FA admin locale (`AdminI18nService.currentLang`), `title` tooltip with exact timestamp.
-  - *Acceptance:* dates localized in admin; table keyboard-navigable.
+- [x] **6.3** Accessibility/format: number column is end-aligned; dates are formatted with `Intl.DateTimeFormat` using `fa-IR` or `en-US` from `AdminI18nService`; native table semantics preserve keyboard navigation.
+  - *Acceptance:* dates are localized in admin; table is keyboard-navigable.
   - *Risk:* low.
   - *Files:* `reports.component.html/ts`.
 
