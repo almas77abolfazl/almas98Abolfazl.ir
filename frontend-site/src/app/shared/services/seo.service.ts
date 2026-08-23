@@ -14,6 +14,8 @@ export interface SeoData {
   path?: string;
   /** Open Graph type. Defaults to 'website'. */
   type?: 'website' | 'article' | 'profile';
+  /** Content language when it differs from the current UI language. */
+  language?: string;
   /** When true, adds a `robots: noindex` tag (e.g. for the 404 page). Defaults to false. */
   noindex?: boolean;
 }
@@ -45,7 +47,11 @@ export class SeoService {
     const image = this.config.resolveImage(data.image);
     const description = (data.description?.trim() || '').replace(/\{name\}/g, this.config.displayName());
     const type = data.type ?? 'website';
-    const locale = this.i18n.currentLang() === 'fa' ? 'fa_IR' : 'en_US';
+    const locale = data.language === 'fa'
+      ? 'fa_IR'
+      : data.language === 'en'
+        ? 'en_US'
+        : this.i18n.currentLang() === 'fa' ? 'fa_IR' : 'en_US';
 
     this.setTitle(data.title);
     const fullTitle = this.fullTitle(data.title);

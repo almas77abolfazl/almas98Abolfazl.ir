@@ -75,7 +75,7 @@ cd /portfolio/almas98Abolfazl.ir
 # Build and start the API first: frontend-site prerender uses the VPS loopback.
 docker compose build backend frontend-admin
 docker compose up -d --wait backend
-docker compose build frontend-site
+docker compose build --no-cache frontend-site
 docker compose up -d --no-deps frontend-admin frontend-site
 docker compose ps            # all healthy/running
 docker compose logs -f backend   # confirm "db push" / migrations applied
@@ -178,7 +178,7 @@ Use this when the backend API contract and admin panel have not changed:
 cd /portfolio/almas98Abolfazl.ir
 # The backend must be healthy: prerender reads content over the VPS loopback.
 docker compose up -d --wait backend
-docker compose build frontend-site
+docker compose build --no-cache frontend-site
 docker compose up -d --no-deps frontend-site
 docker image prune -f          # clean up old dangling images
 ```
@@ -200,7 +200,7 @@ docker compose build backend frontend-admin
 
 # The new backend must be healthy before the site is prerendered.
 docker compose up -d --wait backend
-docker compose build frontend-site
+docker compose build --no-cache frontend-site
 
 # Recreate only after all required builds have succeeded.
 docker compose up -d --no-deps frontend-admin frontend-site

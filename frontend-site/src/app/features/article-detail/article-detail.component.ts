@@ -93,6 +93,7 @@ export class ArticleDetailComponent implements OnInit {
       image: article.coverUrl,
       path,
       type: 'article',
+      language: article.language,
     });
 
     const schema: Record<string, unknown> = {
