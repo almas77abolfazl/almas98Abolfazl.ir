@@ -460,10 +460,16 @@ input:focus, textarea:focus, select:focus {
   }
   .article-content img { @apply my-6 w-full rounded-xl; }
   .article-content hr { @apply my-8 border-slate-200 dark:border-slate-700; }
-  .article-content code {
-    @apply rounded px-1.5 py-0.5 text-sm font-medium dark:bg-slate-800;
-    color: var(--brand-primary);
-    background-color: rgba(var(--brand-primary-rgb), 0.12);
+  .article-content :not(pre) > code {
+    @apply rounded-md px-1.5 py-0.5 text-sm font-mono font-medium;
+    color: #e11d48;
+    background-color: rgba(225, 29, 72, 0.08);
+    border: 1px solid rgba(225, 29, 72, 0.18);
+  }
+  .dark .article-content :not(pre) > code {
+    color: #f472b6;
+    background-color: rgba(244, 114, 182, 0.15);
+    border: 1px solid rgba(244, 114, 182, 0.3);
   }
   .article-content pre {
     @apply my-6 rounded-xl bg-slate-900 p-4 text-sm leading-relaxed text-slate-100 dark:bg-black/40;
@@ -473,6 +479,54 @@ input:focus, textarea:focus, select:focus {
   }
   .article-content pre code {
     @apply bg-transparent p-0 text-slate-100 dark:text-slate-100;
+  }
+  /* Prism syntax highlighting theme */
+  .article-content .token.comment,
+  .article-content .token.prolog,
+  .article-content .token.doctype,
+  .article-content .token.cdata {
+    color: #64748b;
+    font-style: italic;
+  }
+  .article-content .token.punctuation {
+    color: #94a3b8;
+  }
+  .article-content .token.property,
+  .article-content .token.tag,
+  .article-content .token.boolean,
+  .article-content .token.number,
+  .article-content .token.constant,
+  .article-content .token.symbol {
+    color: #f59e0b;
+  }
+  .article-content .token.selector,
+  .article-content .token.attr-name,
+  .article-content .token.string,
+  .article-content .token.char,
+  .article-content .token.builtin {
+    color: #10b981;
+  }
+  .article-content .token.operator,
+  .article-content .token.entity,
+  .article-content .token.url,
+  .article-content .language-css .token.string,
+  .article-content .style .token.string {
+    color: #38bdf8;
+  }
+  .article-content .token.atrule,
+  .article-content .token.attr-value,
+  .article-content .token.keyword {
+    color: #c084fc;
+    font-weight: 600;
+  }
+  .article-content .token.function,
+  .article-content .token.class-name {
+    color: #60a5fa;
+  }
+  .article-content .token.regex,
+  .article-content .token.important,
+  .article-content .token.variable {
+    color: #f43f5e;
   }
   .article-content pre .copy-btn {
     position: absolute;
@@ -532,7 +586,8 @@ input:focus, textarea:focus, select:focus {
     background-color: #64748b;
   }
   .article-content table {
-    @apply m-0 w-full min-w-max border-collapse text-sm text-left rtl:text-right;
+    @apply m-0 w-full border-collapse text-sm text-left rtl:text-right;
+    table-layout: auto;
   }
   .article-content thead {
     @apply bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300;

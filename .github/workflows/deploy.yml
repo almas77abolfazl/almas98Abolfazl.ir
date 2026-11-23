@@ -1,0 +1,80 @@
+name: CI & Production Deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: production_deploy
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Build & Verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build Backend
+        run: |
+          cd backend
+          npm ci
+          npm run build
+
+      - name: Build Admin Panel
+        run: |
+          cd frontend-admin
+          npm ci
+          npm run build
+
+      - name: Type-check Frontend Site
+        run: |
+          cd frontend-site
+          npm ci
+          npx tsc --noEmit
+
+  deploy:
+    name: Deploy to Production VPS
+    needs: verify
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Execute remote deployment commands
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -e
+            echo "🚀 Starting deployment on VPS..."
+            cd /portfolio/almas98Abolfazl.ir
+
+            echo "📥 Pulling latest changes from main..."
+            git pull origin main
+
+            echo "🐳 Building backend and admin services..."
+            docker compose build backend frontend-admin
+            docker compose up -d --wait backend
+
+            echo "📝 Running database migrations & article upsert..."
+            docker compose exec -T backend npx ts-node prisma/upsert-angular-cd-article.ts
+
+            echo "🌐 Building frontend site with prerender..."
+            docker compose build --no-cache frontend-site
+            docker compose up -d --no-deps frontend-admin frontend-site
+
+            echo "🧹 Cleaning unused docker dangling images..."
+            docker image prune -f
+
+            echo "✅ Deployment completed successfully!"
+            docker compose ps

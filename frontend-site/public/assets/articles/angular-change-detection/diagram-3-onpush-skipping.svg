@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" width="100%" height="100%" style="background:#0f0f17; border-radius:16px; font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+  <defs>
+    <linearGradient id="skipGrad3b" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a1622"/>
+      <stop offset="100%" stop-color="#190e15"/>
+    </linearGradient>
+    <linearGradient id="checkGrad3b" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#142823"/>
+      <stop offset="100%" stop-color="#0b1714"/>
+    </linearGradient>
+    <marker id="onpushArrow3b" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#9678fb"/>
+    </marker>
+  </defs>
+
+  <!-- Title Left Aligned -->
+  <text x="50" y="44" fill="#ffffff" font-size="19" font-weight="700">OnPush Change Detection &amp; Subtree Skipping</text>
+  <text x="50" y="68" fill="#94a3b8" font-size="13">An OnPush component subtree is checked only when marked dirty or input references change</text>
+
+  <!-- Parent Component (Centered at x=390, width=220) -->
+  <g transform="translate(390, 105)">
+    <rect width="220" height="66" rx="10" fill="#1e1e30" stroke="#9678fb" stroke-width="2"/>
+    <text x="20" y="28" fill="#ffffff" font-size="14" font-weight="700">Parent Component</text>
+    <text x="20" y="48" fill="#a78bfa" font-size="12" font-family="monospace">Current Tick / Checked</text>
+  </g>
+
+  <!-- Arrows to 2 subtrees -->
+  <path d="M 440 171 L 270 235" fill="none" stroke="#f43f5e" stroke-width="2" stroke-dasharray="4" marker-end="url(#onpushArrow3b)"/>
+  <path d="M 560 171 L 730 235" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#onpushArrow3b)"/>
+
+  <!-- Left: Skipped Subtree (Clean) - width 410 -->
+  <g transform="translate(50, 235)">
+    <rect width="410" height="200" rx="12" fill="url(#skipGrad3b)" stroke="#f43f5e" stroke-width="1.5" stroke-dasharray="6"/>
+    <text x="20" y="30" fill="#f43f5e" font-size="15" font-weight="700">Skipped Subtree (Clean)</text>
+    <text x="20" y="52" fill="#fda4af" font-size="12">LViewFlags.Dirty = false | References Unchanged</text>
+
+    <g transform="translate(20, 72)">
+      <rect width="370" height="48" rx="6" fill="#1f131a" stroke="#881337"/>
+      <text x="14" y="24" fill="#cbd5e1" font-size="12" font-weight="600">ProductTable (OnPush)</text>
+      <text x="14" y="40" fill="#f43f5e" font-size="11">Inputs unchanged, entire subtree check skipped</text>
+    </g>
+
+    <g transform="translate(20, 130)">
+      <rect width="370" height="48" rx="6" fill="#1f131a" stroke="#881337"/>
+      <text x="14" y="24" fill="#94a3b8" font-size="12">RowItem 1 .. 1000</text>
+      <text x="14" y="40" fill="#f43f5e" font-size="11">Massive CPU savings: thousands of bindings skipped</text>
+    </g>
+  </g>
+
+  <!-- Right: Checked Subtree (Dirty) - width 410 -->
+  <g transform="translate(540, 235)">
+    <rect width="410" height="200" rx="12" fill="url(#checkGrad3b)" stroke="#10b981" stroke-width="1.5"/>
+    <text x="20" y="30" fill="#10b981" font-size="15" font-weight="700">Checked Subtree (Dirty)</text>
+    <text x="20" y="52" fill="#6ee7b7" font-size="12">LViewFlags.Dirty = true | Marked for Check</text>
+
+    <g transform="translate(20, 72)">
+      <rect width="370" height="48" rx="6" fill="#0d1f19" stroke="#065f46"/>
+      <text x="14" y="24" fill="#ffffff" font-size="12" font-weight="600">UserProfile (OnPush)</text>
+      <text x="14" y="40" fill="#34d399" font-size="11">Input ref change, Signal update, or (click) event</text>
+    </g>
+
+    <g transform="translate(20, 130)">
+      <rect width="370" height="48" rx="6" fill="#0d1f19" stroke="#065f46"/>
+      <text x="14" y="24" fill="#ffffff" font-size="12">Avatar &amp; Name Bindings</text>
+      <text x="14" y="40" fill="#34d399" font-size="11">Slots in LView evaluated &amp; DOM updated</text>
+    </g>
+  </g>
+
+  <!-- Footer explanation note Centered -->
+  <text x="500" y="480" text-anchor="middle" fill="#94a3b8" font-size="12">
+    Object mutations without reference change do NOT mark OnPush components dirty.
+  </text>
+</svg>

@@ -265,10 +265,16 @@ body,
   }
   .md-preview img { @apply my-6 w-full rounded-xl; }
   .md-preview hr { @apply my-8 border-slate-200 dark:border-slate-700; }
-  .md-preview code {
-    @apply rounded px-1.5 py-0.5 text-sm font-medium dark:bg-slate-800;
-    color: var(--color-secondary);
-    background-color: rgba(122, 92, 245, 0.12);
+  .md-preview :not(pre) > code {
+    @apply rounded-md px-1.5 py-0.5 text-sm font-mono font-medium;
+    color: #e11d48;
+    background-color: rgba(225, 29, 72, 0.08);
+    border: 1px solid rgba(225, 29, 72, 0.18);
+  }
+  .dark .md-preview :not(pre) > code {
+    color: #f472b6;
+    background-color: rgba(244, 114, 182, 0.15);
+    border: 1px solid rgba(244, 114, 182, 0.3);
   }
   .md-preview pre {
     @apply my-6 overflow-auto rounded-xl bg-slate-900 p-4 text-sm leading-relaxed text-slate-100 dark:bg-black/40;
