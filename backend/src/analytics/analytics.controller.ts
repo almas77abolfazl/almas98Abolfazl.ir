@@ -1,6 +1,8 @@
-import { BadRequestException, Controller, Post, Get, Body, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Controller, Post, Get, Body, Query, UseGuards, Req } from '@nestjs/common';
+import type { Request } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthGuard } from '../auth/auth.guard';
+import { AuthService } from '../auth/auth.service';
 
 interface PageCount {
   url: string;
@@ -14,13 +16,38 @@ interface DailyCount {
 
 @Controller('analytics')
 export class AnalyticsController {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('track')
-  track(@Body() body: { url: string }) {
+  track(@Body() body: { url: string }, @Req() req: Request) {
+    if (this.isAdminRequest(req)) {
+      return { success: true, ignored: true };
+    }
     return this.prisma.pageView.create({
       data: { url: this.normalizeUrl(body.url) },
     });
+  }
+
+  private isAdminRequest(req: Request): boolean {
+    try {
+      const cookieHeader = req.headers.cookie;
+      if (cookieHeader && /(?:^|;\s*)is_admin=1(?=$|;)/.test(cookieHeader)) {
+        return true;
+      }
+      const authHeader = req.headers.authorization;
+      if (authHeader) {
+        const [type, token] = authHeader.split(' ');
+        if (type === 'Bearer' && token && this.authService.verifyToken(token)) {
+          return true;
+        }
+      }
+    } catch {
+      // fallback
+    }
+    return false;
   }
 
   @Get('stats')

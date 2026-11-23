@@ -5,10 +5,19 @@ import { Router } from '@angular/router';
 export class AuthService {
   private tokenKey = 'token';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    if (this.isLoggedIn()) {
+      this.setAdminCookie(true);
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('isAdmin', 'true');
+      }
+    }
+  }
 
   setToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
+    localStorage.setItem('isAdmin', 'true');
+    this.setAdminCookie(true);
   }
 
   getToken(): string | null {
@@ -23,7 +32,23 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem('isAdmin');
+    this.setAdminCookie(false);
     this.router.navigate(['/login']);
+  }
+
+  private setAdminCookie(enable: boolean): void {
+    if (typeof document === 'undefined') return;
+    const maxAge = enable ? 31536000 : 0;
+    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
+    const isProd = hostname.endsWith('almas98abolfazl.ir');
+    const securePart = isHttps ? '; Secure' : '';
+
+    if (isProd) {
+      document.cookie = `is_admin=${enable ? '1' : ''}; path=/; max-age=${maxAge}; domain=.almas98abolfazl.ir${securePart}; SameSite=Lax`;
+    }
+    document.cookie = `is_admin=${enable ? '1' : ''}; path=/; max-age=${maxAge}${securePart}; SameSite=Lax`;
   }
 
   private isTokenExpired(token: string): boolean {
