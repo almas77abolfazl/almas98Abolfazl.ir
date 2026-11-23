@@ -62,12 +62,16 @@ jobs:
             echo "📥 Pulling latest changes from main..."
             git pull origin main
 
+            echo "🖼️ Syncing static SVG assets..."
+            mkdir -p uploads/articles/angular-change-detection
+            cp -rf frontend-site/public/assets/articles/angular-change-detection/* uploads/articles/angular-change-detection/ 2>/dev/null || true
+
             echo "🐳 Building backend and admin services..."
             docker compose build backend frontend-admin
             docker compose up -d --wait backend
 
             echo "📝 Running database migrations & article upsert..."
-            docker compose exec -T backend npx ts-node prisma/upsert-angular-cd-article.ts
+            docker compose exec -T backend ./node_modules/.bin/ts-node prisma/upsert-angular-cd-article.ts
 
             echo "🌐 Building frontend site with prerender..."
             docker compose build --no-cache frontend-site

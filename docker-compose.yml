@@ -35,6 +35,8 @@ services:
       NODE_ENV: production
       RUN_MIGRATIONS: 'true'
       SITE_URL: ${SITE_URL:-https://almas98abolfazl.ir}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
     networks:
       - app-network
     depends_on:
