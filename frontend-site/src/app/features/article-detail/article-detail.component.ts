@@ -7,11 +7,6 @@ import { ArticleDatePipe } from '../../shared/pipes/article-date.pipe';
 import { SeoService } from '../../shared/services/seo.service';
 import { SiteConfigService } from '../../shared/services/site-config.service';
 import { MarkdownService } from '../../shared/services/markdown.service';
-import * as Prism from 'prismjs';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-javascript';
-import 'prismjs/components/prism-markup';
-import 'prismjs/components/prism-json';
 
 @Component({
   selector: 'app-article-detail',
