@@ -38,7 +38,7 @@ export class AnalyticsService {
         return true;
       }
 
-      if (document.cookie.split(';').some((item) => item.trim().startsWith('is_admin=1'))) {
+      if (/(?:^|;\s*)is_admin=1(?=$|;)/.test(document.cookie)) {
         return true;
       }
     } catch {
