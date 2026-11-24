@@ -71,9 +71,6 @@ jobs:
             docker compose build backend frontend-admin
             docker compose up -d --wait backend
 
-            echo "📝 Running database migrations & article upsert..."
-            docker compose exec -T backend ./node_modules/.bin/ts-node prisma/upsert-angular-cd-article.ts
-
             echo "🌐 Building frontend site with prerender..."
             docker compose build --no-cache frontend-site
             docker compose up -d --no-deps frontend-admin frontend-site
