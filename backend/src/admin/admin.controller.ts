@@ -293,7 +293,7 @@ export class AdminController {
   }
 
   @Post('projects')
-  createProject(@Body() body: { title: string; titleFa?: string; description?: string; descriptionFa?: string; techStack?: string[]; liveUrl?: string; repoUrl?: string; coverUrl?: string; order?: number }) {
+  createProject(@Body() body: { title: string; titleFa?: string; description?: string; descriptionFa?: string; techStack?: string[]; liveUrl?: string; repoUrl?: string; coverUrl?: string; published?: boolean; order?: number }) {
     return this.adminService.createProject(body);
   }
 
@@ -310,6 +310,7 @@ export class AdminController {
       liveUrl?: string;
       repoUrl?: string;
       coverUrl?: string;
+      published?: boolean;
       order?: number;
     },
   ) {

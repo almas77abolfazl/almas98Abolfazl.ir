@@ -258,6 +258,7 @@ export class AdminService {
     liveUrl?: string;
     repoUrl?: string;
     coverUrl?: string;
+    published?: boolean;
     order?: number;
   }) {
     return this.prisma.projects.create({ data });
@@ -274,6 +275,7 @@ export class AdminService {
       liveUrl?: string;
       repoUrl?: string;
       coverUrl?: string;
+      published?: boolean;
       order?: number;
     },
   ) {

@@ -17,10 +17,11 @@ interface Project {
   liveUrl?: string;
   repoUrl?: string;
   coverUrl?: string;
+  published?: boolean;
   order?: number;
 }
 
-type SortCol = 'title' | 'order' | null;
+type SortCol = 'title' | 'order' | 'published' | null;
 
 @Component({
   selector: 'app-projects',
@@ -52,8 +53,13 @@ export class ProjectsComponent implements OnInit {
     if (!col) return this.items();
     const dir = this.sortDir();
     return [...this.items()].sort((a, b) => {
-      let av: string | number = a[col] ?? (col === 'order' ? 0 : '');
-      let bv: string | number = b[col] ?? (col === 'order' ? 0 : '');
+      let av: string | number | boolean = a[col] ?? (col === 'order' ? 0 : col === 'published' ? false : '');
+      let bv: string | number | boolean = b[col] ?? (col === 'order' ? 0 : col === 'published' ? false : '');
+      if (typeof av === 'boolean' && typeof bv === 'boolean') {
+        const an = av ? 1 : 0;
+        const bn = bv ? 1 : 0;
+        return dir === 'asc' ? an - bn : bn - an;
+      }
       if (typeof av === 'number' && typeof bv === 'number') {
         return dir === 'asc' ? av - bv : bv - av;
       }
@@ -148,6 +154,6 @@ export class ProjectsComponent implements OnInit {
   }
 
   private emptyModel(): Project {
-    return { title: '', order: 0 };
+    return { title: '', published: true, order: 0 };
   }
 }

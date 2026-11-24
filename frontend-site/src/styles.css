@@ -433,14 +433,16 @@ input:focus, textarea:focus, select:focus {
   .article-content h2,
   .article-content h3 {
     scroll-margin-top: 6rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   .article-content .article-spacer { height: 1.5rem; }
-  .article-content p { @apply mb-5 leading-8; }
+  .article-content p { @apply mb-5 leading-8 text-start; }
   .article-content h2 {
-    @apply mt-10 mb-4 text-2xl font-bold tracking-tight text-slate-900 dark:text-white;
+    @apply mt-10 mb-4 text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white text-start;
   }
   .article-content h3 {
-    @apply mt-8 mb-3 text-xl font-bold tracking-tight text-slate-900 dark:text-white;
+    @apply mt-8 mb-3 text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white text-start;
   }
   .article-content a {
     color: var(--brand-primary);
@@ -452,13 +454,50 @@ input:focus, textarea:focus, select:focus {
   }
   .article-content a:hover { color: var(--brand-primary-light); }
   .dark .article-content a:hover { color: var(--brand-primary); }
-  .article-content ul { @apply mb-5 list-disc space-y-2 ps-6; }
-  .article-content ol { @apply mb-5 list-decimal space-y-2 ps-6; }
+  .article-content ul { @apply mb-5 list-disc space-y-2 ps-6 text-start; }
+  .article-content ol { @apply mb-5 list-decimal space-y-2 ps-6 text-start; }
   .article-content blockquote {
     @apply my-6 ps-4 italic text-slate-500 dark:text-slate-400;
     border-inline-start: 4px solid rgba(var(--brand-primary-rgb), 0.5);
   }
-  .article-content img { @apply my-6 w-full rounded-xl; }
+  .article-content img { @apply my-6 max-w-full rounded-xl; }
+  .article-content img:not([class*="w-"]):not([style*="width"]):not([style*="max-width"]) { @apply w-full; }
+
+  /* Device gallery for screenshots */
+  .article-content .phone-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  .article-content .phone-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 280px;
+    max-width: calc(100vw - 2.5rem);
+  }
+  .article-content .phone-card img {
+    width: 280px !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 1.5rem !important;
+    box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.35) !important;
+    border: 1px solid rgba(148, 163, 184, 0.25) !important;
+    object-fit: contain;
+  }
+  .article-content .phone-card figcaption {
+    margin-top: 0.85rem;
+    text-align: center;
+    font-size: 0.825rem;
+    font-weight: 500;
+    color: #64748b;
+    line-height: 1.5;
+  }
+  .dark .article-content .phone-card figcaption {
+    color: #94a3b8;
+  }
   .article-content hr { @apply my-8 border-slate-200 dark:border-slate-700; }
   .article-content :not(pre) > code {
     @apply rounded-md px-1.5 py-0.5 text-sm font-mono font-medium;

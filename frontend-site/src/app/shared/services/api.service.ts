@@ -124,6 +124,7 @@ export interface Project {
   liveUrl?: string;
   repoUrl?: string;
   coverUrl?: string;
+  published: boolean;
   order: number;
   createdAt: string;
   updatedAt: string;
