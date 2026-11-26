@@ -1,20 +1,39 @@
-import { Controller, Post, Body, UnauthorizedException, Res } from '@nestjs/common';
-import type { Response } from 'express';
+import { Controller, Post, Body, UnauthorizedException, HttpException, Req, Res } from '@nestjs/common';
+import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
+import { RateLimitService } from '../common/rate-limit.service';
+import { LoginDto } from './dto/login.dto';
+
+const LOGIN_MAX_ATTEMPTS = 5;
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly rateLimit: RateLimitService,
+  ) {}
 
   @Post('login')
   login(
-    @Body() body: { username: string; password: string },
+    @Req() req: Request,
+    @Body() body: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { username, password } = body;
+    const ip = (req as any).ip ?? (req as any).socket?.remoteAddress ?? 'unknown';
+    const rateKey = `login:${ip}`;
+    if (this.rateLimit.isBlocked(rateKey, LOGIN_MAX_ATTEMPTS, LOGIN_WINDOW_MS)) {
+      throw new HttpException('Too many attempts, please try again later.', 429);
+    }
+
+    const username = body?.username ?? '';
+    const password = body?.password ?? '';
     if (!this.authService.validateCredentials(username, password)) {
+      this.rateLimit.recordHit(rateKey, LOGIN_WINDOW_MS);
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    this.rateLimit.reset(rateKey);
     const isProd = process.env.NODE_ENV === 'production';
     const domainAttr = isProd ? '; Domain=.almas98abolfazl.ir' : '';
     const secureAttr = isProd ? '; Secure' : '';

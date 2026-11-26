@@ -248,3 +248,25 @@ to the backend, those calls would 404. Two clean options:
   and use `panel.almas98abolfazl.ir` purely as a redirect to `/admin`.
 
 This guide uses **Option A** so `panel.almas98abolfazl.ir` is fully functional on its own.
+
+## 10. Automated Backups & Disaster Recovery
+
+Two scripts in `scripts/` handle PostgreSQL dumps and `uploads/` media archives:
+
+1. Make the scripts executable on the VPS:
+   ```bash
+   cd /portfolio/almas98Abolfazl.ir
+   chmod +x scripts/backup.sh scripts/restore.sh
+   ```
+2. Run a manual backup (stored in `/var/backups/almas98abolfazl` by default, keeping the last 7 archives):
+   ```bash
+   ./scripts/backup.sh
+   ```
+3. Schedule a daily cron job (e.g. every day at 03:00 AM via `crontab -e`):
+   ```cron
+   0 3 * * * /portfolio/almas98Abolfazl.ir/scripts/backup.sh >> /var/log/almas98-backup.log 2>&1
+   ```
+4. Restore from a backup archive in a disaster recovery scenario:
+   ```bash
+   ./scripts/restore.sh /var/backups/almas98abolfazl/backup_YYYY-MM-DD_HHMMSS.tar.gz
+   ```

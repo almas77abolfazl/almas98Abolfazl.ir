@@ -5,6 +5,12 @@ import { TestimonialsService } from './testimonials.service';
 import { RateLimitService } from '../common/rate-limit.service';
 import { isValidEmail } from '../common/validation.util';
 import type { UploadedFile as UploadedFileType } from '../uploads/uploads.service';
+import { CreateTestimonialDto } from './dto/create-testimonial.dto';
+
+const ALLOWED_AVATAR_MIMES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const UPLOAD_MAX_BYTES = 2 * 1024 * 1024;
+const UPLOAD_RATE_LIMIT_MAX = 5;
+const UPLOAD_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 
 @Controller('testimonials')
 export class TestimonialsController {
@@ -20,20 +26,7 @@ export class TestimonialsController {
 
   @Post()
   @HttpCode(201)
-  create(
-    @Req() req: Request,
-    @Body()
-    body: {
-      authorName: string;
-      authorNameFa?: string;
-      companyRole?: string;
-      companyRoleFa?: string;
-      email?: string;
-      content: string;
-      contentFa?: string;
-      authorImageUrl?: string;
-    },
-  ) {
+  create(@Req() req: Request, @Body() body: CreateTestimonialDto) {
     const authorName = body.authorName?.trim();
     const content = body.content?.trim();
     const email = body.email?.trim();
@@ -63,17 +56,21 @@ export class TestimonialsController {
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
-      limits: { fileSize: 5 * 1024 * 1024 },
-      fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith('image/')) {
+      limits: { fileSize: UPLOAD_MAX_BYTES },
+      fileFilter: (_req, file, cb) => {
+        if (ALLOWED_AVATAR_MIMES.has(file.mimetype)) {
           cb(null, true);
         } else {
-          cb(new BadRequestException('Only image files are allowed'), false);
+          cb(new BadRequestException('Only JPEG, PNG, and WebP images are allowed.'), false);
         }
       },
     }),
   )
-  upload(@UploadedFile() file: UploadedFileType) {
+  upload(@Req() req: Request, @UploadedFile() file: UploadedFileType) {
+    const ip = (req as any).ip ?? (req as any).socket?.remoteAddress ?? 'unknown';
+    if (!this.rateLimit.isAllowed(`testimonial-upload:${ip}`, UPLOAD_RATE_LIMIT_MAX, UPLOAD_RATE_LIMIT_WINDOW_MS)) {
+      throw new HttpException('Too many upload requests, please try again later.', 429);
+    }
     if (!file) {
       throw new BadRequestException('No file provided');
     }

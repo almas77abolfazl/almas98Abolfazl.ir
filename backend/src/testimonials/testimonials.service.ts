@@ -32,6 +32,6 @@ export class TestimonialsService {
   }
 
   uploadImage(file: { originalname: string; mimetype: string; size: number; buffer: Buffer }) {
-    return this.uploads.save(file);
+    return this.uploads.saveValidatedImage(file);
   }
 }

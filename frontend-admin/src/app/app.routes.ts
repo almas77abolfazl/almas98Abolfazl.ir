@@ -7,6 +7,7 @@ export const routes: Routes = [
   {
     path: '',
     canActivate: [AdminGuard],
+    loadComponent: () => import('./features/layout/shell.component').then(m => m.ShellComponent),
     children: [
       { path: 'dashboard', loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent) },
       { path: 'about-me', loadComponent: () => import('./features/about-me/about-me.component').then(m => m.AboutMeComponent), canDeactivate: [pendingChangesGuard] },
