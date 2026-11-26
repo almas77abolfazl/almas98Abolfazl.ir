@@ -1,0 +1,66 @@
+name: CI Verification
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (Type-check, Build, Test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - run: npm test
+
+  frontend-admin:
+    name: Frontend Admin (Type-check, Build, Test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend-admin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend-admin/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run build
+      - run: npx ng test --watch=false --browsers=ChromeHeadless
+
+  frontend-site:
+    name: Frontend Site (Type-check, Test)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend-site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend-site/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npx ng test --watch=false --browsers=ChromeHeadless

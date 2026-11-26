@@ -12,7 +12,7 @@ describe('AdminService (articles)', () => {
         update: jest.fn(({ data }) => Promise.resolve(data)),
       },
     };
-    service = new AdminService(prisma as any, {} as any);
+    service = new AdminService(prisma as any, {} as any, {} as any);
   });
 
   it('assigns publishedAt on initial publish when creating a published article', async () => {
