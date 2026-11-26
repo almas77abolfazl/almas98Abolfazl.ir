@@ -1,11 +1,22 @@
 import { BadRequestException } from '@nestjs/common';
+import { existsSync, readFileSync, unlinkSync } from 'fs';
+import { join } from 'path';
+import sharp from 'sharp';
 import { UploadsService } from './uploads.service';
 
 describe('UploadsService', () => {
   let service: UploadsService;
+  const createdFiles: string[] = [];
 
   beforeEach(() => {
     service = new UploadsService();
+  });
+
+  afterEach(() => {
+    for (const file of createdFiles.splice(0)) {
+      const p = join(process.cwd(), 'uploads', file);
+      if (existsSync(p)) unlinkSync(p);
+    }
   });
 
   it('detects JPEG magic bytes', () => {
@@ -23,16 +34,42 @@ describe('UploadsService', () => {
     expect(service.detectSafeImageType(buf)).toEqual({ ext: '.webp', mimeType: 'image/webp' });
   });
 
-  it('rejects SVG or spoofed text content', () => {
+  it('rejects SVG or spoofed text content', async () => {
     const svg = Buffer.from('<svg onload="alert(1)"></svg>', 'utf8');
     expect(service.detectSafeImageType(svg)).toBeNull();
-    expect(() =>
+    await expect(
       service.saveValidatedImage({
         originalname: 'avatar.png',
         mimetype: 'image/png',
         size: svg.length,
         buffer: svg,
       }),
-    ).toThrow(BadRequestException);
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('converts and resizes valid PNG images to WebP', async () => {
+    const pngBuffer = await sharp({
+      create: { width: 800, height: 400, channels: 3, background: { r: 100, g: 150, b: 200 } },
+    })
+      .png()
+      .toBuffer();
+
+    const saved = await service.saveValidatedImage(
+      {
+        originalname: 'avatar.png',
+        mimetype: 'image/png',
+        size: pngBuffer.length,
+        buffer: pngBuffer,
+      },
+      500,
+    );
+    createdFiles.push(saved.filename);
+
+    expect(saved.filename.endsWith('.webp')).toBe(true);
+    expect(saved.mimeType).toBe('image/webp');
+    expect(saved.url).toBe(`/api/uploads/${saved.filename}`);
+    const meta = await sharp(readFileSync(join(process.cwd(), 'uploads', saved.filename))).metadata();
+    expect(meta.format).toBe('webp');
+    expect(meta.width).toBe(500);
   });
 });

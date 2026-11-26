@@ -292,7 +292,7 @@ export class AdminService {
   }
 
   async uploadMedia(file: UploadedFile) {
-    const saved = this.uploads.save(file);
+    const saved = await this.uploads.save(file);
     return this.prisma.media.create({ data: saved });
   }
 

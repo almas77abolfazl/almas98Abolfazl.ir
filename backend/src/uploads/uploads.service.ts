@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { randomUUID } from 'crypto';
+import sharp from 'sharp';
 
 export interface UploadedFile {
   originalname: string;
@@ -14,6 +15,16 @@ export interface DetectedImageType {
   ext: '.jpg' | '.png' | '.webp';
   mimeType: 'image/jpeg' | 'image/png' | 'image/webp';
 }
+
+const OPTIMIZABLE_IMAGE_MIMES = new Set([
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'image/tiff',
+  'image/bmp',
+  'image/avif',
+]);
 
 @Injectable()
 export class UploadsService {
@@ -56,35 +67,60 @@ export class UploadsService {
     return null;
   }
 
-  save(file: UploadedFile) {
+  /**
+   * Saves an admin-uploaded file, converting raster images (excluding GIFs/SVGs/favicons)
+   * to resized WebP while stripping EXIF metadata.
+   */
+  async save(file: UploadedFile) {
+    if (OPTIMIZABLE_IMAGE_MIMES.has(file.mimetype?.toLowerCase())) {
+      try {
+        const optimized = await this.optimizeToWebp(file.buffer, 1920);
+        return this.writeToDisk(optimized, file.originalname, '.webp', 'image/webp');
+      } catch {
+        // Fall through to raw save if sharp cannot decode the buffer
+      }
+    }
     const ext = file.originalname.includes('.')
       ? file.originalname.slice(file.originalname.lastIndexOf('.'))
       : '';
-    return this.writeToDisk(file, ext, file.mimetype);
+    return this.writeToDisk(file.buffer, file.originalname, ext, file.mimetype);
   }
 
   /**
-   * Validates image magic bytes and saves using the canonical safe extension
-   * instead of trusting client-supplied filename extensions or MIME headers.
+   * Validates image magic bytes, converts to resized WebP (max 500px for avatars),
+   * strips EXIF metadata, and saves using a canonical `.webp` extension.
    */
-  saveValidatedImage(file: UploadedFile) {
+  async saveValidatedImage(file: UploadedFile, maxWidth = 500) {
     const detected = this.detectSafeImageType(file.buffer);
     if (!detected) {
       throw new BadRequestException('Invalid image file. Only JPEG, PNG, and WebP images are allowed.');
     }
-    return this.writeToDisk(file, detected.ext, detected.mimeType);
+    try {
+      const optimized = await this.optimizeToWebp(file.buffer, maxWidth);
+      return this.writeToDisk(optimized, file.originalname, '.webp', 'image/webp');
+    } catch {
+      throw new BadRequestException('Invalid or corrupted image file.');
+    }
   }
 
-  private writeToDisk(file: UploadedFile, ext: string, mimeType: string) {
+  private optimizeToWebp(buffer: Buffer, maxWidth: number): Promise<Buffer> {
+    return sharp(buffer)
+      .rotate()
+      .resize({ width: maxWidth, withoutEnlargement: true })
+      .webp({ quality: 85 })
+      .toBuffer();
+  }
+
+  private writeToDisk(buffer: Buffer, originalName: string, ext: string, mimeType: string) {
     const filename = `${randomUUID()}${ext}`;
     mkdirSync(this.uploadsDir, { recursive: true });
-    writeFileSync(join(this.uploadsDir, filename), file.buffer);
+    writeFileSync(join(this.uploadsDir, filename), buffer);
     const url = `/api/uploads/${filename}`;
     return {
       filename,
-      originalName: file.originalname,
+      originalName,
       mimeType,
-      sizeBytes: file.size,
+      sizeBytes: buffer.length,
       url,
     };
   }
