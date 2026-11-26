@@ -1,12 +1,17 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ShellComponent } from './features/layout/shell.component';
+import { ToastContainerComponent } from './core/components/toast-container.component';
+import { ConfirmDialogComponent } from './core/components/confirm-dialog.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ShellComponent],
-  template: '<app-shell></app-shell>',
+  imports: [RouterOutlet, ToastContainerComponent, ConfirmDialogComponent],
+  template: `
+    <router-outlet></router-outlet>
+    <app-toast-container></app-toast-container>
+    <app-confirm-dialog></app-confirm-dialog>
+  `,
   changeDetection: ChangeDetectionStrategy.Eager,
   styles: [],
 })

@@ -6,7 +6,6 @@
       </div>
     }
 
-    @if (!isLoginRoute()) {
     <div class="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-950">
 
       <!-- Desktop sidebar -->
@@ -140,10 +139,3 @@
         </main>
       </div>
     </div>
-
-    } @else {
-      <router-outlet></router-outlet>
-    }
-
-    <app-toast-container></app-toast-container>
-    <app-confirm-dialog></app-confirm-dialog>
