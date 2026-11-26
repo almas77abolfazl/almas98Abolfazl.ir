@@ -1,9 +1,14 @@
-import { BadRequestException, Controller, Post, Get, Body, Query, UseGuards, Req } from '@nestjs/common';
+import { BadRequestException, Controller, Post, Get, Body, Query, UseGuards, Req, HttpCode } from '@nestjs/common';
 import type { Request } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthService } from '../auth/auth.service';
+import { RateLimitService } from '../common/rate-limit.service';
 import { TrackPageViewDto } from './dto/track-page-view.dto';
+
+const TRACK_RATE_LIMIT_MAX = 60;
+const TRACK_RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const TRACK_MAX_URL_LENGTH = 500;
 
 interface PageCount {
   url: string;
@@ -20,15 +25,25 @@ export class AnalyticsController {
   constructor(
     private readonly prisma: PrismaService,
     private readonly authService: AuthService,
+    private readonly rateLimit: RateLimitService,
   ) {}
 
   @Post('track')
+  @HttpCode(200)
   track(@Body() body: TrackPageViewDto, @Req() req: Request) {
     if (this.isAdminRequest(req)) {
       return { success: true, ignored: true };
     }
+    const rawUrl = body?.url;
+    if (typeof rawUrl !== 'string' || rawUrl.length === 0 || rawUrl.length > TRACK_MAX_URL_LENGTH || !rawUrl.startsWith('/')) {
+      throw new BadRequestException('url must be a valid path starting with / (max 500 characters).');
+    }
+    const ip = (req as any).ip ?? (req as any).socket?.remoteAddress ?? 'unknown';
+    if (!this.rateLimit.isAllowed(`analytics-track:${ip}`, TRACK_RATE_LIMIT_MAX, TRACK_RATE_LIMIT_WINDOW_MS)) {
+      return { success: true, throttled: true };
+    }
     return this.prisma.pageView.create({
-      data: { url: this.normalizeUrl(body.url) },
+      data: { url: this.normalizeUrl(rawUrl) },
     });
   }
 
