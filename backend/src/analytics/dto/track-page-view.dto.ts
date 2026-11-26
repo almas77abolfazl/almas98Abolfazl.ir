@@ -1,8 +1,9 @@
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsString, Matches, MaxLength } from 'class-validator';
 
 export class TrackPageViewDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(1000)
+  @MaxLength(500)
+  @Matches(/^\//, { message: 'url must start with /' })
   url!: string;
 }
