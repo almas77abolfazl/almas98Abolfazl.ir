@@ -1,9 +1,13 @@
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, inject, ChangeDetectionStrategy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
+import { ConfirmService } from '../../core/services/confirm.service';
+import { ToastService } from '../../core/services/toast.service';
 import { AsyncPipe } from '@angular/common';
 
 interface NavItem {
@@ -21,7 +25,11 @@ interface NavItem {
   styles: [],
 })
 export class ShellComponent {
+  private readonly http = inject(HttpClient);
+  private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
   menuOpen = signal(false);
+  rebuilding = signal(false);
 
   nav: NavItem[] = [
     { path: '/dashboard', key: 'nav_dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
@@ -74,5 +82,26 @@ export class ShellComponent {
 
   clearError(): void {
     this.notificationService.clear();
+  }
+
+  async rebuildSite(): Promise<void> {
+    if (this.rebuilding()) return;
+    const ok = await this.confirm.confirm({
+      title: this.i18n.t('rebuildSiteConfirmTitle'),
+      message: this.i18n.t('rebuildSiteConfirm'),
+      confirmText: this.i18n.t('rebuildSite'),
+      cancelText: this.i18n.t('cancel'),
+    });
+    if (!ok) return;
+
+    this.rebuilding.set(true);
+    try {
+      await firstValueFrom(this.http.post('/api/admin/site/rebuild', {}));
+      this.toast.success(this.i18n.t('rebuildSiteSuccess'));
+    } catch (err: any) {
+      this.toast.error(err?.error?.message || this.i18n.t('rebuildSiteError'));
+    } finally {
+      this.rebuilding.set(false);
+    }
   }
 }

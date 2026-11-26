@@ -109,6 +109,14 @@
           </button>
           <h1 class="text-lg font-semibold text-slate-800 dark:text-slate-100 lg:hidden">{{ i18n.t('appName') }}</h1>
           <div class="flex items-center gap-2">
+            <button (click)="rebuildSite()" type="button" [disabled]="rebuilding()"
+              class="inline-flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 transition-colors hover:bg-indigo-100 disabled:opacity-60 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300 dark:hover:bg-indigo-500/20"
+              [title]="i18n.t('rebuildSite')">
+              <svg class="h-4 w-4" [class.animate-spin]="rebuilding()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span class="hidden sm:inline">{{ rebuilding() ? i18n.t('rebuildingSite') : i18n.t('rebuildSite') }}</span>
+            </button>
             <button (click)="i18n.toggleLang()" type="button"
               class="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
               [title]="i18n.t('toggleLang')">

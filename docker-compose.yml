@@ -37,6 +37,9 @@ services:
       SITE_URL: ${SITE_URL:-https://almas98abolfazl.ir}
       ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      GITHUB_REBUILD_TOKEN: ${GITHUB_REBUILD_TOKEN:-}
+      GITHUB_REPO: ${GITHUB_REPO:-almas77abolfazl/almas98Abolfazl.ir}
+      GITHUB_REBUILD_REF: ${GITHUB_REBUILD_REF:-main}
     networks:
       - app-network
     depends_on:
