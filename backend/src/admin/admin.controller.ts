@@ -338,4 +338,9 @@ export class AdminController {
   reorderSkillCategories(@Body() body: ReorderDto) {
     return this.adminService.reorderSkillCategories(body.items);
   }
+
+  @Post('site/rebuild')
+  rebuildSite() {
+    return this.adminService.triggerSiteRebuild();
+  }
 }

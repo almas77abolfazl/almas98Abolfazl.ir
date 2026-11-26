@@ -1,0 +1,33 @@
+name: Rebuild Static Site
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: production_deploy
+  cancel-in-progress: false
+
+jobs:
+  rebuild-site:
+    name: Rebuild Frontend Site (SSG Prerender)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rebuild and restart frontend-site on VPS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          command_timeout: 20m
+          script_stop: true
+          script: |
+            set -e
+            echo "🌐 Rebuilding frontend-site with latest prerendered routes..."
+            cd /portfolio/almas98Abolfazl.ir
+            docker compose up -d --wait backend
+            docker compose build --no-cache frontend-site
+            docker compose up -d --no-deps frontend-site
+            docker image prune -f
+            echo "✅ Static site rebuild completed!"
+            docker compose ps frontend-site

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UploadsService, UploadedFile } from '../uploads/uploads.service';
 import { SiteSettingsService } from '../site-settings/site-settings.service';
@@ -424,5 +424,36 @@ export class AdminService {
       ),
     );
     return { updated: items.length };
+  }
+
+  /** Triggers the GitHub Actions `rebuild-site.yml` workflow to refresh SSG prerendered routes. */
+  async triggerSiteRebuild(): Promise<{ triggered: boolean; message: string }> {
+    const token = process.env.GITHUB_REBUILD_TOKEN?.trim();
+    if (!token) {
+      throw new BadRequestException('GITHUB_REBUILD_TOKEN is not configured on the server.');
+    }
+    const repo = process.env.GITHUB_REPO?.trim() || 'almas77abolfazl/almas98Abolfazl.ir';
+    const ref = process.env.GITHUB_REBUILD_REF?.trim() || 'main';
+    const response = await fetch(
+      `https://api.github.com/repos/${repo}/actions/workflows/rebuild-site.yml/dispatches`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28',
+          'Content-Type': 'application/json',
+          'User-Agent': 'almas98-portfolio-admin',
+        },
+        body: JSON.stringify({ ref }),
+      },
+    );
+    if (!response.ok) {
+      const detail = await response.text().catch(() => '');
+      throw new BadRequestException(
+        `GitHub Actions dispatch failed (${response.status})${detail ? `: ${detail}` : ''}`,
+      );
+    }
+    return { triggered: true, message: 'Static site rebuild triggered.' };
   }
 }

@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { AdminService } from './admin.service';
 
 describe('AdminService (articles)', () => {
@@ -35,5 +36,12 @@ describe('AdminService (articles)', () => {
     prisma.articles.findUnique.mockResolvedValueOnce({ published: true, publishedAt: existingDate });
     const reEdit = await service.updateArticle('a1', { title: 'Updated', published: true });
     expect(reEdit.publishedAt).toBeUndefined();
+  });
+
+  it('throws BadRequestException when GITHUB_REBUILD_TOKEN is missing', async () => {
+    const prev = process.env.GITHUB_REBUILD_TOKEN;
+    delete process.env.GITHUB_REBUILD_TOKEN;
+    await expect(service.triggerSiteRebuild()).rejects.toThrow(BadRequestException);
+    if (prev !== undefined) process.env.GITHUB_REBUILD_TOKEN = prev;
   });
 });
