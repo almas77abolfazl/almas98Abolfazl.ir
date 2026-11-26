@@ -21,7 +21,7 @@ describe('TestimonialsController (upload)', () => {
     controller = new TestimonialsController(testimonialsService as any, rateLimit);
   });
 
-  it('allows up to 5 uploads per IP and throws 429 on the 6th', () => {
+  it('allows up to 5 uploads per IP and throws 429 on the 6th', async () => {
     const req = { ip: '203.0.113.10' } as any;
     const validFile = {
       originalname: 'avatar.png',
@@ -31,7 +31,7 @@ describe('TestimonialsController (upload)', () => {
     };
 
     for (let i = 0; i < 5; i++) {
-      const res = controller.upload(req, validFile);
+      const res = await controller.upload(req, validFile);
       expect(res.url).toBe('/api/uploads/uuid.png');
     }
 
