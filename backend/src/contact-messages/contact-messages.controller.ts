@@ -3,6 +3,7 @@ import { Request, BadRequestException, HttpException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RateLimitService } from '../common/rate-limit.service';
 import { isValidEmail } from '../common/validation.util';
+import { CreateContactMessageDto } from './dto/create-contact-message.dto';
 
 @Controller('contact-messages')
 export class ContactMessagesController {
@@ -13,16 +14,7 @@ export class ContactMessagesController {
 
   @Post()
   @HttpCode(201)
-  async create(
-    @Req() req: Request,
-    @Body()
-    body: {
-      name: string;
-      email: string;
-      subject?: string;
-      message: string;
-    },
-  ) {
+  async create(@Req() req: Request, @Body() body: CreateContactMessageDto) {
     const name = body.name?.trim();
     const email = body.email?.trim();
     const message = body.message?.trim();
