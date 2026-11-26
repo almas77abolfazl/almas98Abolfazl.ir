@@ -1,6 +1,7 @@
 import { Injectable, signal, effect, inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { Router } from '@angular/router';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { NavigationEnd, Router, RoutesRecognized } from '@angular/router';
+import { filter } from 'rxjs';
 
 export type Language = 'en' | 'fa';
 
@@ -183,20 +184,41 @@ const TRANSLATIONS: Record<Language, Record<string, string>> = {
 export class I18nService {
   private readonly storageKey = 'app_lang';
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  private readonly document = inject(DOCUMENT);
 
   currentLang = signal<Language>('en');
 
   constructor(private router: Router) {
-    if (!this.isBrowser) {
-      return;
+    const initialUrl = this.router.url || this.document.location?.pathname || '/';
+    const routeLang = this.detectLangFromUrl(initialUrl);
+
+    if (routeLang === 'fa') {
+      this.currentLang.set('fa');
+    } else if (this.isBrowser) {
+      const stored = localStorage.getItem(this.storageKey) as Language | null;
+      if (stored === 'en' || stored === 'fa') {
+        this.currentLang.set(stored);
+      }
     }
 
-    const stored = localStorage.getItem(this.storageKey) as Language | null;
-    if (stored) {
-      this.currentLang.set(stored);
-    }
     this.applyLang(this.currentLang());
-    effect(() => this.applyLang(this.currentLang()));
+
+    this.router.events
+      .pipe(filter((e): e is RoutesRecognized | NavigationEnd => e instanceof RoutesRecognized || e instanceof NavigationEnd))
+      .subscribe((event) => {
+        const url = event instanceof NavigationEnd ? event.urlAfterRedirects : event.url;
+        const langFromRoute = this.detectLangFromUrl(url);
+        if (langFromRoute === 'fa' && this.currentLang() !== 'fa') {
+          this.currentLang.set('fa');
+        } else if (!this.isBrowser && langFromRoute === 'en' && this.currentLang() !== 'en') {
+          this.currentLang.set('en');
+        }
+        this.applyLang(this.currentLang());
+      });
+
+    if (this.isBrowser) {
+      effect(() => this.applyLang(this.currentLang()));
+    }
   }
 
   t(key: string): string {
@@ -207,6 +229,32 @@ export class I18nService {
     return this.currentLang() === 'fa';
   }
 
+  /** Prefixes internal routes with `/fa` when Persian mode is active. */
+  route(path: string): string {
+    const clean = path.startsWith('/') ? path : `/${path}`;
+    const base = this.stripLangPrefix(clean);
+    if (!this.isFa) {
+      return base;
+    }
+    return base === '/' ? '/fa' : `/fa${base}`;
+  }
+
+  stripLangPrefix(url: string): string {
+    const path = (url || '/').split(/[?#]/)[0] || '/';
+    if (path === '/fa' || path === '/fa/') {
+      return '/';
+    }
+    if (path.startsWith('/fa/')) {
+      return path.slice(3) || '/';
+    }
+    return path;
+  }
+
+  private detectLangFromUrl(url: string): Language {
+    const path = (url || '/').split(/[?#]/)[0];
+    return path === '/fa' || path.startsWith('/fa/') ? 'fa' : 'en';
+  }
+
   toggleLang(): void {
     if (!this.isBrowser) {
       return;
@@ -214,13 +262,17 @@ export class I18nService {
     const next: Language = this.currentLang() === 'en' ? 'fa' : 'en';
     this.currentLang.set(next);
     localStorage.setItem(this.storageKey, next);
+
+    const basePath = this.stripLangPrefix(this.router.url);
+    const targetPath = next === 'fa' ? (basePath === '/' ? '/fa' : `/fa${basePath}`) : basePath;
+    void this.router.navigate([targetPath], { queryParamsHandling: 'preserve' });
   }
 
   private applyLang(lang: Language): void {
-    if (!this.isBrowser) {
+    const html = this.document?.documentElement;
+    if (!html) {
       return;
     }
-    const html = document.documentElement;
     html.lang = lang;
     html.dir = lang === 'fa' ? 'rtl' : 'ltr';
   }
