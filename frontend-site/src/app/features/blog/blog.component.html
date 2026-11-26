@@ -17,7 +17,7 @@
   } @else {
     <div class="grid md:grid-cols-2 gap-6">
       @for (article of articles(); track article.id) {
-        <a [routerLink]="['/blog', article.slug]"
+        <a [routerLink]="i18n.route('/blog/' + article.slug)"
           class="block bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 card-hover group">
           @if (article.coverUrl) {
             <div class="w-full h-40 rounded-xl overflow-hidden mb-4">

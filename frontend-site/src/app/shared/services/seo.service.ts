@@ -43,7 +43,14 @@ export class SeoService {
     // Remove any structured data from a previous page; pages that need it re-add via setJsonLd().
     this.clearJsonLd();
 
-    const url = this.config.absoluteUrl(data.path);
+    const basePath = this.i18n.stripLangPrefix(data.path ?? '/');
+    const enPath = basePath;
+    const faPath = basePath === '/' ? '/fa' : `/fa${basePath}`;
+    const activePath = this.i18n.isFa ? faPath : enPath;
+
+    const url = this.config.absoluteUrl(activePath);
+    const enUrl = this.config.absoluteUrl(enPath);
+    const faUrl = this.config.absoluteUrl(faPath);
     const image = this.config.resolveImage(data.image);
     const description = (data.description?.trim() || '').replace(/\{name\}/g, this.config.displayName());
     const type = data.type ?? 'website';
@@ -78,6 +85,11 @@ export class SeoService {
     this.setTag('twitter:image', image);
 
     this.setCanonical(url);
+    if (data.noindex) {
+      this.clearHreflang();
+    } else {
+      this.setHreflang(enUrl, faUrl);
+    }
   }
 
   /** Injects (or replaces) a JSON-LD structured-data script in <head>. */
@@ -105,6 +117,30 @@ export class SeoService {
       this.document.head.appendChild(link);
     }
     link.setAttribute('href', url);
+  }
+
+  private setHreflang(enUrl: string, faUrl: string): void {
+    const entries: Array<[string, string]> = [
+      ['en', enUrl],
+      ['fa', faUrl],
+      ['x-default', enUrl],
+    ];
+    for (const [lang, href] of entries) {
+      let link = this.document.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${lang}"]`);
+      if (!link) {
+        link = this.document.createElement('link');
+        link.setAttribute('rel', 'alternate');
+        link.setAttribute('hreflang', lang);
+        this.document.head.appendChild(link);
+      }
+      link.setAttribute('href', href);
+    }
+  }
+
+  private clearHreflang(): void {
+    this.document
+      .querySelectorAll('link[rel="alternate"][hreflang]')
+      .forEach((el) => el.remove());
   }
 
   private fullTitle(pageTitle: string): string {

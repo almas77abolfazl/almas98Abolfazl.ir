@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center h-16">
 
       <!-- Logo -->
-      <a routerLink="/" class="flex items-center gap-2 group">
+      <a [routerLink]="i18n.route('/')" class="flex items-center gap-2 group">
         <span class="flex h-8 w-8 items-center justify-center rounded-lg brand-gradient text-sm font-bold text-white shadow-sm">
           {{ config.brandInitial() }}
         </span>
@@ -14,30 +14,30 @@
 
       <!-- Nav (desktop) -->
       <nav class="hidden md:flex items-center gap-1">
-        <a routerLink="/" routerLinkActive="brand-text brand-soft" [routerLinkActiveOptions]="{exact:true}"
+        <a [routerLink]="i18n.route('/')" routerLinkActive="brand-text brand-soft" [routerLinkActiveOptions]="{exact:true}"
           class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
           {{ i18n.t('home') }}
         </a>
         @if (siteSettings.visible('about')) {
-          <a routerLink="/about-me" routerLinkActive="brand-text brand-soft"
+          <a [routerLink]="i18n.route('/about-me')" routerLinkActive="brand-text brand-soft"
             class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('about') }}
           </a>
         }
         @if (siteSettings.visible('articles')) {
-          <a routerLink="/blog" routerLinkActive="brand-text brand-soft"
+          <a [routerLink]="i18n.route('/blog')" routerLinkActive="brand-text brand-soft"
             class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('articles') }}
           </a>
         }
         @if (siteSettings.visible('videos')) {
-          <a routerLink="/videos" routerLinkActive="brand-text brand-soft"
+          <a [routerLink]="i18n.route('/videos')" routerLinkActive="brand-text brand-soft"
             class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('videos') }}
           </a>
         }
         @if (siteSettings.visible('projects')) {
-          <a routerLink="/projects" routerLinkActive="brand-text brand-soft"
+          <a [routerLink]="i18n.route('/projects')" routerLinkActive="brand-text brand-soft"
             class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('projects') }}
           </a>
@@ -101,30 +101,30 @@
     <!-- Mobile nav panel -->
     @if (menuOpen()) {
       <nav class="md:hidden border-t border-slate-200/60 dark:border-slate-700/60 mobile-nav">
-        <a routerLink="/" (click)="closeMenu()" routerLinkActive="brand-text brand-soft" [routerLinkActiveOptions]="{exact:true}"
+        <a [routerLink]="i18n.route('/')" (click)="closeMenu()" routerLinkActive="brand-text brand-soft" [routerLinkActiveOptions]="{exact:true}"
           class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
           {{ i18n.t('home') }}
         </a>
         @if (siteSettings.visible('about')) {
-          <a routerLink="/about-me" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+          <a [routerLink]="i18n.route('/about-me')" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
             class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('about') }}
           </a>
         }
         @if (siteSettings.visible('articles')) {
-          <a routerLink="/blog" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+          <a [routerLink]="i18n.route('/blog')" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
             class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('articles') }}
           </a>
         }
         @if (siteSettings.visible('videos')) {
-          <a routerLink="/videos" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+          <a [routerLink]="i18n.route('/videos')" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
             class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('videos') }}
           </a>
         }
         @if (siteSettings.visible('projects')) {
-          <a routerLink="/projects" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
+          <a [routerLink]="i18n.route('/projects')" (click)="closeMenu()" routerLinkActive="brand-text brand-soft"
             class="block px-4 py-3 text-sm font-medium text-slate-600 dark:text-slate-300 brand-text-hover hover-brand-soft transition-all">
             {{ i18n.t('projects') }}
           </a>
