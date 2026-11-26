@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { randomUUID } from 'crypto';
-import sharp from 'sharp';
+import type sharp from 'sharp';
 
 export interface UploadedFile {
   originalname: string;
@@ -28,8 +28,28 @@ const OPTIMIZABLE_IMAGE_MIMES = new Set([
 
 @Injectable()
 export class UploadsService {
+  private readonly logger = new Logger(UploadsService.name);
+  private sharpLoader: typeof sharp | null | undefined;
+
   private get uploadsDir(): string {
     return join(process.cwd(), 'uploads');
+  }
+
+  private getSharp(): typeof sharp | null {
+    if (this.sharpLoader !== undefined) {
+      return this.sharpLoader;
+    }
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const mod = require('sharp');
+      this.sharpLoader = (mod?.default ?? mod) as typeof sharp;
+    } catch (err) {
+      this.logger.warn(
+        `sharp is unavailable in this runtime; falling back to unoptimized image storage: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      this.sharpLoader = null;
+    }
+    return this.sharpLoader;
   }
 
   /**
@@ -87,13 +107,17 @@ export class UploadsService {
   }
 
   /**
-   * Validates image magic bytes, converts to resized WebP (max 500px for avatars),
-   * strips EXIF metadata, and saves using a canonical `.webp` extension.
+   * Validates image magic bytes, converts to resized WebP (max 500px for avatars)
+   * when sharp is available, and falls back to saving with the verified extension.
    */
   async saveValidatedImage(file: UploadedFile, maxWidth = 500) {
     const detected = this.detectSafeImageType(file.buffer);
     if (!detected) {
       throw new BadRequestException('Invalid image file. Only JPEG, PNG, and WebP images are allowed.');
+    }
+    const sharpFn = this.getSharp();
+    if (!sharpFn) {
+      return this.writeToDisk(file.buffer, file.originalname, detected.ext, detected.mimeType);
     }
     try {
       const optimized = await this.optimizeToWebp(file.buffer, maxWidth);
@@ -104,7 +128,11 @@ export class UploadsService {
   }
 
   private optimizeToWebp(buffer: Buffer, maxWidth: number): Promise<Buffer> {
-    return sharp(buffer)
+    const sharpFn = this.getSharp();
+    if (!sharpFn) {
+      return Promise.reject(new Error('sharp unavailable'));
+    }
+    return sharpFn(buffer)
       .rotate()
       .resize({ width: maxWidth, withoutEnlargement: true })
       .webp({ quality: 85 })
