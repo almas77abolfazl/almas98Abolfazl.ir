@@ -1,13 +1,9 @@
-import { Component, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, map } from 'rxjs';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { AdminI18nService } from '../../core/services/admin-i18n.service';
-import { ToastContainerComponent } from '../../core/components/toast-container.component';
-import { ConfirmDialogComponent } from '../../core/components/confirm-dialog.component';
 import { AsyncPipe } from '@angular/common';
 
 interface NavItem {
@@ -19,26 +15,13 @@ interface NavItem {
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, ToastContainerComponent, ConfirmDialogComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe],
   templateUrl: './shell.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styles: [],
 })
 export class ShellComponent {
-  private readonly router = inject(Router);
   menuOpen = signal(false);
-
-  /** Reactive current URL, updated on every completed navigation. */
-  private readonly currentUrl = toSignal(
-    this.router.events.pipe(
-      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
-      map(() => this.router.url),
-    ),
-    { initialValue: this.router.url },
-  );
-
-  /** True when the active route is the standalone login page (no panel chrome). */
-  readonly isLoginRoute = computed(() => (this.currentUrl() || '').startsWith('/login'));
 
   nav: NavItem[] = [
     { path: '/dashboard', key: 'nav_dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
