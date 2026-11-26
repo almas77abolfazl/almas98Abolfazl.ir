@@ -3,6 +3,7 @@ import type { Request } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthService } from '../auth/auth.service';
+import { TrackPageViewDto } from './dto/track-page-view.dto';
 
 interface PageCount {
   url: string;
@@ -22,7 +23,7 @@ export class AnalyticsController {
   ) {}
 
   @Post('track')
-  track(@Body() body: { url: string }, @Req() req: Request) {
+  track(@Body() body: TrackPageViewDto, @Req() req: Request) {
     if (this.isAdminRequest(req)) {
       return { success: true, ignored: true };
     }

@@ -5,6 +5,7 @@ import { TestimonialsService } from './testimonials.service';
 import { RateLimitService } from '../common/rate-limit.service';
 import { isValidEmail } from '../common/validation.util';
 import type { UploadedFile as UploadedFileType } from '../uploads/uploads.service';
+import { CreateTestimonialDto } from './dto/create-testimonial.dto';
 
 const ALLOWED_AVATAR_MIMES = new Set(['image/jpeg', 'image/png', 'image/webp']);
 const UPLOAD_MAX_BYTES = 2 * 1024 * 1024;
@@ -25,20 +26,7 @@ export class TestimonialsController {
 
   @Post()
   @HttpCode(201)
-  create(
-    @Req() req: Request,
-    @Body()
-    body: {
-      authorName: string;
-      authorNameFa?: string;
-      companyRole?: string;
-      companyRoleFa?: string;
-      email?: string;
-      content: string;
-      contentFa?: string;
-      authorImageUrl?: string;
-    },
-  ) {
+  create(@Req() req: Request, @Body() body: CreateTestimonialDto) {
     const authorName = body.authorName?.trim();
     const content = body.content?.trim();
     const email = body.email?.trim();

@@ -2,6 +2,7 @@ import { Controller, Post, Body, UnauthorizedException, HttpException, Req, Res 
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { RateLimitService } from '../common/rate-limit.service';
+import { LoginDto } from './dto/login.dto';
 
 const LOGIN_MAX_ATTEMPTS = 5;
 const LOGIN_WINDOW_MS = 15 * 60 * 1000;
@@ -16,7 +17,7 @@ export class AuthController {
   @Post('login')
   login(
     @Req() req: Request,
-    @Body() body: { username: string; password: string },
+    @Body() body: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
     const ip = (req as any).ip ?? (req as any).socket?.remoteAddress ?? 'unknown';

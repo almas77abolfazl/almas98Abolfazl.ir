@@ -3,6 +3,31 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '../auth/auth.guard';
 import { AdminService } from './admin.service';
 import type { UploadedFile as UploadedFileType } from '../uploads/uploads.service';
+import {
+  UpsertAboutMeDto,
+  CreateExperienceDto,
+  UpdateExperienceDto,
+  CreateEducationDto,
+  UpdateEducationDto,
+  CreateSkillDto,
+  UpdateSkillDto,
+  CreateArticleDto,
+  UpdateArticleDto,
+  CreateVideoDto,
+  UpdateVideoDto,
+  CreateProjectDto,
+  UpdateProjectDto,
+  CreateMediaDto,
+  UpdateMediaDto,
+  UpdateContactMessageDto,
+  AdminCreateTestimonialDto,
+  AdminUpdateTestimonialDto,
+  UpdateTestimonialStatusDto,
+  UpdateSettingsDto,
+  ReorderDto,
+  CreateSkillCategoryDto,
+  UpdateSkillCategoryDto,
+} from './dto/admin.dto';
 
 @Controller('admin')
 @UseGuards(AuthGuard)
@@ -16,28 +41,7 @@ export class AdminController {
   }
 
   @Post('about-me')
-  upsertAboutMe(
-    @Body()
-    body: {
-      fullName: string;
-      fullNameFa?: string;
-      title: string;
-      titleFa?: string;
-      bio?: string;
-      bioFa?: string;
-      avatarUrl?: string;
-      resumeUrl?: string;
-      resumeName?: string;
-      email?: string;
-      phone?: string;
-      location?: string;
-      linkedinUrl?: string;
-      githubUrl?: string;
-      youtubeUrl?: string;
-      twitterUrl?: string;
-      instagramUrl?: string;
-    },
-  ) {
+  upsertAboutMe(@Body() body: UpsertAboutMeDto) {
     return this.adminService.upsertAboutMe(body);
   }
 
@@ -53,20 +57,7 @@ export class AdminController {
   }
 
   @Post('experiences')
-  createExperience(
-    @Body()
-    body: {
-      role: string;
-      roleFa?: string;
-      company: string;
-      companyFa?: string;
-      startDate: string;
-      endDate?: string;
-      description?: string;
-      descriptionFa?: string;
-      technologies: string[];
-    },
-  ) {
+  createExperience(@Body() body: CreateExperienceDto) {
     return this.adminService.createExperience({
       ...body,
       startDate: new Date(body.startDate),
@@ -75,21 +66,7 @@ export class AdminController {
   }
 
   @Put('experiences/:id')
-  updateExperience(
-    @Param('id') id: string,
-    @Body()
-    body: {
-      role?: string;
-      roleFa?: string;
-      company?: string;
-      companyFa?: string;
-      startDate?: string;
-      endDate?: string;
-      description?: string;
-      descriptionFa?: string;
-      technologies?: string[];
-    },
-  ) {
+  updateExperience(@Param('id') id: string, @Body() body: UpdateExperienceDto) {
     const data: any = { ...body };
     if (body.startDate) data.startDate = new Date(body.startDate);
     if (body.endDate) data.endDate = new Date(body.endDate);
@@ -108,21 +85,7 @@ export class AdminController {
   }
 
   @Post('educations')
-  createEducation(
-    @Body()
-    body: {
-      degree: string;
-      degreeFa?: string;
-      institution: string;
-      institutionFa?: string;
-      field?: string;
-      fieldFa?: string;
-      startDate: string;
-      endDate?: string;
-      description?: string;
-      descriptionFa?: string;
-    },
-  ) {
+  createEducation(@Body() body: CreateEducationDto) {
     return this.adminService.createEducation({
       ...body,
       startDate: new Date(body.startDate),
@@ -131,22 +94,7 @@ export class AdminController {
   }
 
   @Put('educations/:id')
-  updateEducation(
-    @Param('id') id: string,
-    @Body()
-    body: {
-      degree?: string;
-      degreeFa?: string;
-      institution?: string;
-      institutionFa?: string;
-      field?: string;
-      fieldFa?: string;
-      startDate?: string;
-      endDate?: string;
-      description?: string;
-      descriptionFa?: string;
-    },
-  ) {
+  updateEducation(@Param('id') id: string, @Body() body: UpdateEducationDto) {
     const data: any = { ...body };
     if (body.startDate) data.startDate = new Date(body.startDate);
     if (body.endDate) data.endDate = new Date(body.endDate);
@@ -165,32 +113,12 @@ export class AdminController {
   }
 
   @Post('skills')
-  createSkill(
-    @Body()
-    body: {
-      name: string;
-      nameFa?: string;
-      category?: string;
-      categoryFa?: string;
-      categoryId?: string;
-      proficiency?: number;
-    },
-  ) {
+  createSkill(@Body() body: CreateSkillDto) {
     return this.adminService.createSkill(body);
   }
 
   @Put('skills/:id')
-  updateSkill(
-    @Param('id') id: string,
-    @Body()
-    body: {
-      name?: string;
-      nameFa?: string;
-      category?: string;
-      categoryFa?: string;
-      proficiency?: number;
-    },
-  ) {
+  updateSkill(@Param('id') id: string, @Body() body: UpdateSkillDto) {
     return this.adminService.updateSkill(id, body);
   }
 
@@ -206,20 +134,7 @@ export class AdminController {
   }
 
   @Post('articles')
-  createArticle(
-    @Body()
-    body: {
-      title: string;
-      slug: string;
-      content: string;
-      excerpt?: string;
-      coverUrl?: string;
-      language?: string;
-      tags?: string[];
-      published?: boolean;
-      publishedAt?: string;
-    },
-  ) {
+  createArticle(@Body() body: CreateArticleDto) {
     return this.adminService.createArticle({
       ...body,
       publishedAt: body.publishedAt ? new Date(body.publishedAt) : undefined,
@@ -227,21 +142,7 @@ export class AdminController {
   }
 
   @Put('articles/:id')
-  updateArticle(
-    @Param('id') id: string,
-    @Body()
-    body: {
-      title?: string;
-      slug?: string;
-      content?: string;
-      excerpt?: string;
-      coverUrl?: string;
-      language?: string;
-      tags?: string[];
-      published?: boolean;
-      publishedAt?: string;
-    },
-  ) {
+  updateArticle(@Param('id') id: string, @Body() body: UpdateArticleDto) {
     const data: any = { ...body };
     if (body.publishedAt) data.publishedAt = new Date(body.publishedAt);
     return this.adminService.updateArticle(id, data);
@@ -259,25 +160,12 @@ export class AdminController {
   }
 
   @Post('videos')
-  createVideo(@Body() body: { title: string; titleFa?: string; description?: string; descriptionFa?: string; platform: string; videoId: string; thumbnailUrl?: string; order?: number }) {
+  createVideo(@Body() body: CreateVideoDto) {
     return this.adminService.createVideo(body);
   }
 
   @Put('videos/:id')
-  updateVideo(
-    @Param('id') id: string,
-    @Body()
-    body: {
-      title?: string;
-      titleFa?: string;
-      description?: string;
-      descriptionFa?: string;
-      platform?: string;
-      videoId?: string;
-      thumbnailUrl?: string;
-      order?: number;
-    },
-  ) {
+  updateVideo(@Param('id') id: string, @Body() body: UpdateVideoDto) {
     return this.adminService.updateVideo(id, body);
   }
 
@@ -293,27 +181,12 @@ export class AdminController {
   }
 
   @Post('projects')
-  createProject(@Body() body: { title: string; titleFa?: string; description?: string; descriptionFa?: string; techStack?: string[]; liveUrl?: string; repoUrl?: string; coverUrl?: string; published?: boolean; order?: number }) {
+  createProject(@Body() body: CreateProjectDto) {
     return this.adminService.createProject(body);
   }
 
   @Put('projects/:id')
-  updateProject(
-    @Param('id') id: string,
-    @Body()
-    body: {
-      title?: string;
-      titleFa?: string;
-      description?: string;
-      descriptionFa?: string;
-      techStack?: string[];
-      liveUrl?: string;
-      repoUrl?: string;
-      coverUrl?: string;
-      published?: boolean;
-      order?: number;
-    },
-  ) {
+  updateProject(@Param('id') id: string, @Body() body: UpdateProjectDto) {
     return this.adminService.updateProject(id, body);
   }
 
@@ -324,7 +197,7 @@ export class AdminController {
 
   // Media
   @Post('media')
-  createMedia(@Body() body: { filename: string; originalName: string; mimeType: string; sizeBytes: number; url: string; alt?: string }) {
+  createMedia(@Body() body: CreateMediaDto) {
     return this.adminService.createMedia(body);
   }
 
@@ -351,18 +224,7 @@ export class AdminController {
   }
 
   @Put('media/:id')
-  updateMedia(
-    @Param('id') id: string,
-    @Body()
-    body: {
-      filename?: string;
-      originalName?: string;
-      mimeType?: string;
-      sizeBytes?: number;
-      url?: string;
-      alt?: string;
-    },
-  ) {
+  updateMedia(@Param('id') id: string, @Body() body: UpdateMediaDto) {
     return this.adminService.updateMedia(id, body);
   }
 
@@ -378,7 +240,7 @@ export class AdminController {
   }
 
   @Put('contact-messages/:id')
-  updateContactMessage(@Param('id') id: string, @Body() body: { isRead?: boolean }) {
+  updateContactMessage(@Param('id') id: string, @Body() body: UpdateContactMessageDto) {
     return this.adminService.updateContactMessage(id, body);
   }
 
@@ -394,20 +256,7 @@ export class AdminController {
   }
 
   @Post('testimonials')
-  createTestimonial(
-    @Body()
-    body: {
-      authorName: string;
-      authorNameFa?: string;
-      companyRole?: string;
-      companyRoleFa?: string;
-      email?: string;
-      content: string;
-      contentFa?: string;
-      authorImageUrl?: string;
-      status?: string;
-    },
-  ) {
+  createTestimonial(@Body() body: AdminCreateTestimonialDto) {
     return this.adminService.createTestimonial({
       ...body,
       status: body.status as any,
@@ -415,21 +264,7 @@ export class AdminController {
   }
 
   @Put('testimonials/:id')
-  updateTestimonial(
-    @Param('id') id: string,
-    @Body()
-    body: {
-      authorName?: string;
-      authorNameFa?: string;
-      companyRole?: string;
-      companyRoleFa?: string;
-      email?: string;
-      content?: string;
-      contentFa?: string;
-      authorImageUrl?: string;
-      status?: string;
-    },
-  ) {
+  updateTestimonial(@Param('id') id: string, @Body() body: AdminUpdateTestimonialDto) {
     return this.adminService.updateTestimonial(id, {
       ...body,
       status: body.status as any,
@@ -437,7 +272,7 @@ export class AdminController {
   }
 
   @Patch('testimonials/:id/status')
-  updateTestimonialStatus(@Param('id') id: string, @Body() body: { status: string }) {
+  updateTestimonialStatus(@Param('id') id: string, @Body() body: UpdateTestimonialStatusDto) {
     return this.adminService.updateTestimonialStatus(id, body.status as any);
   }
 
@@ -453,48 +288,28 @@ export class AdminController {
   }
 
   @Put('settings')
-  updateSettings(
-    @Body()
-    body: {
-      skillsCardView?: boolean;
-      themeMode?: string;
-      themePrimary?: string;
-      themeSecondary?: string;
-      siteName?: string;
-      siteNameFa?: string;
-      siteUrl?: string;
-      showAbout?: boolean;
-      showExperiences?: boolean;
-      showEducations?: boolean;
-      showSkills?: boolean;
-      showProjects?: boolean;
-      showArticles?: boolean;
-      showVideos?: boolean;
-      showTestimonials?: boolean;
-      showContact?: boolean;
-    },
-  ) {
+  updateSettings(@Body() body: UpdateSettingsDto) {
     return this.adminService.updateSettings(body);
   }
 
   // Drag-and-drop reordering
   @Patch('experiences/reorder')
-  reorderExperiences(@Body() body: { items: { id: string; order: number }[] }) {
+  reorderExperiences(@Body() body: ReorderDto) {
     return this.adminService.reorderExperiences(body.items);
   }
 
   @Patch('educations/reorder')
-  reorderEducations(@Body() body: { items: { id: string; order: number }[] }) {
+  reorderEducations(@Body() body: ReorderDto) {
     return this.adminService.reorderEducations(body.items);
   }
 
   @Patch('skills/reorder')
-  reorderSkills(@Body() body: { items: { id: string; order: number }[] }) {
+  reorderSkills(@Body() body: ReorderDto) {
     return this.adminService.reorderSkills(body.items);
   }
 
   @Patch('projects/reorder')
-  reorderProjects(@Body() body: { items: { id: string; order: number }[] }) {
+  reorderProjects(@Body() body: ReorderDto) {
     return this.adminService.reorderProjects(body.items);
   }
 
@@ -505,15 +320,12 @@ export class AdminController {
   }
 
   @Post('skill-categories')
-  createSkillCategory(@Body() body: { title: string; titleFa?: string; order?: number }) {
+  createSkillCategory(@Body() body: CreateSkillCategoryDto) {
     return this.adminService.createSkillCategory(body);
   }
 
   @Put('skill-categories/:id')
-  updateSkillCategory(
-    @Param('id') id: string,
-    @Body() body: { title?: string; titleFa?: string; order?: number },
-  ) {
+  updateSkillCategory(@Param('id') id: string, @Body() body: UpdateSkillCategoryDto) {
     return this.adminService.updateSkillCategory(id, body);
   }
 
@@ -523,7 +335,7 @@ export class AdminController {
   }
 
   @Patch('skill-categories/reorder')
-  reorderSkillCategories(@Body() body: { items: { id: string; order: number }[] }) {
+  reorderSkillCategories(@Body() body: ReorderDto) {
     return this.adminService.reorderSkillCategories(body.items);
   }
 }
